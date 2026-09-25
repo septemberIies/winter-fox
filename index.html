@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./winter-ui.css?v=20260925-puzzles-only1" />
+  <link rel="stylesheet" href="./winter-ui.css?v=20260925-wine1" />
 </head>
 <body>
 <main id="app">
@@ -20,7 +20,7 @@
       <div class="fox-logo"></div>
       <span class="kicker">A SMALL WINTER GAME</span>
       <h1>WINTER FOX</h1>
-      <p>Três pequenos jogos feitos para você.</p>
+      <p>Quatro pequenos jogos feitos para você.</p>
       <button id="start-game" class="primary">Começar</button>
     </div>
   </section>
@@ -32,7 +32,7 @@
     </div>
 
     <header class="topbar">
-      <div><span>JOGO 1 DE 3</span><strong>Le Petit Café</strong></div>
+      <div><span>JOGO 1 DE 4</span><strong>Le Petit Café</strong></div>
       <div class="topbar-right"><span>OBJETIVO</span><strong>Pegue os itens do pedido</strong></div>
     </header>
 
@@ -67,6 +67,93 @@
     </div>
   </section>
 
+
+  <section id="wine" class="scene wine-scene">
+    <div class="scene-bg wine-bg">
+      <div class="wine-shelves wine-shelves-left"></div>
+      <div class="wine-shelves wine-shelves-right"></div>
+      <div class="cold-haze"></div>
+    </div>
+
+    <header class="topbar">
+      <div><span>JOGO 2 DE 4</span><strong>La Cave Froide</strong></div>
+      <div class="topbar-right"><span>OBJETIVO</span><strong>Deixe o vinho no ponto perfeito</strong></div>
+    </header>
+
+    <div class="wine-shell">
+      <div class="wine-copy">
+        <span class="kicker">VINHO BEM GELADO</span>
+        <h2>Acerte a temperatura</h2>
+
+        <div class="how-to">
+          <b>COMO JOGAR</b>
+          <span>Segure o botão para resfriar. Solte exatamente quando o marcador estiver dentro da faixa dourada.</span>
+        </div>
+
+        <div class="wine-rules">
+          <span><b>1</b> Segure</span>
+          <span><b>2</b> Observe</span>
+          <span><b>3</b> Solte no ponto</span>
+        </div>
+
+        <div class="wine-meta">
+          <span id="wine-round" class="round-pill">Rodada 1 de 3</span>
+          <span class="wine-difficulty">A faixa fica menor a cada rodada.</span>
+        </div>
+
+        <p id="wine-status" class="status">Segure para começar a resfriar.</p>
+      </div>
+
+      <div id="wine-machine" class="wine-machine">
+        <div class="wine-display">
+          <div class="frost-ring"></div>
+          <div class="ice-bucket">
+            <i class="ice-cube c1"></i><i class="ice-cube c2"></i><i class="ice-cube c3"></i>
+            <img class="wine-bottle-icon" src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/bottle.svg" alt="">
+          </div>
+
+          <div class="wine-glass-card">
+            <img src="https://raw.githubusercontent.com/redamajlal/kitchen-nightmare/main/assets/kenney_pixel-platformer-food-expansion/Tiles/tile_0098.png" alt="Taça de vinho">
+            <span>servir bem gelado</span>
+          </div>
+
+          <span class="cold-spark s1">✦</span>
+          <span class="cold-spark s2">✦</span>
+          <span class="cold-spark s3">✦</span>
+        </div>
+
+        <div class="temperature-panel">
+          <div class="temperature-head">
+            <div>
+              <img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/thermometer.svg" alt="">
+              <span>TEMPERATURA</span>
+            </div>
+            <strong id="wine-temp">18.0°C</strong>
+          </div>
+
+          <div class="wine-scale-labels">
+            <span>QUENTE</span>
+            <span>FRIO</span>
+            <span>GELADO DEMAIS</span>
+          </div>
+
+          <div id="wine-meter" class="wine-meter">
+            <div class="meter-gradient"></div>
+            <div id="wine-target" class="wine-target"><span>PERFEITO</span></div>
+            <div id="wine-marker" class="wine-marker"><i></i></div>
+          </div>
+
+          <button id="cool-wine" class="hold-button">
+            <span class="hold-icon">❄</span>
+            <span><b>SEGURE PARA RESFRIAR</b><small>solte na faixa perfeita</small></span>
+          </button>
+
+          <div class="wine-key-hint">Também funciona segurando <kbd>ESPAÇO</kbd></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="witch" class="scene witch-scene">
     <div class="scene-bg witch-bg">
       <div class="ritual-circle"></div>
@@ -74,7 +161,7 @@
     </div>
 
     <header class="topbar">
-      <div><span>JOGO 2 DE 3</span><strong>Ateliê da Bruxa</strong></div>
+      <div><span>JOGO 3 DE 4</span><strong>Ateliê da Bruxa</strong></div>
       <div class="topbar-right"><span>OBJETIVO</span><strong>Repita o ritual</strong></div>
     </header>
 
@@ -121,7 +208,7 @@
     <div class="scene-bg journal-bg"></div>
 
     <header class="topbar">
-      <div><span>JOGO 3 DE 3</span><strong>O Caderno</strong></div>
+      <div><span>JOGO 4 DE 4</span><strong>O Caderno</strong></div>
       <div class="topbar-right"><span>OBJETIVO</span><strong>Encontre os pares</strong></div>
     </header>
 
@@ -150,7 +237,7 @@
     <div class="final-card">
       <span class="kicker">FIM</span>
       <h1>Feliz aniversário.</h1>
-      <p>Você terminou os três jogos.</p>
+      <p>Você terminou os quatro jogos.</p>
       <p class="gold-line">Ainda falta colocar aqui a sua mensagem pessoal de aniversário.</p>
       <button id="replay" class="primary">Jogar de novo</button>
     </div>
@@ -160,6 +247,6 @@
   <div id="toast" class="toast hidden"></div>
 </main>
 
-<script src="./story.js?v=20260925-puzzles-only1"></script>
+<script src="./story.js?v=20260925-wine1"></script>
 </body>
 </html>
