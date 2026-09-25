@@ -751,7 +751,6 @@ class GameScene extends Phaser.Scene {
       for (const [x, y] of tallTrees) addTallTree(x, y);
       for (const [x, y] of smallTrees) addSmallTree(x, y);
     }
-    }
   }
 
   createRuneClearing() {
