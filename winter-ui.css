@@ -104,34 +104,18 @@ button, kbd { font: inherit; }
 .title-screen::before {
   content: "";
   position: absolute;
-  inset: -1px;
+  inset: 0;
   pointer-events: none;
   opacity: .018;
   background-image:
     linear-gradient(rgba(150, 160, 170, .08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(150, 160, 170, .08) 1px, transparent 1px);
   background-size: 84px 84px;
-  -webkit-mask-image: radial-gradient(circle at center, black 0%, rgba(0,0,0,.85) 36%, transparent 78%);
-  mask-image: radial-gradient(circle at center, black 0%, rgba(0,0,0,.85) 36%, transparent 78%);
-}
-
-.title-screen::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(860px, 78vw);
-  height: min(500px, 68vh);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  border: 1px solid rgba(231, 238, 245, .025);
-  border-radius: 50%;
-  filter: blur(.2px);
 }
 
 .title-minimal {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: min(1040px, calc(100vw - 48px));
   display: flex;
   flex-direction: column;
@@ -474,4 +458,52 @@ noscript {
   .dialogue-content { padding: 19px 20px; }
   .interaction { bottom: 118px; }
   .controls { display: none; }
+}
+.menu-snow {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.snow {
+  position: absolute;
+  inset: -220px 0 0 0;
+  background-repeat: repeat;
+  animation-name: snowfall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.snow-1 {
+  opacity: .30;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.92) 0 1px, transparent 1.55px);
+  background-size: 116px 116px;
+  animation-duration: 17s;
+}
+
+.snow-2 {
+  opacity: .19;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.76) 0 1.35px, transparent 2px);
+  background-size: 172px 172px;
+  animation-duration: 27s;
+  animation-delay: -7s;
+}
+
+.snow-3 {
+  opacity: .10;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.62) 0 1.8px, transparent 2.6px);
+  background-size: 236px 236px;
+  animation-duration: 39s;
+  animation-delay: -13s;
+}
+
+@keyframes snowfall {
+  from { transform: translate3d(0, -60px, 0); }
+  to { transform: translate3d(18px, calc(100vh + 220px), 0); }
 }
