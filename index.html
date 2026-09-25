@@ -288,6 +288,24 @@
             tone({ frequency: 622, endFrequency: 698, duration: 0.22, volume: 0.025, type: "sine" });
             tone({ frequency: 932, endFrequency: 1046, duration: 0.30, volume: 0.017, type: "sine", delay: 0.07 });
             break;
+
+          case "step": {
+            const pitch = 118 + Math.random() * 34;
+            noiseBurst(0.055, 0.010 + Math.random() * 0.006, 620 + Math.random() * 240);
+            tone({
+              frequency: pitch,
+              endFrequency: pitch * 0.78,
+              duration: 0.045,
+              volume: 0.010,
+              type: "triangle"
+            });
+            break;
+          }
+
+          case "fox":
+            tone({ frequency: 520, endFrequency: 650, duration: 0.08, volume: 0.015, type: "triangle" });
+            tone({ frequency: 760, endFrequency: 690, duration: 0.10, volume: 0.011, type: "sine", delay: 0.045 });
+            break;
         }
       }
 
@@ -350,6 +368,6 @@
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-  <script src="./winter-game.js?v=20260925-9"></script>
+  <script src="./winter-game.js?v=20260925-10"></script>
 </body>
 </html>
