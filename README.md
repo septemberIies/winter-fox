@@ -29,12 +29,13 @@ A base foi refeita para ficar mais polida:
 - Uso: sprite base da personagem feminina
 - Licença: **CC0**
 
-### Pixel Archer — Fox
-- Fonte: https://opengameart.org/content/fox-1
-- Uso: sprite da raposa
-- Licença: **CC0**
+### Fox (Wolf Pack Rework)
+- Fonte: https://opengameart.org/content/fox-wolf-pack-rework
+- Uso: raposa top-down em 4 direções
+- Licença: **CC BY 3.0/4.0 / OGA BY**
+- Crédito: patvanmackelberg, bleutailfly e Jordan Irwin (AntumDeluge)
 
-Os assets são carregados de fontes públicas e possuem licença CC0. Há fallbacks simples no código caso algum asset remoto não carregue.
+Os assets são carregados de fontes públicas; Tiny Ski e Miss Princess são CC0, e a raposa usa licença de atribuição conforme o crédito acima. Há fallbacks simples no código caso algum asset remoto não carregue.
 
 ## Controles
 
