@@ -175,7 +175,181 @@
     })();
   </script>
 
+  <script>
+    window.WinterAudio = (function () {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      let ctx = null;
+      let master = null;
+      let windSource = null;
+      let windGain = null;
+
+      function ensure() {
+        if (!AudioCtx) return null;
+
+        if (!ctx) {
+          ctx = new AudioCtx();
+          master = ctx.createGain();
+          master.gain.value = 0.72;
+          master.connect(ctx.destination);
+        }
+
+        if (ctx.state === "suspended") {
+          ctx.resume().catch(() => {});
+        }
+
+        return ctx;
+      }
+
+      function tone({
+        frequency = 440,
+        endFrequency = frequency,
+        duration = 0.08,
+        volume = 0.03,
+        type = "sine",
+        delay = 0
+      } = {}) {
+        const audio = ensure();
+        if (!audio) return;
+
+        const now = audio.currentTime + delay;
+        const osc = audio.createOscillator();
+        const gain = audio.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(frequency, now);
+        osc.frequency.exponentialRampToValueAtTime(Math.max(20, endFrequency), now + duration);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(volume, now + Math.min(0.012, duration * 0.25));
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(master);
+        osc.start(now);
+        osc.stop(now + duration + 0.02);
+      }
+
+      function noiseBurst(duration = 0.045, volume = 0.014, cutoff = 1100) {
+        const audio = ensure();
+        if (!audio) return;
+
+        const length = Math.max(1, Math.floor(audio.sampleRate * duration));
+        const buffer = audio.createBuffer(1, length, audio.sampleRate);
+        const data = buffer.getChannelData(0);
+
+        for (let i = 0; i < length; i++) {
+          data[i] = (Math.random() * 2 - 1) * (1 - i / length);
+        }
+
+        const source = audio.createBufferSource();
+        const filter = audio.createBiquadFilter();
+        const gain = audio.createGain();
+
+        source.buffer = buffer;
+        filter.type = "lowpass";
+        filter.frequency.value = cutoff;
+
+        const now = audio.currentTime;
+        gain.gain.setValueAtTime(volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(master);
+        source.start(now);
+      }
+
+      function play(name) {
+        switch (name) {
+          case "hover":
+            tone({ frequency: 720, endFrequency: 840, duration: 0.045, volume: 0.012, type: "triangle" });
+            break;
+
+          case "click":
+            noiseBurst(0.038, 0.018, 900);
+            tone({ frequency: 185, endFrequency: 150, duration: 0.055, volume: 0.022, type: "triangle" });
+            break;
+
+          case "start":
+            noiseBurst(0.055, 0.012, 1250);
+            tone({ frequency: 330, endFrequency: 390, duration: 0.13, volume: 0.025, type: "sine" });
+            tone({ frequency: 494, endFrequency: 587, duration: 0.18, volume: 0.020, type: "sine", delay: 0.055 });
+            break;
+
+          case "interact":
+            tone({ frequency: 275, endFrequency: 345, duration: 0.065, volume: 0.018, type: "triangle" });
+            break;
+
+          case "dialogue":
+            tone({ frequency: 510, endFrequency: 470, duration: 0.035, volume: 0.010, type: "triangle" });
+            break;
+
+          case "rune":
+            tone({ frequency: 622, endFrequency: 698, duration: 0.22, volume: 0.025, type: "sine" });
+            tone({ frequency: 932, endFrequency: 1046, duration: 0.30, volume: 0.017, type: "sine", delay: 0.07 });
+            break;
+        }
+      }
+
+      function startWind() {
+        const audio = ensure();
+        if (!audio || windSource) return;
+
+        const seconds = 3;
+        const buffer = audio.createBuffer(1, audio.sampleRate * seconds, audio.sampleRate);
+        const data = buffer.getChannelData(0);
+
+        let smooth = 0;
+        for (let i = 0; i < data.length; i++) {
+          const white = Math.random() * 2 - 1;
+          smooth = smooth * 0.985 + white * 0.015;
+          data[i] = smooth * 3.1;
+        }
+
+        windSource = audio.createBufferSource();
+        const filter = audio.createBiquadFilter();
+        windGain = audio.createGain();
+
+        windSource.buffer = buffer;
+        windSource.loop = true;
+
+        filter.type = "bandpass";
+        filter.frequency.value = 420;
+        filter.Q.value = 0.45;
+
+        windGain.gain.value = 0.018;
+
+        windSource.connect(filter);
+        filter.connect(windGain);
+        windGain.connect(master);
+        windSource.start();
+      }
+
+      return { ensure, play, startWind };
+    })();
+
+    (function bindUISounds() {
+      document.addEventListener("mouseover", (event) => {
+        const button = event.target.closest && event.target.closest("button");
+        if (!button) return;
+        if (event.relatedTarget && button.contains(event.relatedTarget)) return;
+        window.WinterAudio.play("hover");
+      });
+
+      document.addEventListener("pointerdown", (event) => {
+        const button = event.target.closest && event.target.closest("button");
+        if (!button) return;
+
+        if (button.id === "start-button") {
+          window.WinterAudio.play("start");
+        } else {
+          window.WinterAudio.play("click");
+        }
+      });
+    })();
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-  <script src="./winter-game.js?v=5"></script>
+  <script src="./winter-game.js?v=20260925-6"></script>
 </body>
 </html>
