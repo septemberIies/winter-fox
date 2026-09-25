@@ -1,42 +1,53 @@
 # Winter Fox
 
-Pequeno jogo 2D de inverno feito como presente de aniversário.
+Mini jogo 2D de inverno feito como presente de aniversário.
 
-## Base jogável atual
+## Visual atual
 
-- tela inicial;
-- personagem com movimento por **WASD** ou setas;
-- mapa congelado em preto, branco e cinza;
+A base foi refeita para ficar mais polida:
+
+- render interno em 1280×720 com suporte a device pixel ratio;
+- textos, HUD, menu e diálogos em HTML/CSS, para ficarem nítidos em qualquer resolução;
+- tipografia `Cormorant Garamond` + `Manrope`;
+- cenário em pixel art top-down;
+- personagem principal feminina;
 - neve animada;
-- colisão com árvores, pedras e objetos;
-- raposa interagível com **E**;
-- sistema simples de diálogo;
-- pedra rúnica como gancho para puzzles futuros;
-- câmera que acompanha o personagem;
-- layout responsivo para navegador.
+- HUD clean com local e objetivo;
+- prompt de interação;
+- sistema de diálogo;
+- mapa pronto para receber os puzzles.
 
-Os sprites atuais são provisórios e gerados pelo próprio jogo. Isso permite testar toda a lógica antes de escolhermos um pack de pixel art definitivo.
+## Assets
 
-## Publicar no GitHub Pages
+### Kenney — Tiny Ski
+- Fonte: https://kenney.nl/assets/tiny-ski
+- Uso: tiles de neve, árvores, pedras e objetos do mapa
+- Licença: **CC0 1.0**
 
-No repositório, abra:
+### qubodup — Miss Princess, animated (16x16)
+- Fonte: https://opengameart.org/content/miss-princess-animated-16x16
+- Uso: sprite base da personagem feminina
+- Licença: **CC0**
 
-1. **Settings**
-2. **Pages**
-3. em **Build and deployment**, escolha **Deploy from a branch**
-4. selecione a branch **main**
-5. escolha **/(root)**
-6. clique em **Save**
+### Pixel Archer — Fox
+- Fonte: https://opengameart.org/content/fox-1
+- Uso: sprite da raposa
+- Licença: **CC0**
 
-Depois, o jogo deverá ficar disponível em:
+Os assets são carregados de fontes públicas e possuem licença CC0. Há fallbacks simples no código caso algum asset remoto não carregue.
 
-https://septemberIies.github.io/winter-fox/
+## Controles
+
+- **WASD / setas:** mover
+- **E:** interagir / avançar diálogo
+- **Enter:** iniciar
 
 ## Próximas etapas
 
-1. escolher um estilo visual e substituir os sprites provisórios;
-2. criar a cabana e o puzzle do queijo;
-3. implementar a mecânica de alternar o mundo preto/branco;
-4. criar a cabana da bruxa e o puzzle do caldeirão;
-5. adicionar runas e progressão;
-6. criar o santuário da raposa e o final de aniversário.
+1. cabana abandonada;
+2. puzzle do queijo;
+3. alternância entre mundo branco/preto;
+4. cabana da bruxa e puzzle do caldeirão;
+5. runas;
+6. santuário da raposa;
+7. final personalizado de aniversário.
