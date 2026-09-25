@@ -478,32 +478,35 @@ noscript {
 }
 
 .snow-1 {
-  opacity: .30;
+  opacity: .62;
   background-image:
-    radial-gradient(circle, rgba(255,255,255,.92) 0 1px, transparent 1.55px);
-  background-size: 116px 116px;
-  animation-duration: 17s;
+    radial-gradient(circle, rgba(255,255,255,.96) 0 1.4px, transparent 1.9px);
+  background-size: 72px 72px;
+  animation-duration: 13s;
 }
 
 .snow-2 {
-  opacity: .19;
+  opacity: .38;
   background-image:
-    radial-gradient(circle, rgba(255,255,255,.76) 0 1.35px, transparent 2px);
-  background-size: 172px 172px;
-  animation-duration: 27s;
-  animation-delay: -7s;
+    radial-gradient(circle, rgba(255,255,255,.82) 0 1.8px, transparent 2.4px);
+  background-size: 108px 108px;
+  animation-duration: 20s;
+  animation-delay: -6s;
 }
 
 .snow-3 {
-  opacity: .10;
+  opacity: .22;
   background-image:
-    radial-gradient(circle, rgba(255,255,255,.62) 0 1.8px, transparent 2.6px);
-  background-size: 236px 236px;
-  animation-duration: 39s;
-  animation-delay: -13s;
+    radial-gradient(circle, rgba(255,255,255,.72) 0 2.2px, transparent 3px);
+  background-size: 156px 156px;
+  animation-duration: 29s;
+  animation-delay: -11s;
 }
 
 @keyframes snowfall {
-  from { transform: translate3d(0, -60px, 0); }
+  from { transform: translate3d(-10px, -180px, 0); }
+  to { transform: translate3d(45px, calc(100vh + 260px), 0); }
+}
+
   to { transform: translate3d(18px, calc(100vh + 220px), 0); }
 }
