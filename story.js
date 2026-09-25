@@ -1,5 +1,5 @@
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const scenes=["title","cafe","witch","journal","finale"];
+const scenes=["title","cafe","wine","witch","journal","finale"];
 let current="title";
 
 function show(id){
@@ -120,7 +120,7 @@ function catchFood(el,id){
     stopConveyor();
     $("#cafe-status").textContent="Pedido completo!";
     orderIndex++;
-    if(orderIndex>=orders.length)setTimeout(()=>go("witch"),900);
+    if(orderIndex>=orders.length)setTimeout(()=>go("wine"),900);
     else setTimeout(setupOrder,700);
   }
 }
@@ -148,6 +148,137 @@ function stopConveyor(){
   conveyorTimer=null;conveyorRaf=null;
 }
 setupOrder();
+
+
+/* VINHO — SEGURE E SOLTE */
+const wineRounds=[
+  {width:10.0,speed:18.5,label:"faixa média"},
+  {width:6.0,speed:25.5,label:"faixa estreita"},
+  {width:3.4,speed:32.5,label:"faixa mínima"}
+];
+
+let wineRound=0;
+let wineProgress=0;
+let wineHolding=false;
+let wineLocked=false;
+let wineRaf=null;
+let wineLast=0;
+let winePhase=Math.random()*Math.PI*2;
+let wineTargetCenter=77;
+let wineTargetWidth=wineRounds[0].width;
+
+const wineButton=$("#cool-wine");
+const wineMachine=$("#wine-machine");
+const wineMarker=$("#wine-marker");
+const wineTarget=$("#wine-target");
+
+function wineTemperature(){
+  return Math.max(0,18-(wineProgress*.18));
+}
+function renderWine(){
+  wineMarker.style.left=wineProgress+"%";
+  $("#wine-temp").textContent=wineTemperature().toFixed(1)+"°C";
+}
+function randomizeWineTarget(){
+  const cfg=wineRounds[wineRound];
+  wineTargetWidth=cfg.width;
+  wineTargetCenter=76+Math.random()*7;
+  const left=wineTargetCenter-wineTargetWidth/2;
+  wineTarget.style.left=left+"%";
+  wineTarget.style.width=wineTargetWidth+"%";
+}
+function resetWineAttempt(message="Segure para começar a resfriar."){
+  wineProgress=0;
+  wineHolding=false;
+  wineLocked=false;
+  wineLast=0;
+  winePhase=Math.random()*Math.PI*2;
+  wineButton.classList.remove("holding");
+  wineMachine.classList.remove("cooling","wine-fail","wine-success");
+  randomizeWineTarget();
+  renderWine();
+  $("#wine-status").textContent=message;
+  $("#wine-round").textContent=`Rodada ${wineRound+1} de 3`;
+}
+function startWineHold(e){
+  if(current!=="wine"||wineLocked||wineHolding)return;
+  if(e?.preventDefault)e.preventDefault();
+  wineHolding=true;
+  wineLast=performance.now();
+  wineButton.classList.add("holding");
+  wineMachine.classList.add("cooling");
+  $("#wine-status").textContent="Resfriando... solte na faixa dourada!";
+  tone(260,.07,.009);
+  wineRaf=requestAnimationFrame(wineLoop);
+}
+function wineLoop(now){
+  if(!wineHolding)return;
+  const dt=Math.min(.035,(now-wineLast)/1000);
+  wineLast=now;
+
+  const cfg=wineRounds[wineRound];
+  const irregular=
+    1
+    +Math.sin(now/190+winePhase)*.22
+    +Math.sin(now/73+winePhase*.7)*.10;
+
+  wineProgress+=cfg.speed*irregular*dt;
+  wineProgress=Math.min(100,wineProgress);
+  renderWine();
+
+  if(wineProgress>=100){
+    finishWineHold();
+    return;
+  }
+  wineRaf=requestAnimationFrame(wineLoop);
+}
+function finishWineHold(e){
+  if(e?.preventDefault)e.preventDefault();
+  if(!wineHolding||wineLocked)return;
+
+  wineHolding=false;
+  wineLocked=true;
+  cancelAnimationFrame(wineRaf);
+  wineButton.classList.remove("holding");
+  wineMachine.classList.remove("cooling");
+
+  const min=wineTargetCenter-wineTargetWidth/2;
+  const max=wineTargetCenter+wineTargetWidth/2;
+  const success=wineProgress>=min&&wineProgress<=max;
+
+  if(success){
+    good();
+    wineMachine.classList.add("wine-success");
+    $("#wine-status").textContent=`Perfeito — ${wineTemperature().toFixed(1)}°C.`;
+
+    if(wineRound===wineRounds.length-1){
+      setTimeout(()=>go("witch"),1100);
+      return;
+    }
+
+    wineRound++;
+    setTimeout(()=>resetWineAttempt("Boa. Agora a faixa ficou menor."),900);
+    return;
+  }
+
+  bad();
+  wineMachine.classList.add("wine-fail");
+
+  if(wineProgress<min){
+    $("#wine-status").textContent=`Ainda está quente demais — ${wineTemperature().toFixed(1)}°C.`;
+  }else{
+    $("#wine-status").textContent=`Passou do ponto — ${wineTemperature().toFixed(1)}°C.`;
+  }
+
+  setTimeout(()=>resetWineAttempt("Tente de novo. A velocidade muda a cada tentativa."),950);
+}
+
+wineButton.addEventListener("pointerdown",startWineHold);
+window.addEventListener("pointerup",finishWineHold);
+window.addEventListener("pointercancel",finishWineHold);
+
+resetWineAttempt();
+
 
 /* BRUXARIA */
 const ritualButtons=$$("#ritual-items button");
@@ -278,6 +409,16 @@ $("#replay").onclick=()=>location.reload();
 
 document.addEventListener("keydown",e=>{
   if(current==="title"&&e.key==="Enter")$("#start-game").click();
+  if(current==="wine"&&e.code==="Space"&&!e.repeat){
+    e.preventDefault();
+    startWineHold(e);
+  }
+});
+document.addEventListener("keyup",e=>{
+  if(current==="wine"&&e.code==="Space"){
+    e.preventDefault();
+    finishWineHold(e);
+  }
 });
 
 snow("title-snow",90);
