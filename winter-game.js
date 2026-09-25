@@ -2,10 +2,14 @@ const GAME_WIDTH = 1280;
 const GAME_HEIGHT = 720;
 const TILE = 16;
 const TILE_SCALE = 3;
-const WORLD_COLS = 31;
-const WORLD_ROWS = 18;
+const BASE_WORLD_COLS = 31;
+const BASE_WORLD_ROWS = 18;
+const WORLD_COLS = 40;
+const WORLD_ROWS = 24;
 const WORLD_WIDTH = WORLD_COLS * TILE * TILE_SCALE;
 const WORLD_HEIGHT = WORLD_ROWS * TILE * TILE_SCALE;
+const BASE_WORLD_WIDTH = BASE_WORLD_COLS * TILE * TILE_SCALE;
+const BASE_WORLD_HEIGHT = BASE_WORLD_ROWS * TILE * TILE_SCALE;
 
 const ASSETS = {
   winterTiles: "https://raw.githubusercontent.com/Tiddybub/2d-assets/main/misc/tiny-ski/Tilemap/tilemap_packed.png",
@@ -303,12 +307,47 @@ class BootScene extends Phaser.Scene {
     }
 
     g.clear();
-    g.fillStyle(0x303843);
-    g.fillRoundedRect(2, 2, 20, 28, 4);
-    g.lineStyle(2, 0xd8e1ea, .8);
-    g.strokeCircle(12, 14, 6);
-    g.lineBetween(12, 8, 12, 20);
-    g.generateTexture("rune", 24, 32);
+
+    // Ancient rune stone - irregular pixel silhouette.
+    g.fillStyle(0x151c22);
+    g.fillRect(8, 2, 16, 2);
+    g.fillRect(5, 4, 22, 4);
+    g.fillRect(3, 8, 26, 24);
+    g.fillRect(5, 32, 22, 4);
+    g.fillRect(8, 36, 16, 2);
+
+    // Stone inner face.
+    g.fillStyle(0x27343e);
+    g.fillRect(6, 7, 20, 25);
+    g.fillStyle(0x344650);
+    g.fillRect(7, 8, 3, 21);
+    g.fillRect(10, 7, 12, 2);
+
+    // Small chips in the stone.
+    g.fillStyle(0x0e1419);
+    g.fillRect(4, 12, 3, 4);
+    g.fillRect(25, 22, 3, 5);
+    g.fillRect(9, 33, 4, 2);
+
+    // Cyan carved rune.
+    g.lineStyle(2, 0xaeeef3, 1);
+    g.strokeCircle(16, 19, 8);
+    g.lineBetween(16, 10, 16, 28);
+    g.lineBetween(12, 14, 16, 10);
+    g.lineBetween(20, 14, 16, 10);
+    g.lineBetween(12, 24, 16, 28);
+    g.lineBetween(20, 24, 16, 28);
+
+    // Bright rune core.
+    g.fillStyle(0xd9fbff, 0.95);
+    g.fillRect(15, 18, 2, 2);
+    g.fillStyle(0x82dfe9, 0.85);
+    g.fillRect(8, 11, 2, 2);
+    g.fillRect(23, 15, 2, 2);
+    g.fillRect(7, 27, 2, 2);
+    g.fillRect(23, 29, 2, 2);
+
+    g.generateTexture("rune", 32, 40);
 
     g.destroy();
   }
@@ -394,7 +433,7 @@ class GameScene extends Phaser.Scene {
     this.createAtmosphere();
 
     this.lastFacing = "down";
-    this.player = this.physics.add.sprite(310, WORLD_HEIGHT - 165, "hero-down-0");
+    this.player = this.physics.add.sprite(310, BASE_WORLD_HEIGHT - 165, "hero-down-0");
     this.player.setScale(2.65);
     this.player.setCollideWorldBounds(true);
     this.player.setDepth(500);
@@ -480,7 +519,7 @@ class GameScene extends Phaser.Scene {
       });
     }
 
-    this.fox = this.physics.add.sprite(WORLD_WIDTH * .67, WORLD_HEIGHT * .43, "fox", foxFrame)
+    this.fox = this.physics.add.sprite(BASE_WORLD_WIDTH * .67, BASE_WORLD_HEIGHT * .43, "fox", foxFrame)
       .setScale(foxScale)
       .setDepth(520)
       .setImmovable(true);
@@ -508,18 +547,26 @@ class GameScene extends Phaser.Scene {
       0.86
     ).setDepth(620);
 
-    this.rune = this.physics.add.staticImage(WORLD_WIDTH * .82, WORLD_HEIGHT * .29, "rune")
-      .setScale(1.7)
-      .setDepth(510)
-      .setTint(0x8fd3df);
+    this.rune = this.physics.add.staticImage(WORLD_WIDTH - 175, 175, "rune")
+      .setScale(1.75)
+      .setDepth(510);
 
     this.runeGlow = this.add.circle(
       this.rune.x,
       this.rune.y,
-      18,
-      0x8fd3df,
-      0.12
+      32,
+      0x8fe8ef,
+      0.16
     ).setDepth(504);
+
+    this.runeHalo = this.add.circle(
+      this.rune.x,
+      this.rune.y,
+      48,
+      0x8fe8ef,
+      0.055
+    ).setDepth(503);
+
     this.rune.refreshBody();
 
     this.physics.add.collider(this.player, this.obstacles);
@@ -557,9 +604,19 @@ class GameScene extends Phaser.Scene {
 
     this.tweens.add({
       targets: this.runeGlow,
-      alpha: { from: 0.07, to: 0.23 },
-      scale: { from: 1, to: 1.34 },
+      alpha: { from: 0.08, to: 0.26 },
+      scale: { from: 1, to: 1.30 },
       duration: 1450,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.inOut"
+    });
+
+    this.tweens.add({
+      targets: this.runeHalo,
+      alpha: { from: 0.025, to: 0.095 },
+      scale: { from: 0.92, to: 1.18 },
+      duration: 2100,
       yoyo: true,
       repeat: -1,
       ease: "Sine.inOut"
@@ -594,10 +651,13 @@ class GameScene extends Phaser.Scene {
 
     for (let row = 0; row < WORLD_ROWS; row++) {
       for (let col = 0; col < WORLD_COLS; col++) {
-        const idx = row * WORLD_COLS + col;
+        const inOriginalMap = row < BASE_WORLD_ROWS && col < BASE_WORLD_COLS;
+        const idx = inOriginalMap ? (row * BASE_WORLD_COLS + col) : -1;
         const x = col * TILE * TILE_SCALE;
         const y = row * TILE * TILE_SCALE;
-        const terrainId = TERRAIN[idx];
+
+        // Preserve the old handcrafted area; new space is calm open snow.
+        const terrainId = inOriginalMap ? TERRAIN[idx] : 3;
 
         if (this.textures.exists("winter") && terrainId > 0) {
           this.add.image(x, y, "winter", terrainId - 1)
@@ -606,7 +666,7 @@ class GameScene extends Phaser.Scene {
             .setDepth(0);
         }
 
-        const objectId = OBJECTS[idx];
+        const objectId = inOriginalMap ? OBJECTS[idx] : 0;
         if (!objectId || !this.textures.exists("winter")) continue;
 
         const cx = x + (TILE * TILE_SCALE) / 2;
@@ -624,6 +684,27 @@ class GameScene extends Phaser.Scene {
             .setScale(TILE_SCALE)
             .setDepth(80 + cy);
         }
+      }
+    }
+
+    // Sparse scenery in the new eastern snowfield so it feels intentionally larger.
+    if (this.textures.exists("winter")) {
+      const extensionProps = [
+        [BASE_WORLD_WIDTH + 92, 118, 7],
+        [BASE_WORLD_WIDTH + 315, 96, 19],
+        [BASE_WORLD_WIDTH + 165, 395, 7],
+        [BASE_WORLD_WIDTH + 350, 520, 19],
+        [BASE_WORLD_WIDTH + 70, 690, 31],
+        [BASE_WORLD_WIDTH + 290, 815, 7],
+        [WORLD_WIDTH - 95, 395, 31],
+        [WORLD_WIDTH - 330, 735, 19]
+      ];
+
+      for (const [x, y, objectId] of extensionProps) {
+        this.add.image(x, y, "winter", objectId - 1)
+          .setScale(TILE_SCALE)
+          .setDepth(80 + y)
+          .setAlpha(0.92);
       }
     }
   }
@@ -731,7 +812,7 @@ class GameScene extends Phaser.Scene {
     const foxDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fox.x, this.fox.y);
     const runeDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.rune.x, this.rune.y);
 
-    if (foxDistance < 105 && (this.foxState === "waiting" || this.foxState === "arrived")) {
+    if (foxDistance < 105 && this.foxState === "waiting") {
       this.setPrompt(this.foxTalked ? "Falar com a raposa" : "Conversar com a raposa");
       ui.objective.textContent = this.foxTalked ? "Acompanhe a raposa" : "Converse com a raposa";
       if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) {
@@ -740,8 +821,8 @@ class GameScene extends Phaser.Scene {
         this.startFoxDialogue();
       }
     } else if (runeDistance < 90) {
-      this.setPrompt("Observar a pedra rúnica");
-      ui.objective.textContent = "Observe o símbolo";
+      this.setPrompt("Examinar a runa");
+      ui.objective.textContent = "Examine a runa";
       if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) {
         if (window.WinterAudio) window.WinterAudio.play("rune");
         this.burstSparkles(this.rune.x, this.rune.y, 0x9be6ef, 14);
@@ -759,11 +840,11 @@ class GameScene extends Phaser.Scene {
   sendFoxAhead() {
     if (!this.foxGuidePoints) {
       this.foxGuidePoints = [
-        { x: WORLD_WIDTH * 0.59, y: WORLD_HEIGHT * 0.50 },
-        { x: WORLD_WIDTH * 0.63, y: WORLD_HEIGHT * 0.45 },
-        { x: WORLD_WIDTH * 0.68, y: WORLD_HEIGHT * 0.40 },
-        { x: WORLD_WIDTH * 0.73, y: WORLD_HEIGHT * 0.35 },
-        { x: WORLD_WIDTH * 0.78, y: WORLD_HEIGHT * 0.31 }
+        { x: 1110, y: 410 },
+        { x: 1285, y: 385 },
+        { x: 1450, y: 345 },
+        { x: 1585, y: 295 },
+        { x: this.rune.x - 95, y: this.rune.y + 72 }
       ];
     }
 
@@ -773,9 +854,10 @@ class GameScene extends Phaser.Scene {
       this.fox.setVelocity(0);
       this.fox.anims.stop();
       this.foxPointer.setVisible(false);
-      ui.objective.textContent = "Observe o símbolo";
+      ui.objective.textContent = "Examine a runa";
       this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 10);
-      if (window.WinterAudio) window.WinterAudio.play("fox");
+      this.burstSparkles(this.rune.x, this.rune.y, 0x9beaf0, 16);
+      if (window.WinterAudio) window.WinterAudio.play("rune");
       return;
     }
 
@@ -785,63 +867,49 @@ class GameScene extends Phaser.Scene {
     this.foxPointer.setVisible(true);
     ui.objective.textContent = "Siga a raposa";
 
-    this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 8);
-    if (window.WinterAudio) window.WinterAudio.play("fox");
-
     if (this.anims.exists("fox-walk")) {
       this.fox.anims.play("fox-walk", true);
     }
   }
 
   updateFoxGuide() {
-    if (!this.fox) return;
+    if (!this.fox || this.foxState !== "moving" || !this.foxTarget) return;
 
-    if (this.foxState === "waiting_for_player") {
-      const playerDistance = Phaser.Math.Distance.Between(
-        this.player.x,
-        this.player.y,
-        this.fox.x,
-        this.fox.y
-      );
+    const playerDistance = Phaser.Math.Distance.Between(
+      this.player.x,
+      this.player.y,
+      this.fox.x,
+      this.fox.y
+    );
 
+    // The fox only pauses when it has genuinely left the player far behind.
+    if (playerDistance > 330) {
+      this.fox.setVelocity(0);
+      this.fox.anims.stop();
       ui.objective.textContent = "Alcance a raposa";
-
-      if (playerDistance < 145) {
-        this.foxState = "pausing";
-        ui.objective.textContent = "Siga a raposa";
-
-        this.time.delayedCall(420, () => {
-          if (this.foxState === "pausing") this.sendFoxAhead();
-        });
-      }
       return;
     }
 
-    if (this.foxState !== "moving" || !this.foxTarget) return;
+    ui.objective.textContent = "Siga a raposa";
 
     const dx = this.foxTarget.x - this.fox.x;
     const dy = this.foxTarget.y - this.fox.y;
     const distance = Math.hypot(dx, dy);
 
-    if (distance < 9) {
+    if (distance < 10) {
       this.fox.setVelocity(0);
       this.fox.anims.stop();
       this.foxTarget = null;
-      this.fox.setAngle(0);
 
-      const hasMore = this.foxGuideStage < this.foxGuidePoints.length;
-
-      if (!hasMore) {
-        this.sendFoxAhead();
-        return;
-      }
-
-      this.foxState = "waiting_for_player";
-      this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 5);
+      this.time.delayedCall(180, () => {
+        if (this.foxState === "moving" && !this.foxTarget) {
+          this.sendFoxAhead();
+        }
+      });
       return;
     }
 
-    const speed = 126;
+    const speed = 130;
     this.fox.setVelocity((dx / distance) * speed, (dy / distance) * speed);
 
     if (Math.abs(dx) > 2) {
