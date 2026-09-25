@@ -507,17 +507,28 @@ class GameScene extends Phaser.Scene {
     }
 
     const foxFrames = this.textures.get("fox").frameTotal || 1;
-    const foxFrame = foxFrames >= 12 ? 5 : 0;
+    const foxFrame = foxFrames >= 12 ? 4 : 0;
     const foxScale = foxFrames >= 12 ? 1.55 : 3.6;
-    this.foxIdleFrame = foxFrame;
 
-    if (foxFrames >= 8 && !this.anims.exists("fox-walk")) {
-      this.anims.create({
-        key: "fox-walk",
-        frames: [4, 5, 6, 7].map(frame => ({ key: "fox", frame })),
-        frameRate: 9,
-        repeat: -1
-      });
+    this.foxFacing = "right";
+    this.foxIdleFrames = foxFrames >= 12
+      ? { up: 1, right: 4, down: 7, left: 10 }
+      : { up: 0, right: 0, down: 0, left: 0 };
+
+    if (foxFrames >= 12 && !this.anims.exists("fox-walk-right")) {
+      const makeFoxWalk = (key, frames) => {
+        this.anims.create({
+          key,
+          frames: frames.map(frame => ({ key: "fox", frame })),
+          frameRate: 8,
+          repeat: -1
+        });
+      };
+
+      makeFoxWalk("fox-walk-up", [0, 1, 2, 1]);
+      makeFoxWalk("fox-walk-right", [3, 4, 5, 4]);
+      makeFoxWalk("fox-walk-down", [6, 7, 8, 7]);
+      makeFoxWalk("fox-walk-left", [9, 10, 11, 10]);
     }
 
     this.fox = this.physics.add.sprite(BASE_WORLD_WIDTH * .67, BASE_WORLD_HEIGHT * .43, "fox", foxFrame)
@@ -692,60 +703,93 @@ class GameScene extends Phaser.Scene {
       }
     }
 
-    // Mysterious eastern forest: a long winding route, dense edges and a rune clearing.
+    // Mysterious eastern forest. Tall trees are two atlas tiles, so always build both halves.
     if (this.textures.exists("winter")) {
-      const mysteryProps = [
-        [1545,120,7],[1615,175,19],[1710,120,7],[1800,180,31],[1910,130,19],[2020,170,7],[2140,115,31],[2260,170,7],
-        [1515,690,19],[1610,760,7],[1740,705,31],[1845,790,19],[1965,720,7],[2080,805,31],[2200,720,19],[2350,790,7],
-        [1560,310,31],[1650,365,7],[1760,300,19],[1850,385,31],[1975,315,7],[2075,370,19],
-        [1620,560,19],[1730,585,31],[1860,545,7],[2000,590,19],[2115,530,31],[2240,580,7],
-        [1480,950,7],[1600,1040,19],[1740,980,31],[1880,1080,7],[2030,1010,19],[2190,1100,31],[2360,1020,7],
-        [1540,1290,19],[1690,1360,7],[1850,1260,31],[2020,1390,19],[2200,1300,7],[2380,1400,31]
+      const addTallTree = (x, baseY, alpha = 0.95) => {
+        this.add.image(x, baseY - 48, "winter", 6)
+          .setScale(TILE_SCALE)
+          .setDepth(80 + baseY - 48)
+          .setAlpha(alpha);
+
+        const bottom = this.obstacles.create(x, baseY, "winter", 18)
+          .setScale(TILE_SCALE)
+          .setDepth(100 + baseY)
+          .setAlpha(alpha);
+
+        bottom.refreshBody();
+        bottom.body.setSize(12, 7);
+        bottom.body.setOffset(2, 8);
+      };
+
+      const addSmallTree = (x, y, alpha = 0.92) => {
+        const tree = this.obstacles.create(x, y, "winter", 30)
+          .setScale(TILE_SCALE)
+          .setDepth(100 + y)
+          .setAlpha(alpha);
+
+        tree.refreshBody();
+        tree.body.setSize(11, 7);
+        tree.body.setOffset(2.5, 8);
+      };
+
+      // Dense edges with a readable winding corridor in the middle.
+      const tallTrees = [
+        [1545,175],[1715,185],[1885,170],[2070,190],[2255,175],[2410,210],
+        [1515,760],[1685,805],[1865,770],[2050,820],[2235,770],[2420,815],
+        [1600,430],[1810,405],[2010,450],[2190,415],[2365,455],
+        [1580,1085],[1770,1040],[1970,1110],[2170,1060],[2380,1120],
+        [1585,1390],[1780,1450],[1990,1375],[2210,1460],[2410,1395]
       ];
 
-      for (const [x, y, objectId] of mysteryProps) {
-        const collides = collidable.has(objectId);
-        if (collides) {
-          const obj = this.obstacles.create(x, y, "winter", objectId - 1)
-            .setScale(TILE_SCALE)
-            .setDepth(100 + y)
-            .setAlpha(0.94);
-          obj.refreshBody();
-          obj.body.setSize(12, 8);
-          obj.body.setOffset(2, 7);
-        } else {
-          this.add.image(x, y, "winter", objectId - 1)
-            .setScale(TILE_SCALE)
-            .setDepth(80 + y)
-            .setAlpha(0.90);
-        }
-      }
+      const smallTrees = [
+        [1640,275],[1795,260],[1950,290],[2140,270],[2310,300],
+        [1610,610],[1760,650],[1920,610],[2110,645],[2290,620],
+        [1680,925],[1870,900],[2070,940],[2260,905],
+        [1700,1240],[1910,1210],[2140,1250],[2340,1210]
+      ];
 
+      for (const [x, y] of tallTrees) addTallTree(x, y);
+      for (const [x, y] of smallTrees) addSmallTree(x, y);
+    }
     }
   }
 
   createRuneClearing() {
     if (!this.textures.exists("winter") || !this.rune) return;
 
-    const clearingProps = [
-      [this.rune.x - 150, this.rune.y - 95, 31],
-      [this.rune.x + 135, this.rune.y - 75, 31],
-      [this.rune.x - 170, this.rune.y + 85, 19],
-      [this.rune.x + 155, this.rune.y + 105, 19],
-      [this.rune.x - 40, this.rune.y - 145, 7],
-      [this.rune.x + 55, this.rune.y + 155, 7]
-    ];
-
-    for (const [x, y, objectId] of clearingProps) {
-      const obj = this.obstacles.create(x, y, "winter", objectId - 1)
+    const addTallTree = (x, baseY) => {
+      this.add.image(x, baseY - 48, "winter", 6)
         .setScale(TILE_SCALE)
-        .setDepth(100 + y)
+        .setDepth(80 + baseY - 48)
         .setAlpha(0.96);
 
-      obj.refreshBody();
-      obj.body.setSize(12, 8);
-      obj.body.setOffset(2, 7);
-    }
+      const bottom = this.obstacles.create(x, baseY, "winter", 18)
+        .setScale(TILE_SCALE)
+        .setDepth(100 + baseY)
+        .setAlpha(0.96);
+
+      bottom.refreshBody();
+      bottom.body.setSize(12, 7);
+      bottom.body.setOffset(2, 8);
+    };
+
+    const addSmallTree = (x, y) => {
+      const tree = this.obstacles.create(x, y, "winter", 30)
+        .setScale(TILE_SCALE)
+        .setDepth(100 + y)
+        .setAlpha(0.94);
+
+      tree.refreshBody();
+      tree.body.setSize(11, 7);
+      tree.body.setOffset(2.5, 8);
+    };
+
+    addTallTree(this.rune.x - 175, this.rune.y - 70);
+    addTallTree(this.rune.x + 165, this.rune.y - 55);
+    addTallTree(this.rune.x - 185, this.rune.y + 135);
+    addTallTree(this.rune.x + 180, this.rune.y + 140);
+    addSmallTree(this.rune.x - 55, this.rune.y - 150);
+    addSmallTree(this.rune.x + 70, this.rune.y + 170);
   }
 
   createMysteryAmbience() {
@@ -935,10 +979,43 @@ class GameScene extends Phaser.Scene {
 
   setFoxIdle() {
     if (!this.fox) return;
+
     this.fox.setVelocity(0);
     this.fox.anims.stop();
-    this.fox.setFrame(this.foxIdleFrame || 0);
+
+    const idleFrame = this.foxIdleFrames
+      ? this.foxIdleFrames[this.foxFacing || "right"]
+      : 0;
+
+    this.fox.setFrame(idleFrame);
     this.fox.setAngle(0);
+  }
+
+  playFoxWalk(dx, dy) {
+    if (!this.fox || !this.foxIdleFrames) return;
+
+    if (Math.abs(dx) >= Math.abs(dy)) {
+      this.foxFacing = dx < 0 ? "left" : "right";
+    } else {
+      this.foxFacing = dy < 0 ? "up" : "down";
+    }
+
+    const animKey = `fox-walk-${this.foxFacing}`;
+    if (this.anims.exists(animKey)) {
+      this.fox.anims.play(animKey, true);
+    }
+  }
+
+  finishFoxGuide() {
+    this.foxState = "arrived";
+    this.foxTarget = null;
+    this.setFoxIdle();
+    this.foxPointer.setVisible(false);
+    ui.objective.textContent = "Examine a runa";
+    this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 10);
+    this.burstSparkles(this.rune.x, this.rune.y, 0x9beaf0, 16);
+
+    if (window.WinterAudio) window.WinterAudio.play("rune");
   }
 
   sendFoxAhead() {
@@ -952,19 +1029,12 @@ class GameScene extends Phaser.Scene {
         { x: 1990, y: 640 },
         { x: 2140, y: 545 },
         { x: 2265, y: 430 },
-        { x: this.rune.x - 105, y: this.rune.y + 82 }
+        { x: this.rune.x - 125, y: this.rune.y + 105 }
       ];
     }
 
     if (this.foxGuideStage >= this.foxGuidePoints.length) {
-      this.foxState = "arrived";
-      this.foxTarget = null;
-      this.setFoxIdle();
-      this.foxPointer.setVisible(false);
-      ui.objective.textContent = "Examine a runa";
-      this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 10);
-      this.burstSparkles(this.rune.x, this.rune.y, 0x9beaf0, 16);
-      if (window.WinterAudio) window.WinterAudio.play("rune");
+      this.finishFoxGuide();
       return;
     }
 
@@ -973,14 +1043,33 @@ class GameScene extends Phaser.Scene {
     this.foxState = "moving";
     this.foxPointer.setVisible(true);
     ui.objective.textContent = "Siga a raposa";
-
-    if (this.anims.exists("fox-walk")) {
-      this.fox.anims.play("fox-walk", true);
-    }
   }
 
   updateFoxGuide() {
     if (!this.fox || this.foxState !== "moving" || !this.foxTarget) return;
+
+    const dx = this.foxTarget.x - this.fox.x;
+    const dy = this.foxTarget.y - this.fox.y;
+    const distance = Math.hypot(dx, dy);
+
+    // Resolve arrival before any waiting logic. This prevents the final point
+    // from visually looking reached while the state still says "moving".
+    if (distance < 12) {
+      this.fox.setPosition(this.foxTarget.x, this.foxTarget.y);
+      this.foxTarget = null;
+      this.setFoxIdle();
+
+      if (this.foxGuideStage >= this.foxGuidePoints.length) {
+        this.finishFoxGuide();
+      } else {
+        this.time.delayedCall(180, () => {
+          if (this.foxState === "moving" && !this.foxTarget) {
+            this.sendFoxAhead();
+          }
+        });
+      }
+      return;
+    }
 
     const playerDistance = Phaser.Math.Distance.Between(
       this.player.x,
@@ -989,7 +1078,6 @@ class GameScene extends Phaser.Scene {
       this.fox.y
     );
 
-    // Wait only when the fox is genuinely too far ahead.
     if (playerDistance > 360) {
       this.setFoxIdle();
       ui.objective.textContent = "Alcance a raposa";
@@ -998,32 +1086,9 @@ class GameScene extends Phaser.Scene {
 
     ui.objective.textContent = "Siga a raposa";
 
-    const dx = this.foxTarget.x - this.fox.x;
-    const dy = this.foxTarget.y - this.fox.y;
-    const distance = Math.hypot(dx, dy);
-
-    if (distance < 10) {
-      this.setFoxIdle();
-      this.foxTarget = null;
-
-      this.time.delayedCall(220, () => {
-        if (this.foxState === "moving" && !this.foxTarget) {
-          this.sendFoxAhead();
-        }
-      });
-      return;
-    }
-
     const speed = 132;
     this.fox.setVelocity((dx / distance) * speed, (dy / distance) * speed);
-
-    if (Math.abs(dx) > 2) {
-      this.fox.setFlipX(dx < 0);
-    }
-
-    if (this.anims.exists("fox-walk")) {
-      this.fox.anims.play("fox-walk", true);
-    }
+    this.playFoxWalk(dx, dy);
 
     if (Math.random() < 0.08) {
       const puff = this.add.circle(
