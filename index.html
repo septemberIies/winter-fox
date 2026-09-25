@@ -8,365 +8,158 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./winter-ui.css?v=20260925-10" />
-  <style>
-    html, body, #app {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      min-height: 100dvh;
-      overflow: hidden;
-      background: #05070b !important;
-    }
-    #app.is-title {
-      background: #05070b !important;
-    }
-    #app.is-title #game {
-      display: none !important;
-    }
-    #title-screen {
-      background: #05070b !important;
-    }
-  </style>
+  <link rel="stylesheet" href="./winter-ui.css?v=20260925-story1" />
 </head>
 <body>
-  <main id="app" class="is-title">
-    <div id="game" style="display:none;background:#05070b" aria-label="Winter Fox"></div>
+  <main id="app">
+    <section id="title-screen" class="screen title-screen is-active">
+      <div id="title-snow" class="snow-layer" aria-hidden="true"></div>
+      <div class="title-vignette" aria-hidden="true"></div>
 
-    <div class="screen-vignette" aria-hidden="true"></div>
-    <div class="grain" aria-hidden="true"></div>
+      <div class="title-content">
+        <div class="fox-emblem" aria-hidden="true">
+          <span></span><i></i><b></b>
+        </div>
+        <p class="eyebrow">A SMALL WINTER STORY</p>
+        <h1>WINTER FOX</h1>
+        <button id="start-button" class="primary-button" type="button">Começar</button>
+      </div>
+    </section>
 
-    <section id="title-screen" class="title-screen">
-      <div id="title-snow" class="title-snow" aria-hidden="true"></div>
-      <div class="title-minimal">
-        <div class="fox-mark" aria-hidden="true">
-          <span class="fox-ear fox-ear-left"></span>
-          <span class="fox-face"></span>
-          <span class="fox-ear fox-ear-right"></span>
+    <section id="paris-scene" class="screen story-scene">
+      <div class="paris-sky" aria-hidden="true">
+        <div class="moon"></div>
+        <div class="paris-haze"></div>
+
+        <div class="skyline skyline-back">
+          <span style="--x:3%;--w:10%;--h:22%"></span>
+          <span style="--x:14%;--w:8%;--h:31%"></span>
+          <span style="--x:25%;--w:12%;--h:25%"></span>
+          <span style="--x:39%;--w:9%;--h:34%"></span>
+          <span style="--x:51%;--w:13%;--h:27%"></span>
+          <span style="--x:67%;--w:10%;--h:36%"></span>
+          <span style="--x:80%;--w:9%;--h:26%"></span>
+          <span style="--x:90%;--w:11%;--h:33%"></span>
         </div>
 
-        <h1>WINTER FOX</h1>
+        <svg class="eiffel" viewBox="0 0 180 360" aria-hidden="true">
+          <defs>
+            <linearGradient id="towerGlow" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#f8dfab"/>
+              <stop offset="1" stop-color="#ad7e48"/>
+            </linearGradient>
+          </defs>
+          <g fill="none" stroke="url(#towerGlow)" stroke-linecap="square">
+            <path stroke-width="9" d="M89 14 L49 286 M91 14 L131 286" />
+            <path stroke-width="8" d="M49 286 L22 343 M131 286 L158 343" />
+            <path stroke-width="7" d="M39 300 H141 M53 246 H127 M63 188 H117 M72 126 H108 M80 70 H100" />
+            <path stroke-width="4" d="M54 246 L116 188 M126 246 L64 188 M64 188 L108 126 M116 188 L72 126 M72 126 L100 70 M108 126 L80 70" />
+            <path stroke-width="6" d="M15 343 H165" />
+          </g>
+        </svg>
 
-        <button id="start-button" class="start-minimal" type="button">
-          <span>Começar</span>
-          <span class="start-line" aria-hidden="true"></span>
-        </button>
+        <div class="window-lights" aria-hidden="true"></div>
+        <div class="river">
+          <div class="river-glow"></div>
+        </div>
+        <div class="bridge">
+          <div class="bridge-rail"></div>
+          <div class="bridge-arch arch-a"></div>
+          <div class="bridge-arch arch-b"></div>
+          <div class="bridge-arch arch-c"></div>
+        </div>
+
+        <div class="lamp lamp-left"><i></i><b></b></div>
+        <div class="lamp lamp-right"><i></i><b></b></div>
+        <div id="paris-snow" class="snow-layer scene-snow" aria-hidden="true"></div>
+      </div>
+
+      <header class="story-hud">
+        <div>
+          <span>CAPÍTULO I</span>
+          <strong>Paris, 23:47</strong>
+        </div>
+        <div class="hud-objective">
+          <span>OBJETIVO</span>
+          <strong id="story-objective">Encontre a raposa</strong>
+        </div>
+      </header>
+
+      <div class="paris-caption">
+        <span class="caption-line"></span>
+        <p>Uma noite fria. Uma cidade conhecida. Algo está esperando por você.</p>
+      </div>
+
+      <div id="fox-wrap" class="fox-wrap fox-start">
+        <div id="story-fox" class="story-fox idle" role="button" tabindex="0" aria-label="Raposa"></div>
+        <div class="fox-glow"></div>
+      </div>
+
+      <button id="fox-prompt" class="interaction-prompt" type="button">
+        <kbd>E</kbd>
+        <span>falar com a raposa</span>
+      </button>
+
+      <section id="story-dialogue" class="story-dialogue hidden">
+        <div class="speaker">RAPOSA</div>
+        <p id="story-dialogue-text"></p>
+        <button id="dialogue-next" type="button"><kbd>E</kbd> continuar</button>
+      </section>
+    </section>
+
+    <section id="cheese-scene" class="screen story-scene cheese-scene">
+      <div class="cafe-bg" aria-hidden="true">
+        <div class="cafe-window">
+          <div class="mini-eiffel"></div>
+          <div id="cafe-snow" class="snow-layer small-snow"></div>
+        </div>
+        <div class="cafe-lamp"></div>
+        <div class="cafe-table"></div>
+      </div>
+
+      <header class="story-hud">
+        <div>
+          <span>CAPÍTULO II</span>
+          <strong>Le petit café</strong>
+        </div>
+        <div class="hud-objective">
+          <span>OBJETIVO</span>
+          <strong>Escolha o queijo certo</strong>
+        </div>
+      </header>
+
+      <div class="puzzle-card">
+        <span class="puzzle-kicker">PRIMEIRO TESTE</span>
+        <h2>Uma escolha simples.</h2>
+        <p>A raposa não quer o queijo mais forte, nem o mais azul. Ela escolhe o que combina com uma noite fria em Paris.</p>
+
+        <div class="cheese-options">
+          <button class="cheese-option" data-cheese="blue">
+            <span class="cheese-art blue-cheese"></span>
+            <strong>Bleu</strong>
+            <small>forte e azul</small>
+          </button>
+
+          <button class="cheese-option" data-cheese="brie">
+            <span class="cheese-art brie-cheese"></span>
+            <strong>Brie</strong>
+            <small>macio e suave</small>
+          </button>
+
+          <button class="cheese-option" data-cheese="aged">
+            <span class="cheese-art aged-cheese"></span>
+            <strong>Comté</strong>
+            <small>curado e intenso</small>
+          </button>
+        </div>
+
+        <div id="puzzle-feedback" class="puzzle-feedback" aria-live="polite"></div>
       </div>
     </section>
 
-    <header id="hud" class="hud hidden">
-      <div class="hud-section">
-        <span class="hud-kicker">LOCAL</span>
-        <strong id="area-name">Floresta de Inverno</strong>
-      </div>
-      <div class="hud-divider"></div>
-      <div class="hud-section hud-objective">
-        <span class="hud-kicker">OBJETIVO</span>
-        <strong id="objective-text">Encontre a raposa</strong>
-      </div>
-    </header>
-
-    <div id="interaction" class="interaction hidden">
-      <kbd>E</kbd>
-      <span id="interaction-text">Interagir</span>
-    </div>
-
-    <section id="dialogue" class="dialogue hidden" aria-live="polite">
-      <div class="dialogue-accent"></div>
-      <div class="dialogue-content">
-        <div id="dialogue-speaker" class="dialogue-speaker">RAPOSA</div>
-        <p id="dialogue-text"></p>
-      </div>
-      <div class="dialogue-next"><kbd>E</kbd><span>continuar</span></div>
-    </section>
-
-    <div id="controls" class="controls hidden">
-      <span><kbd>WASD</kbd> mover</span>
-      <i></i>
-      <span><kbd>E</kbd> interagir</span>
-    </div>
-
-    <div id="loading" class="loading">
-      <span class="loading-mark">✦</span>
-      <span>Preparando o inverno…</span>
-    </div>
-
-    <noscript>Você precisa ativar o JavaScript para jogar Winter Fox.</noscript>
+    <div id="scene-transition" class="scene-transition" aria-hidden="true"></div>
   </main>
 
-  <script>
-    (function createTitleSnow() {
-      const snow = document.getElementById("title-snow");
-      if (!snow) return;
-
-      const flakes = [];
-      const count = 92;
-      let last = performance.now();
-
-      function randomize(flake, firstSpawn) {
-        const sizeRoll = Math.random();
-
-        flake.size =
-          sizeRoll < 0.58 ? (Math.random() * 1.4 + 1.0) :
-          sizeRoll < 0.90 ? (Math.random() * 1.9 + 1.8) :
-                            (Math.random() * 2.3 + 3.0);
-
-        flake.x = Math.random() * window.innerWidth;
-        flake.y = firstSpawn
-          ? Math.random() * window.innerHeight
-          : -(Math.random() * 90 + 12);
-
-        // Every respawn gets a new fall behaviour.
-        flake.speed = Math.random() * 34 + 28;
-        flake.wind = Math.random() * 18 - 9;
-        flake.wobble = Math.random() * 15 + 3;
-        flake.frequency = Math.random() * 0.0018 + 0.0007;
-        flake.phase = Math.random() * Math.PI * 2;
-        flake.opacity = Math.random() * 0.46 + 0.26;
-        flake.soft = Math.random() < 0.22;
-
-        const el = flake.el;
-        el.style.width = flake.size + "px";
-        el.style.height = flake.size + "px";
-        el.style.opacity = flake.opacity;
-        el.classList.toggle("soft-flake", flake.soft);
-      }
-
-      for (let i = 0; i < count; i++) {
-        const el = document.createElement("span");
-        el.className = "title-flake";
-        snow.appendChild(el);
-
-        const flake = { el };
-        randomize(flake, true);
-        flakes.push(flake);
-      }
-
-      function frame(now) {
-        const dt = Math.min((now - last) / 1000, 0.035);
-        last = now;
-
-        for (const flake of flakes) {
-          flake.y += flake.speed * dt;
-          flake.x += flake.wind * dt;
-
-          const sway =
-            Math.sin(now * flake.frequency + flake.phase) *
-            flake.wobble;
-
-          flake.el.style.transform =
-            "translate3d(" +
-            (flake.x + sway).toFixed(1) + "px," +
-            flake.y.toFixed(1) + "px,0)";
-
-          if (
-            flake.y > window.innerHeight + 20 ||
-            flake.x < -80 ||
-            flake.x > window.innerWidth + 80
-          ) {
-            randomize(flake, false);
-          }
-        }
-
-        requestAnimationFrame(frame);
-      }
-
-      requestAnimationFrame(frame);
-    })();
-  </script>
-
-  <script>
-    window.WinterAudio = (function () {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      let ctx = null;
-      let master = null;
-      let windSource = null;
-      let windGain = null;
-
-      function ensure() {
-        if (!AudioCtx) return null;
-
-        if (!ctx) {
-          ctx = new AudioCtx();
-          master = ctx.createGain();
-          master.gain.value = 0.72;
-          master.connect(ctx.destination);
-        }
-
-        if (ctx.state === "suspended") {
-          ctx.resume().catch(() => {});
-        }
-
-        return ctx;
-      }
-
-      function tone({
-        frequency = 440,
-        endFrequency = frequency,
-        duration = 0.08,
-        volume = 0.03,
-        type = "sine",
-        delay = 0
-      } = {}) {
-        const audio = ensure();
-        if (!audio) return;
-
-        const now = audio.currentTime + delay;
-        const osc = audio.createOscillator();
-        const gain = audio.createGain();
-
-        osc.type = type;
-        osc.frequency.setValueAtTime(frequency, now);
-        osc.frequency.exponentialRampToValueAtTime(Math.max(20, endFrequency), now + duration);
-
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(volume, now + Math.min(0.012, duration * 0.25));
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-
-        osc.connect(gain);
-        gain.connect(master);
-        osc.start(now);
-        osc.stop(now + duration + 0.02);
-      }
-
-      function noiseBurst(duration = 0.045, volume = 0.014, cutoff = 1100) {
-        const audio = ensure();
-        if (!audio) return;
-
-        const length = Math.max(1, Math.floor(audio.sampleRate * duration));
-        const buffer = audio.createBuffer(1, length, audio.sampleRate);
-        const data = buffer.getChannelData(0);
-
-        for (let i = 0; i < length; i++) {
-          data[i] = (Math.random() * 2 - 1) * (1 - i / length);
-        }
-
-        const source = audio.createBufferSource();
-        const filter = audio.createBiquadFilter();
-        const gain = audio.createGain();
-
-        source.buffer = buffer;
-        filter.type = "lowpass";
-        filter.frequency.value = cutoff;
-
-        const now = audio.currentTime;
-        gain.gain.setValueAtTime(volume, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-
-        source.connect(filter);
-        filter.connect(gain);
-        gain.connect(master);
-        source.start(now);
-      }
-
-      function play(name) {
-        switch (name) {
-          case "hover":
-            tone({ frequency: 720, endFrequency: 840, duration: 0.045, volume: 0.012, type: "triangle" });
-            break;
-
-          case "click":
-            noiseBurst(0.038, 0.018, 900);
-            tone({ frequency: 185, endFrequency: 150, duration: 0.055, volume: 0.022, type: "triangle" });
-            break;
-
-          case "start":
-            noiseBurst(0.055, 0.012, 1250);
-            tone({ frequency: 330, endFrequency: 390, duration: 0.13, volume: 0.025, type: "sine" });
-            tone({ frequency: 494, endFrequency: 587, duration: 0.18, volume: 0.020, type: "sine", delay: 0.055 });
-            break;
-
-          case "interact":
-            tone({ frequency: 275, endFrequency: 345, duration: 0.065, volume: 0.018, type: "triangle" });
-            break;
-
-          case "dialogue":
-            tone({ frequency: 510, endFrequency: 470, duration: 0.035, volume: 0.010, type: "triangle" });
-            break;
-
-          case "rune":
-            tone({ frequency: 622, endFrequency: 698, duration: 0.22, volume: 0.025, type: "sine" });
-            tone({ frequency: 932, endFrequency: 1046, duration: 0.30, volume: 0.017, type: "sine", delay: 0.07 });
-            break;
-
-          case "step": {
-            const pitch = 118 + Math.random() * 34;
-            noiseBurst(0.055, 0.010 + Math.random() * 0.006, 620 + Math.random() * 240);
-            tone({
-              frequency: pitch,
-              endFrequency: pitch * 0.78,
-              duration: 0.045,
-              volume: 0.010,
-              type: "triangle"
-            });
-            break;
-          }
-
-          case "fox":
-            tone({ frequency: 520, endFrequency: 650, duration: 0.08, volume: 0.015, type: "triangle" });
-            tone({ frequency: 760, endFrequency: 690, duration: 0.10, volume: 0.011, type: "sine", delay: 0.045 });
-            break;
-        }
-      }
-
-      function startWind() {
-        const audio = ensure();
-        if (!audio || windSource) return;
-
-        const seconds = 3;
-        const buffer = audio.createBuffer(1, audio.sampleRate * seconds, audio.sampleRate);
-        const data = buffer.getChannelData(0);
-
-        let smooth = 0;
-        for (let i = 0; i < data.length; i++) {
-          const white = Math.random() * 2 - 1;
-          smooth = smooth * 0.985 + white * 0.015;
-          data[i] = smooth * 3.1;
-        }
-
-        windSource = audio.createBufferSource();
-        const filter = audio.createBiquadFilter();
-        windGain = audio.createGain();
-
-        windSource.buffer = buffer;
-        windSource.loop = true;
-
-        filter.type = "bandpass";
-        filter.frequency.value = 420;
-        filter.Q.value = 0.45;
-
-        windGain.gain.value = 0.018;
-
-        windSource.connect(filter);
-        filter.connect(windGain);
-        windGain.connect(master);
-        windSource.start();
-      }
-
-      return { ensure, play, startWind };
-    })();
-
-    (function bindUISounds() {
-      document.addEventListener("mouseover", (event) => {
-        const button = event.target.closest && event.target.closest("button");
-        if (!button) return;
-        if (event.relatedTarget && button.contains(event.relatedTarget)) return;
-        window.WinterAudio.play("hover");
-      });
-
-      document.addEventListener("pointerdown", (event) => {
-        const button = event.target.closest && event.target.closest("button");
-        if (!button) return;
-
-        if (button.id === "start-button") {
-          window.WinterAudio.play("start");
-        } else {
-          window.WinterAudio.play("click");
-        }
-      });
-    })();
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-  <script src="./winter-game.js?v=20260925-22"></script>
+  <script src="./story.js?v=20260925-story1"></script>
 </body>
 </html>
