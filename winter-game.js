@@ -770,14 +770,34 @@ class GameScene extends Phaser.Scene {
     const bottomId = variant === 1 ? 20 : 19;
     const spriteScale = TILE_SCALE * scale;
     const cellStep = TILE * spriteScale;
-    const depth = 100 + groundY;
 
-    this.add.image(x, groundY - cellStep, "winter", topId - 1)
+    // Keep the full two-tile tree inside the world.
+    // Without this, trees near the far-right/top/bottom edge can be visibly cropped
+    // because the camera cannot move beyond the world bounds.
+    const halfWidth = (TILE * spriteScale) / 2;
+    const sideMargin = Math.max(72, halfWidth + 36);
+    const topMargin = cellStep + 36;
+    const bottomMargin = 42;
+
+    const safeX = Phaser.Math.Clamp(
+      x,
+      sideMargin,
+      WORLD_WIDTH - sideMargin
+    );
+    const safeGroundY = Phaser.Math.Clamp(
+      groundY,
+      topMargin,
+      WORLD_HEIGHT - bottomMargin
+    );
+
+    const depth = 100 + safeGroundY;
+
+    this.add.image(safeX, safeGroundY - cellStep, "winter", topId - 1)
       .setScale(spriteScale)
       .setDepth(depth)
       .setAlpha(alpha);
 
-    const trunk = this.obstacles.create(x, groundY, "winter", bottomId - 1)
+    const trunk = this.obstacles.create(safeX, safeGroundY, "winter", bottomId - 1)
       .setScale(spriteScale)
       .setDepth(depth)
       .setAlpha(alpha);
@@ -868,11 +888,11 @@ class GameScene extends Phaser.Scene {
     }
 
     const trees = [
-      [1540,170,0,.96],[1700,190,1,.90],[1870,165,0,1.02],[2055,195,1,.94],[2240,170,0,.98],[2410,210,1,.90],
-      [1510,770,1,.96],[1680,815,0,.90],[1850,775,0,1.02],[2040,830,1,.94],[2225,775,0,.98],[2410,820,1,.90],
-      [1590,420,0,.88],[1800,400,1,.98],[2000,455,0,.92],[2180,415,1,1.00],[2350,460,0,.88],
-      [1570,1080,1,1.00],[1760,1040,0,.90],[1960,1110,0,1.02],[2160,1060,1,.96],[2370,1120,0,.92],
-      [1580,1390,0,.94],[1770,1450,1,1.00],[1980,1375,0,.90],[2200,1460,1,1.02],[2400,1395,0,.96]
+      [1540,170,0,.96],[1700,190,1,.90],[1870,165,0,1.02],[2055,195,1,.94],[2240,170,0,.98],[2360,210,1,.90],
+      [1510,770,1,.96],[1680,815,0,.90],[1850,775,0,1.02],[2040,830,1,.94],[2225,775,0,.98],[2360,820,1,.90],
+      [1590,420,0,.88],[1800,400,1,.98],[2000,455,0,.92],[2180,415,1,1.00],[2320,460,0,.88],
+      [1570,1080,1,1.00],[1760,1040,0,.90],[1960,1110,0,1.02],[2160,1060,1,.96],[2330,1120,0,.92],
+      [1580,1390,0,.94],[1770,1450,1,1.00],[1980,1375,0,.90],[2200,1460,1,1.02],[2350,1395,0,.96]
     ];
 
     for (const [x, y, variant, scale] of trees) {
