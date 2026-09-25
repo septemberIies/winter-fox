@@ -57,3 +57,197 @@ body{font-family:"Manrope",system-ui,sans-serif;color:var(--text)}button{font:in
   .witch-shell{top:55%;width:94vw;padding:18px}.ritual-items{grid-template-columns:repeat(2,1fr)}
   .memory-shell{width:94vw;grid-template-columns:1fr;gap:18px}.memory-grid{grid-template-columns:repeat(4,1fr)}.memory-card{height:120px}
 }
+
+/* VINHO — HOLD & RELEASE */
+.wine-scene{
+  background:
+    radial-gradient(circle at 72% 45%,rgba(91,116,136,.18),transparent 28%),
+    linear-gradient(135deg,#171016 0%,#0a0d13 56%,#101821 100%);
+}
+.wine-bg{
+  background:
+    linear-gradient(to bottom,rgba(7,8,12,.15),rgba(4,7,11,.68)),
+    radial-gradient(circle at 50% 80%,rgba(116,157,177,.11),transparent 30%);
+}
+.wine-shelves{
+  position:absolute;
+  top:9%;
+  bottom:4%;
+  width:21%;
+  opacity:.42;
+  background:
+    repeating-linear-gradient(to bottom,transparent 0 118px,rgba(123,90,70,.26) 118px 124px),
+    repeating-linear-gradient(90deg,rgba(59,33,43,.58) 0 20px,transparent 20px 37px);
+  border:1px solid rgba(255,255,255,.025);
+  filter:blur(.1px);
+}
+.wine-shelves-left{left:2%}
+.wine-shelves-right{right:2%}
+.cold-haze{
+  position:absolute;left:50%;bottom:-12%;width:64%;height:42%;
+  transform:translateX(-50%);
+  background:radial-gradient(ellipse,rgba(177,211,224,.12),transparent 68%);
+  filter:blur(25px);
+}
+.wine-shell{
+  position:absolute;z-index:10;inset:108px 7% 6%;
+  display:grid;grid-template-columns:.72fr 1.28fr;gap:34px;align-items:center;
+}
+.wine-copy h2{
+  margin:7px 0 4px;
+  font:600 clamp(40px,4vw,56px) "Cormorant Garamond",serif;
+}
+.wine-rules{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.wine-rules span{
+  display:flex;align-items:center;gap:7px;
+  min-height:35px;padding:0 11px;border:1px solid rgba(255,255,255,.08);
+  border-radius:999px;background:rgba(255,255,255,.025);
+  color:#adb7bf;font-size:10px;font-weight:700;
+}
+.wine-rules b{
+  display:grid;place-items:center;width:20px;height:20px;border-radius:50%;
+  background:#6d263c;color:#f5e8eb;font-size:9px;
+}
+.wine-meta{display:flex;align-items:center;gap:12px;margin-top:17px}
+.wine-difficulty{color:#7f8b95;font-size:10px;font-weight:650}
+.wine-machine{
+  min-height:520px;display:grid;grid-template-columns:.8fr 1.2fr;gap:0;
+  border:1px solid rgba(232,237,241,.1);border-radius:20px;
+  overflow:hidden;background:rgba(8,11,16,.82);
+  box-shadow:0 30px 90px rgba(0,0,0,.28);
+  backdrop-filter:blur(14px);
+}
+.wine-display{
+  position:relative;overflow:hidden;display:grid;place-items:center;
+  background:
+    radial-gradient(circle at 50% 58%,rgba(180,215,228,.12),transparent 33%),
+    linear-gradient(160deg,#111821,#090c12);
+  border-right:1px solid rgba(255,255,255,.065);
+}
+.frost-ring{
+  position:absolute;width:280px;height:280px;border-radius:50%;
+  border:1px solid rgba(197,225,235,.1);
+  box-shadow:inset 0 0 45px rgba(173,213,228,.05),0 0 55px rgba(173,213,228,.04);
+}
+.ice-bucket{
+  position:relative;width:184px;height:150px;margin-top:38px;
+  border-radius:16px 16px 48px 48px;
+  background:linear-gradient(90deg,#6e7780,#d7dde0 44%,#818b94);
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.13),0 24px 38px rgba(0,0,0,.32);
+}
+.ice-bucket:before{
+  content:"";position:absolute;left:7px;right:7px;top:-14px;height:29px;
+  border-radius:50%;background:#d9e2e6;border:4px solid #68727a;
+  box-shadow:inset 0 5px 12px rgba(82,115,128,.28);
+}
+.ice-bucket:after{
+  content:"";position:absolute;left:19px;right:19px;top:15px;height:4px;
+  background:rgba(255,255,255,.34);border-radius:999px;
+}
+.wine-bottle-icon{
+  position:absolute;z-index:3;left:50%;bottom:62px;width:88px;height:190px;
+  transform:translateX(-50%);
+  filter:invert(17%) sepia(33%) saturate(975%) hue-rotate(285deg) brightness(74%);
+  stroke-width:1.4;
+}
+.ice-cube{
+  position:absolute;z-index:4;width:32px;height:27px;border-radius:7px;
+  border:1px solid rgba(255,255,255,.43);
+  background:linear-gradient(145deg,rgba(225,246,252,.8),rgba(121,177,199,.5));
+  box-shadow:inset 4px 4px 8px rgba(255,255,255,.24);
+}
+.ice-cube.c1{left:24px;top:-12px;transform:rotate(-15deg)}
+.ice-cube.c2{right:25px;top:-8px;transform:rotate(18deg)}
+.ice-cube.c3{left:76px;top:-2px;transform:rotate(5deg)}
+.wine-glass-card{
+  position:absolute;left:20px;bottom:20px;display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border:1px solid rgba(255,255,255,.07);border-radius:9px;
+  background:rgba(5,8,12,.58);color:#81909a;font-size:9px;font-weight:700;
+}
+.wine-glass-card img{width:34px;height:34px;image-rendering:pixelated}
+.cold-spark{
+  position:absolute;color:#bfe6f2;opacity:.36;font-size:18px;
+  animation:coldFloat 2.4s ease-in-out infinite alternate;
+}
+.cold-spark.s1{left:18%;top:28%}.cold-spark.s2{right:17%;top:38%;animation-delay:-.7s}.cold-spark.s3{right:27%;bottom:24%;animation-delay:-1.2s}
+@keyframes coldFloat{to{transform:translateY(-12px) rotate(18deg);opacity:.72}}
+.wine-machine.cooling .frost-ring{
+  animation:frostPulse .7s ease-in-out infinite alternate;
+}
+.wine-machine.cooling .ice-bucket{filter:brightness(1.08)}
+.wine-machine.cooling .cold-spark{opacity:.9}
+@keyframes frostPulse{to{transform:scale(1.05);box-shadow:inset 0 0 65px rgba(173,213,228,.1),0 0 80px rgba(173,213,228,.08)}}
+
+.temperature-panel{padding:30px;display:flex;flex-direction:column;justify-content:center}
+.temperature-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.temperature-head>div{display:flex;align-items:center;gap:8px}
+.temperature-head img{width:24px;height:24px;filter:invert(77%);opacity:.75}
+.temperature-head span{font-size:10px;font-weight:800;letter-spacing:.13em;color:#8e9aa4}
+.temperature-head strong{
+  font:600 31px "Cormorant Garamond",serif;color:#e8edf0;letter-spacing:.02em;
+}
+.wine-scale-labels{display:flex;justify-content:space-between;margin-bottom:8px;color:#6f7b85;font-size:8px;font-weight:800;letter-spacing:.09em}
+.wine-meter{
+  position:relative;height:58px;border:1px solid rgba(255,255,255,.09);
+  border-radius:13px;background:#10141a;overflow:visible;
+  box-shadow:inset 0 8px 18px rgba(0,0,0,.18);
+}
+.meter-gradient{
+  position:absolute;inset:7px;border-radius:8px;
+  background:linear-gradient(90deg,#703448 0%,#455668 48%,#92c5d5 77%,#cfe9ef 100%);
+  opacity:.48;
+}
+.wine-target{
+  position:absolute;z-index:3;top:5px;bottom:5px;border-radius:8px;
+  border:2px solid #d4aa68;background:rgba(201,156,92,.2);
+  box-shadow:0 0 18px rgba(211,166,100,.28),inset 0 0 12px rgba(226,190,132,.1);
+}
+.wine-target span{
+  position:absolute;left:50%;top:-25px;transform:translateX(-50%);
+  color:#d7b277;font-size:8px;font-weight:800;letter-spacing:.1em;white-space:nowrap;
+}
+.wine-marker{
+  position:absolute;z-index:6;left:0;top:-7px;width:4px;height:72px;
+  transform:translateX(-2px);background:#f1f4f6;border-radius:999px;
+  box-shadow:0 0 12px rgba(222,239,246,.5);
+}
+.wine-marker:before{
+  content:"";position:absolute;left:50%;top:-3px;width:15px;height:15px;
+  transform:translate(-50%,-50%) rotate(45deg);background:#f1f4f6;border-radius:3px;
+}
+.wine-marker i{
+  position:absolute;left:50%;bottom:-14px;width:8px;height:8px;
+  transform:translateX(-50%);border-radius:50%;background:#cde7ef;
+  box-shadow:0 0 13px rgba(184,224,237,.65);
+}
+.hold-button{
+  margin-top:34px;min-height:76px;display:flex;align-items:center;justify-content:center;gap:12px;
+  border:1px solid rgba(181,216,229,.22);border-radius:13px;
+  background:linear-gradient(135deg,#19333d,#13252e);
+  cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;
+  box-shadow:0 13px 30px rgba(0,0,0,.2);transition:.14s;
+}
+.hold-button:hover{border-color:rgba(194,227,239,.42);transform:translateY(-2px)}
+.hold-button.holding{
+  transform:translateY(1px) scale(.995);
+  background:linear-gradient(135deg,#285667,#183844);
+  border-color:rgba(205,236,246,.62);
+  box-shadow:0 0 28px rgba(108,190,218,.14);
+}
+.hold-icon{font-size:29px;color:#d6edf4}
+.hold-button b{display:block;font-size:11px;letter-spacing:.08em}
+.hold-button small{display:block;margin-top:4px;color:#94a9b3;font-size:9px}
+.wine-key-hint{margin-top:13px;text-align:center;color:#67747e;font-size:9px;font-weight:650}
+.wine-key-hint kbd{
+  display:inline-grid;place-items:center;min-width:54px;height:24px;margin-left:4px;
+  border:1px solid rgba(255,255,255,.1);border-radius:6px;background:#151a20;color:#aeb9c1;font-size:8px;
+}
+.wine-machine.wine-success{animation:wineSuccess .48s ease}
+.wine-machine.wine-fail{animation:wineFail .28s ease}
+@keyframes wineSuccess{50%{box-shadow:0 0 0 2px rgba(209,169,106,.45),0 0 60px rgba(209,169,106,.13)}}
+@keyframes wineFail{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+@media(max-width:900px){
+  .wine-shell{inset:88px 4% 3%;grid-template-columns:1fr;overflow:auto}
+  .wine-machine{min-height:440px}
+}
