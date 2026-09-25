@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./winter-ui.css?v=20260925-8" />
+  <link rel="stylesheet" href="./winter-ui.css?v=20260925-9" />
   <style>
     html, body, #app {
       margin: 0;
@@ -99,29 +99,79 @@
       const snow = document.getElementById("title-snow");
       if (!snow) return;
 
-      const count = 64;
+      const flakes = [];
+      const count = 92;
+      let last = performance.now();
+
+      function randomize(flake, firstSpawn) {
+        const sizeRoll = Math.random();
+
+        flake.size =
+          sizeRoll < 0.58 ? (Math.random() * 1.4 + 1.0) :
+          sizeRoll < 0.90 ? (Math.random() * 1.9 + 1.8) :
+                            (Math.random() * 2.3 + 3.0);
+
+        flake.x = Math.random() * window.innerWidth;
+        flake.y = firstSpawn
+          ? Math.random() * window.innerHeight
+          : -(Math.random() * 90 + 12);
+
+        // Every respawn gets a new fall behaviour.
+        flake.speed = Math.random() * 34 + 28;
+        flake.wind = Math.random() * 18 - 9;
+        flake.wobble = Math.random() * 15 + 3;
+        flake.frequency = Math.random() * 0.0018 + 0.0007;
+        flake.phase = Math.random() * Math.PI * 2;
+        flake.opacity = Math.random() * 0.46 + 0.26;
+        flake.soft = Math.random() < 0.22;
+
+        const el = flake.el;
+        el.style.width = flake.size + "px";
+        el.style.height = flake.size + "px";
+        el.style.opacity = flake.opacity;
+        el.classList.toggle("soft-flake", flake.soft);
+      }
 
       for (let i = 0; i < count; i++) {
-        const flake = document.createElement("span");
-        const roll = Math.random();
-        const type = roll < 0.50 ? "flake-small" : roll < 0.84 ? "flake-medium" : "flake-large";
+        const el = document.createElement("span");
+        el.className = "title-flake";
+        snow.appendChild(el);
 
-        flake.className = "title-flake " + type;
-
-        const x = (Math.random() * 100).toFixed(2);
-        const duration = (Math.random() * 8 + 11).toFixed(2);
-        const delay = (-Math.random() * 20).toFixed(2);
-        const drift = (Math.random() * 34 - 17).toFixed(1);
-        const opacity = (Math.random() * 0.30 + 0.48).toFixed(2);
-
-        flake.style.setProperty("--x", x + "vw");
-        flake.style.setProperty("--duration", duration + "s");
-        flake.style.setProperty("--delay", delay + "s");
-        flake.style.setProperty("--drift", drift + "px");
-        flake.style.setProperty("--opacity", opacity);
-
-        snow.appendChild(flake);
+        const flake = { el };
+        randomize(flake, true);
+        flakes.push(flake);
       }
+
+      function frame(now) {
+        const dt = Math.min((now - last) / 1000, 0.035);
+        last = now;
+
+        for (const flake of flakes) {
+          flake.y += flake.speed * dt;
+          flake.x += flake.wind * dt;
+
+          const sway =
+            Math.sin(now * flake.frequency + flake.phase) *
+            flake.wobble;
+
+          flake.el.style.transform =
+            "translate3d(" +
+            (flake.x + sway).toFixed(1) + "px," +
+            flake.y.toFixed(1) + "px,0)";
+
+          if (
+            flake.y > window.innerHeight + 20 ||
+            flake.x < -80 ||
+            flake.x > window.innerWidth + 80
+          ) {
+            randomize(flake, false);
+          }
+        }
+
+        requestAnimationFrame(frame);
+      }
+
+      requestAnimationFrame(frame);
     })();
   </script>
 
