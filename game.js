@@ -10,7 +10,7 @@ const WORLD_HEIGHT = WORLD_ROWS * TILE * TILE_SCALE;
 const ASSETS = {
   winterTiles: "https://raw.githubusercontent.com/Tiddybub/2d-assets/main/misc/tiny-ski/Tilemap/tilemap_packed.png",
   girl: "https://raw.githubusercontent.com/Tiddybub/2d-assets/main/characters/oga-miss-princess-animated-16x16/missprincess.png",
-  fox: "https://opengameart.org/sites/default/files/fox_6.png"
+  fox: "https://raw.githubusercontent.com/AntumDeluge/game-resources/master/sprite/animal/fox/PNG/48x64/fox-NESW.png"
 };
 
 const ui = {
@@ -85,7 +85,7 @@ class BootScene extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16
     });
-    this.load.image("fox", ASSETS.fox);
+    this.load.spritesheet("fox", ASSETS.fox, { frameWidth: 48, frameHeight: 64 });
 
     this.load.on("loaderror", file => {
       console.warn("Asset não carregou:", file.key);
@@ -158,9 +158,11 @@ class TitleScene extends Phaser.Scene {
       }
     }
 
-    const fox = this.add.image(GAME_WIDTH / 2, GAME_HEIGHT * .61, "fox")
-      .setScale(this.textures.get("fox").getSourceImage().width > 32 ? .42 : 3)
-      .setAlpha(.72);
+    const titleFoxFrames = this.textures.get("fox").frameTotal || 1;
+    const titleFoxFrame = titleFoxFrames >= 12 ? 7 : 0;
+    const fox = this.add.image(GAME_WIDTH / 2, GAME_HEIGHT * .61, "fox", titleFoxFrame)
+      .setScale(titleFoxFrames >= 12 ? 1.25 : 3)
+      .setAlpha(.82);
 
     this.tweens.add({
       targets: fox,
@@ -239,8 +241,10 @@ class GameScene extends Phaser.Scene {
       });
     }
 
-    const foxScale = this.textures.get("fox").getSourceImage().width > 32 ? .34 : 3.4;
-    this.fox = this.physics.add.staticImage(WORLD_WIDTH * .67, WORLD_HEIGHT * .43, "fox")
+    const foxFrames = this.textures.get("fox").frameTotal || 1;
+    const foxFrame = foxFrames >= 12 ? 7 : 0;
+    const foxScale = foxFrames >= 12 ? 1.15 : 3.4;
+    this.fox = this.physics.add.staticImage(WORLD_WIDTH * .67, WORLD_HEIGHT * .43, "fox", foxFrame)
       .setScale(foxScale)
       .setDepth(520);
     this.fox.refreshBody();
