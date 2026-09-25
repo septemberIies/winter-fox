@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./winter-ui.css?v=20260925-6" />
+  <link rel="stylesheet" href="./winter-ui.css?v=20260925-7" />
   <style>
     html, body, #app {
       margin: 0;
@@ -37,11 +37,7 @@
     <div class="grain" aria-hidden="true"></div>
 
     <section id="title-screen" class="title-screen">
-      <div class="menu-snow" aria-hidden="true">
-        <span class="snow snow-1"></span>
-        <span class="snow snow-2"></span>
-        <span class="snow snow-3"></span>
-      </div>
+      <div id="title-snow" class="title-snow" aria-hidden="true"></div>
       <div class="title-minimal">
         <div class="fox-mark" aria-hidden="true">
           <span class="fox-ear fox-ear-left"></span>
@@ -97,6 +93,35 @@
 
     <noscript>Você precisa ativar o JavaScript para jogar Winter Fox.</noscript>
   </main>
+
+  <script>
+    (function createTitleSnow() {
+      const snow = document.getElementById("title-snow");
+      if (!snow) return;
+
+      const count = 72;
+      for (let i = 0; i < count; i++) {
+        const flake = document.createElement("span");
+        flake.className = "title-flake";
+
+        const size = (Math.random() * 2.8 + 1.2).toFixed(2);
+        const x = (Math.random() * 100).toFixed(2);
+        const duration = (Math.random() * 9 + 10).toFixed(2);
+        const delay = (-Math.random() * 18).toFixed(2);
+        const drift = (Math.random() * 90 - 45).toFixed(1);
+        const opacity = (Math.random() * 0.48 + 0.28).toFixed(2);
+
+        flake.style.setProperty("--size", size + "px");
+        flake.style.setProperty("--x", x + "vw");
+        flake.style.setProperty("--duration", duration + "s");
+        flake.style.setProperty("--delay", delay + "s");
+        flake.style.setProperty("--drift", drift + "px");
+        flake.style.setProperty("--opacity", opacity);
+
+        snow.appendChild(flake);
+      }
+    })();
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
   <script src="./winter-game.js?v=5"></script>
