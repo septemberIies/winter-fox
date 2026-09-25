@@ -8,9 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=20260925-4" />
+  <link rel="stylesheet" href="./winter-ui.css?v=5" />
   <style>
-    /* critical-title-shell */
     html, body, #app {
       margin: 0;
       width: 100%;
@@ -19,71 +18,20 @@
       overflow: hidden;
       background: #05070b !important;
     }
-
-    #app.is-title #game {
-      display: none !important;
-      opacity: 0 !important;
-      visibility: hidden !important;
-    }
-
-    #app.is-title .title-screen {
-      position: fixed !important;
-      inset: 0 !important;
-      width: 100vw !important;
-      height: 100dvh !important;
-      z-index: 9999 !important;
-      display: grid !important;
-      place-items: center !important;
+    #app.is-title {
       background: #05070b !important;
     }
-
-    #app.is-title .title-minimal {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+    #app.is-title #game {
+      display: none !important;
     }
-
-    #app.is-title .title-minimal h1 {
-      margin: 0;
-      color: #f5f7f9;
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: clamp(64px, 8.4vw, 128px);
-      line-height: .9;
-      font-weight: 600;
-      letter-spacing: .145em;
-      white-space: nowrap;
-    }
-
-    #app.is-title .start-minimal {
-      appearance: none;
-      -webkit-appearance: none;
-      margin-top: 42px;
-      padding: 12px 8px 15px;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      color: #c9d1d9;
-      cursor: pointer;
-      font-family: "Manrope", sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .31em;
-      text-transform: uppercase;
-    }
-
-    #app.is-title .start-line {
-      display: block;
-      width: 34px;
-      height: 1px;
-      margin: 11px auto 0;
-      background: rgba(218, 227, 235, .32);
+    #title-screen {
+      background: #05070b !important;
     }
   </style>
 </head>
 <body>
   <main id="app" class="is-title">
-    <div id="game" aria-label="Winter Fox"></div>
+    <div id="game" style="display:none;background:#05070b" aria-label="Winter Fox"></div>
 
     <div class="screen-vignette" aria-hidden="true"></div>
     <div class="grain" aria-hidden="true"></div>
@@ -146,6 +94,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
-  <script src="./game.js?v=20260925-4"></script>
+  <script src="./winter-game.js?v=5"></script>
 </body>
 </html>
