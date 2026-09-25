@@ -356,3 +356,93 @@ body{font-family:"Manrope",system-ui,sans-serif;color:var(--text)}button{font:in
   background:#742943;
   border-color:rgba(221,181,122,.48);
 }
+
+
+/* DOTTED NEON HEART CLICK EFFECT */
+.click-heart{
+  position:fixed;
+  z-index:99999;
+  width:0;
+  height:0;
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  animation:clickHeartFloat .9s cubic-bezier(.18,.72,.28,1) forwards;
+  filter:drop-shadow(0 0 4px rgba(255,70,190,.85))
+         drop-shadow(0 0 10px rgba(255,45,170,.42));
+  will-change:transform,opacity;
+}
+
+.click-heart-dot{
+  position:absolute;
+  left:0;
+  top:0;
+  width:3.2px;
+  height:3.2px;
+  margin:-1.6px 0 0 -1.6px;
+  border-radius:50%;
+  background:#ff55c8;
+  box-shadow:
+    0 0 4px rgba(255,130,218,.98),
+    0 0 8px rgba(255,55,184,.78);
+  transform:translate(var(--x),var(--y)) scale(.25);
+  opacity:0;
+  animation:clickHeartDot .48s ease-out var(--delay) forwards;
+}
+
+.click-heart-spark{
+  position:absolute;
+  left:0;
+  top:0;
+  width:2px;
+  height:2px;
+  margin:-1px 0 0 -1px;
+  border-radius:50%;
+  background:#ffd6f2;
+  box-shadow:0 0 6px #ff5bc9;
+  opacity:0;
+  animation:clickHeartSpark .68s ease-out var(--sd) forwards;
+}
+
+@keyframes clickHeartFloat{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-44%) scale(.48);
+  }
+  16%{opacity:1}
+  62%{
+    opacity:1;
+    transform:translate(-50%,-72%) scale(.96);
+  }
+  100%{
+    opacity:0;
+    transform:translate(-50%,-105%) scale(1.13);
+  }
+}
+
+@keyframes clickHeartDot{
+  0%{
+    opacity:0;
+    transform:translate(calc(var(--x)*.42),calc(var(--y)*.42)) scale(.15);
+  }
+  45%{opacity:1}
+  100%{
+    opacity:1;
+    transform:translate(var(--x),var(--y)) scale(1);
+  }
+}
+
+@keyframes clickHeartSpark{
+  0%{
+    opacity:0;
+    transform:translate(0,0) scale(.2);
+  }
+  24%{opacity:.95}
+  100%{
+    opacity:0;
+    transform:translate(var(--sx),var(--sy)) scale(.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .click-heart,.click-heart-dot,.click-heart-spark{animation-duration:.18s!important}
+}
