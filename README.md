@@ -1,36 +1,21 @@
 # Winter Fox
 
-Experiência interativa de aniversário em capítulos, agora simplificada para cinco minigames claros e curtos.
+Experiência interativa de aniversário em capítulos.
 
-## Fluxo
+## Minigames atuais
 
-1. Paris — conversar com a raposa e memorizar a rua marcada pelas pegadas.
-2. Boutique — escolher uma peça por categoria seguindo um convite dark coquette / old money.
-3. Café — montar três pedidos usando cartas de comida.
-4. Bruxaria — repetir sequências de ingredientes.
-5. Caderno — jogo da memória com quatro pares.
-6. Final — mensagem de aniversário.
+1. **Paris — navegação:** mova a personagem por um pequeno tabuleiro seguindo as pegadas.
+2. **Boutique — drag & drop:** arraste roupa, sapato, joia e detalhe corretos para o manequim.
+3. **Café — esteira:** alimentos passam pela tela; pegue somente os itens do pedido.
+4. **Bruxaria — Simon:** memorize e repita a sequência de ingredientes.
+5. **Caderno — memória:** encontre quatro pares de pins.
+6. **Final:** mensagem de aniversário.
+
+Cada capítulo usa uma mecânica diferente e possui uma caixa “Como jogar” com instruções grandes e diretas.
 
 ## Assets públicos
 
-### ScratchIO — Animated Wild Animals
-- Fonte: https://opengameart.org/content/animated-wild-animals
-- Uso: raposa Idle / Walk
-- Licença: CC0 1.0
-
-### Kenney — Pixel Platformer Food Expansion
-- Fonte: https://kenney.nl/assets/pixel-platformer-food-expansion
-- Uso: sprites de comida e bebida no café
-- Licença: CC0 1.0
-
-### Kenney — Game / Board Game Icons
-- Fonte: https://kenney.nl/assets/game-icons
-- Uso: ícone de poção
-- Licença: CC0
-
-### Tabler Icons
-- Fonte: https://github.com/tabler/tabler-icons
-- Uso: ícones de interface, moda, pegadas e cartas
-- Licença: MIT
-
-A direção visual usa preto, branco, vinho e dourado suave, com cenários minimalistas para manter os minigames legíveis.
+- ScratchIO — Animated Wild Animals (raposa), CC0.
+- Kenney — Pixel Platformer Food Expansion (comida/bebida), CC0.
+- Kenney — Game / Board Game Icons (poção), CC0.
+- Tabler Icons (interface e objetos), MIT.
