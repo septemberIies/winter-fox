@@ -4,8 +4,8 @@ const TILE = 16;
 const TILE_SCALE = 3;
 const BASE_WORLD_COLS = 31;
 const BASE_WORLD_ROWS = 18;
-const WORLD_COLS = 40;
-const WORLD_ROWS = 24;
+const WORLD_COLS = 52;
+const WORLD_ROWS = 34;
 const WORLD_WIDTH = WORLD_COLS * TILE * TILE_SCALE;
 const WORLD_HEIGHT = WORLD_ROWS * TILE * TILE_SCALE;
 const BASE_WORLD_WIDTH = BASE_WORLD_COLS * TILE * TILE_SCALE;
@@ -507,8 +507,9 @@ class GameScene extends Phaser.Scene {
     }
 
     const foxFrames = this.textures.get("fox").frameTotal || 1;
-    const foxFrame = foxFrames >= 12 ? 7 : 0;
+    const foxFrame = foxFrames >= 12 ? 5 : 0;
     const foxScale = foxFrames >= 12 ? 1.55 : 3.6;
+    this.foxIdleFrame = foxFrame;
 
     if (foxFrames >= 8 && !this.anims.exists("fox-walk")) {
       this.anims.create({
@@ -547,7 +548,7 @@ class GameScene extends Phaser.Scene {
       0.86
     ).setDepth(620);
 
-    this.rune = this.physics.add.staticImage(WORLD_WIDTH - 175, 175, "rune")
+    this.rune = this.physics.add.staticImage(WORLD_WIDTH - 230, 245, "rune")
       .setScale(1.75)
       .setDepth(510);
 
@@ -687,26 +688,114 @@ class GameScene extends Phaser.Scene {
       }
     }
 
-    // Sparse scenery in the new eastern snowfield so it feels intentionally larger.
+    // Mysterious eastern forest: a long winding route, dense edges and a rune clearing.
     if (this.textures.exists("winter")) {
-      const extensionProps = [
-        [BASE_WORLD_WIDTH + 92, 118, 7],
-        [BASE_WORLD_WIDTH + 315, 96, 19],
-        [BASE_WORLD_WIDTH + 165, 395, 7],
-        [BASE_WORLD_WIDTH + 350, 520, 19],
-        [BASE_WORLD_WIDTH + 70, 690, 31],
-        [BASE_WORLD_WIDTH + 290, 815, 7],
-        [WORLD_WIDTH - 95, 395, 31],
-        [WORLD_WIDTH - 330, 735, 19]
+      const mysteryProps = [
+        [1545,120,7],[1615,175,19],[1710,120,7],[1800,180,31],[1910,130,19],[2020,170,7],[2140,115,31],[2260,170,7],
+        [1515,690,19],[1610,760,7],[1740,705,31],[1845,790,19],[1965,720,7],[2080,805,31],[2200,720,19],[2350,790,7],
+        [1560,310,31],[1650,365,7],[1760,300,19],[1850,385,31],[1975,315,7],[2075,370,19],
+        [1620,560,19],[1730,585,31],[1860,545,7],[2000,590,19],[2115,530,31],[2240,580,7],
+        [1480,950,7],[1600,1040,19],[1740,980,31],[1880,1080,7],[2030,1010,19],[2190,1100,31],[2360,1020,7],
+        [1540,1290,19],[1690,1360,7],[1850,1260,31],[2020,1390,19],[2200,1300,7],[2380,1400,31]
       ];
 
-      for (const [x, y, objectId] of extensionProps) {
-        this.add.image(x, y, "winter", objectId - 1)
+      for (const [x, y, objectId] of mysteryProps) {
+        const collides = collidable.has(objectId);
+        if (collides) {
+          const obj = this.obstacles.create(x, y, "winter", objectId - 1)
+            .setScale(TILE_SCALE)
+            .setDepth(100 + y)
+            .setAlpha(0.94);
+          obj.refreshBody();
+          obj.body.setSize(12, 8);
+          obj.body.setOffset(2, 7);
+        } else {
+          this.add.image(x, y, "winter", objectId - 1)
+            .setScale(TILE_SCALE)
+            .setDepth(80 + y)
+            .setAlpha(0.90);
+        }
+      }
+
+      // Rune clearing ring.
+      const clearingProps = [
+        [this.rune.x - 150, this.rune.y - 95, 31],
+        [this.rune.x + 135, this.rune.y - 75, 31],
+        [this.rune.x - 170, this.rune.y + 85, 19],
+        [this.rune.x + 155, this.rune.y + 105, 19],
+        [this.rune.x - 40, this.rune.y - 145, 7],
+        [this.rune.x + 55, this.rune.y + 155, 7]
+      ];
+
+      for (const [x, y, objectId] of clearingProps) {
+        const obj = this.obstacles.create(x, y, "winter", objectId - 1)
           .setScale(TILE_SCALE)
-          .setDepth(80 + y)
-          .setAlpha(0.92);
+          .setDepth(100 + y)
+          .setAlpha(0.96);
+        obj.refreshBody();
+        obj.body.setSize(12, 8);
+        obj.body.setOffset(2, 7);
       }
     }
+
+    this.createMysteryAmbience();
+  }
+
+  createMysteryAmbience() {
+    // Soft blue wisps and dark mist make the far side feel different from the starting area.
+    this.mysteryWisps = [];
+    const wispSpots = [
+      [1580,460],[1735,430],[1870,650],[2025,470],[2160,650],
+      [2290,430],[2380,610],[1880,940],[2150,980],[2350,1160]
+    ];
+
+    for (const [x, y] of wispSpots) {
+      const glow = this.add.circle(x, y, Phaser.Math.Between(5, 9), 0x8fdce8, 0.10)
+        .setDepth(160);
+
+      this.tweens.add({
+        targets: glow,
+        y: y - Phaser.Math.Between(10, 22),
+        x: x + Phaser.Math.Between(-12, 12),
+        alpha: { from: 0.04, to: 0.16 },
+        scale: { from: 0.85, to: 1.45 },
+        duration: Phaser.Math.Between(1800, 3200),
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.inOut"
+      });
+
+      this.mysteryWisps.push(glow);
+    }
+
+    const mistZones = [
+      [1710,840,210,85],
+      [2060,880,250,95],
+      [2290,720,190,75],
+      [1940,1210,260,95]
+    ];
+
+    for (const [x, y, w, h] of mistZones) {
+      const mist = this.add.ellipse(x, y, w, h, 0x26333c, 0.055).setDepth(70);
+      this.tweens.add({
+        targets: mist,
+        x: x + Phaser.Math.Between(-24, 24),
+        alpha: { from: 0.025, to: 0.075 },
+        duration: Phaser.Math.Between(3600, 5200),
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.inOut"
+      });
+    }
+
+    // A faint halo makes the distant rune clearing readable without revealing too much.
+    this.runeClearingGlow = this.add.circle(
+      this.rune.x,
+      this.rune.y,
+      115,
+      0x78cfd9,
+      0.025
+    ).setDepth(65);
   }
 
   createAtmosphere() {
@@ -837,22 +926,33 @@ class GameScene extends Phaser.Scene {
     }
   }
 
+  setFoxIdle() {
+    if (!this.fox) return;
+    this.fox.setVelocity(0);
+    this.fox.anims.stop();
+    this.fox.setFrame(this.foxIdleFrame || 0);
+    this.fox.setAngle(0);
+  }
+
   sendFoxAhead() {
     if (!this.foxGuidePoints) {
       this.foxGuidePoints = [
-        { x: 1110, y: 410 },
-        { x: 1285, y: 385 },
-        { x: 1450, y: 345 },
-        { x: 1585, y: 295 },
-        { x: this.rune.x - 95, y: this.rune.y + 72 }
+        { x: 1120, y: 430 },
+        { x: 1320, y: 500 },
+        { x: 1510, y: 455 },
+        { x: 1680, y: 560 },
+        { x: 1840, y: 500 },
+        { x: 1990, y: 640 },
+        { x: 2140, y: 545 },
+        { x: 2265, y: 430 },
+        { x: this.rune.x - 105, y: this.rune.y + 82 }
       ];
     }
 
     if (this.foxGuideStage >= this.foxGuidePoints.length) {
       this.foxState = "arrived";
       this.foxTarget = null;
-      this.fox.setVelocity(0);
-      this.fox.anims.stop();
+      this.setFoxIdle();
       this.foxPointer.setVisible(false);
       ui.objective.textContent = "Examine a runa";
       this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 10);
@@ -882,10 +982,9 @@ class GameScene extends Phaser.Scene {
       this.fox.y
     );
 
-    // The fox only pauses when it has genuinely left the player far behind.
-    if (playerDistance > 330) {
-      this.fox.setVelocity(0);
-      this.fox.anims.stop();
+    // Wait only when the fox is genuinely too far ahead.
+    if (playerDistance > 360) {
+      this.setFoxIdle();
       ui.objective.textContent = "Alcance a raposa";
       return;
     }
@@ -897,11 +996,10 @@ class GameScene extends Phaser.Scene {
     const distance = Math.hypot(dx, dy);
 
     if (distance < 10) {
-      this.fox.setVelocity(0);
-      this.fox.anims.stop();
+      this.setFoxIdle();
       this.foxTarget = null;
 
-      this.time.delayedCall(180, () => {
+      this.time.delayedCall(220, () => {
         if (this.foxState === "moving" && !this.foxTarget) {
           this.sendFoxAhead();
         }
@@ -909,7 +1007,7 @@ class GameScene extends Phaser.Scene {
       return;
     }
 
-    const speed = 130;
+    const speed = 132;
     this.fox.setVelocity((dx / distance) * speed, (dy / distance) * speed);
 
     if (Math.abs(dx) > 2) {
