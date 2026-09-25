@@ -425,3 +425,49 @@ document.addEventListener("keyup",e=>{
 
 snow("title-snow",90);
 snow("final-snow",95);
+
+
+/* CLICK HEART — dotted neon heart */
+(function(){
+  const HEART_DOTS=28;
+  const SPARKS=6;
+
+  function createClickHeart(x,y){
+    const heart=document.createElement("div");
+    heart.className="click-heart";
+    heart.style.left=x+"px";
+    heart.style.top=y+"px";
+
+    for(let i=0;i<HEART_DOTS;i++){
+      const t=(Math.PI*2*i)/HEART_DOTS;
+      const px=16*Math.pow(Math.sin(t),3);
+      const py=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+
+      const dot=document.createElement("i");
+      dot.className="click-heart-dot";
+      dot.style.setProperty("--x",(px*1.25)+"px");
+      dot.style.setProperty("--y",(py*1.25)+"px");
+      dot.style.setProperty("--delay",(i*5)+"ms");
+      heart.appendChild(dot);
+    }
+
+    for(let i=0;i<SPARKS;i++){
+      const a=(Math.PI*2*i)/SPARKS+(Math.random()-.5)*.45;
+      const d=28+Math.random()*16;
+      const spark=document.createElement("b");
+      spark.className="click-heart-spark";
+      spark.style.setProperty("--sx",(Math.cos(a)*d)+"px");
+      spark.style.setProperty("--sy",(Math.sin(a)*d)+"px");
+      spark.style.setProperty("--sd",(Math.random()*100)+"ms");
+      heart.appendChild(spark);
+    }
+
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),1000);
+  }
+
+  window.addEventListener("pointerdown",(e)=>{
+    if(e.pointerType==="mouse" && e.button!==0)return;
+    createClickHeart(e.clientX,e.clientY);
+  },{passive:true});
+})();
