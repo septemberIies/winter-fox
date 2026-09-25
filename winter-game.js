@@ -220,6 +220,25 @@ class GameScene extends Phaser.Scene {
     this.player.setDepth(500);
     this.player.body.setSize(9, 7);
     this.player.body.setOffset(3.5, 8);
+    this.player.setTint(0xb8dff2);
+
+    this.playerShadow = this.add.ellipse(
+      this.player.x,
+      this.player.y + 17,
+      21,
+      9,
+      0x000000,
+      0.18
+    ).setDepth(488);
+
+    this.playerMarker = this.add.ellipse(
+      this.player.x,
+      this.player.y + 16,
+      17,
+      7,
+      0x66a9ca,
+      0.24
+    ).setDepth(489);
 
     if (girlFrameCount >= 3) {
       this.anims.create({
@@ -235,12 +254,31 @@ class GameScene extends Phaser.Scene {
     const foxScale = foxFrames >= 12 ? 1.15 : 3.4;
     this.fox = this.physics.add.staticImage(WORLD_WIDTH * .67, WORLD_HEIGHT * .43, "fox", foxFrame)
       .setScale(foxScale)
-      .setDepth(520);
+      .setDepth(520)
+      .setTint(0xe49b55);
+
+    this.foxMarker = this.add.ellipse(
+      this.fox.x,
+      this.fox.y + 12,
+      20,
+      8,
+      0xe49b55,
+      0.18
+    ).setDepth(514);
     this.fox.refreshBody();
 
     this.rune = this.physics.add.staticImage(WORLD_WIDTH * .82, WORLD_HEIGHT * .29, "rune")
       .setScale(1.7)
-      .setDepth(510);
+      .setDepth(510)
+      .setTint(0x8fd3df);
+
+    this.runeGlow = this.add.circle(
+      this.rune.x,
+      this.rune.y,
+      18,
+      0x8fd3df,
+      0.12
+    ).setDepth(504);
     this.rune.refreshBody();
 
     this.physics.add.collider(this.player, this.obstacles);
@@ -259,6 +297,38 @@ class GameScene extends Phaser.Scene {
       targets: this.fox,
       y: this.fox.y - 4,
       duration: 1500,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.inOut"
+    });
+
+    this.tweens.add({
+      targets: this.foxMarker,
+      alpha: { from: 0.10, to: 0.24 },
+      scaleX: { from: 1, to: 1.18 },
+      scaleY: { from: 1, to: 1.18 },
+      duration: 1250,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.inOut"
+    });
+
+    this.tweens.add({
+      targets: this.runeGlow,
+      alpha: { from: 0.07, to: 0.23 },
+      scale: { from: 1, to: 1.34 },
+      duration: 1450,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.inOut"
+    });
+
+    this.tweens.add({
+      targets: this.playerMarker,
+      alpha: { from: 0.16, to: 0.30 },
+      scaleX: { from: 1, to: 1.08 },
+      scaleY: { from: 1, to: 1.08 },
+      duration: 950,
       yoyo: true,
       repeat: -1,
       ease: "Sine.inOut"
@@ -324,6 +394,16 @@ class GameScene extends Phaser.Scene {
 
   update() {
     this.updateSnow();
+
+    if (this.playerShadow) {
+      this.playerShadow.setPosition(this.player.x, this.player.y + 17);
+    }
+    if (this.playerMarker) {
+      this.playerMarker.setPosition(this.player.x, this.player.y + 16);
+    }
+    if (this.foxMarker) {
+      this.foxMarker.setPosition(this.fox.x, this.fox.y + 12);
+    }
 
     if (this.dialogueOpen) {
       this.player.setVelocity(0);
