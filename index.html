@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./winter-ui.css?v=20260925-varied1" />
+  <link rel="stylesheet" href="./winter-ui.css?v=20260925-cinematic1" />
 </head>
 <body>
 <main id="app">
@@ -25,92 +25,65 @@
   </div>
 </section>
 
-<section id="paris" class="scene paris-scene">
-  <div class="paris-art">
-    <div class="moon"></div><div class="paris-buildings"></div>
-    <svg class="eiffel" viewBox="0 0 180 360" aria-hidden="true">
-      <g fill="none" stroke="currentColor" stroke-linecap="square">
-        <path stroke-width="9" d="M89 14 L49 286 M91 14 L131 286"/>
-        <path stroke-width="8" d="M49 286 L22 343 M131 286 L158 343"/>
-        <path stroke-width="7" d="M39 300 H141 M53 246 H127 M63 188 H117 M72 126 H108 M80 70 H100"/>
-        <path stroke-width="4" d="M54 246 L116 188 M126 246 L64 188 M64 188 L108 126 M116 188 L72 126"/>
-        <path stroke-width="6" d="M15 343 H165"/>
-      </g>
-    </svg>
-    <div class="seine"></div><div class="paris-bridge"></div>
-    <div id="paris-snow" class="snow-layer"></div>
-  </div>
+<section id="paris" class="scene paris-scene cinematic-scene">
+  <div class="cinematic-stage paris-cinematic">
+    <div id="paris-snow" class="snow-layer cinematic-snow"></div>
 
-  <header class="topbar">
-    <div><span>CAPÍTULO I</span><strong>Paris, 23:47</strong></div>
-    <div class="topbar-right"><span>OBJETIVO</span><strong id="paris-objective">Fale com a raposa</strong></div>
-  </header>
+    <header class="topbar stage-topbar">
+      <div><span>CAPÍTULO I</span><strong>Paris, 23:47</strong></div>
+      <div class="topbar-right"><span>OBJETIVO</span><strong id="paris-objective">Fale com a raposa</strong></div>
+    </header>
 
-  <div class="fox-stage"><div id="fox" class="fox idle"></div><div class="fox-shadow"></div></div>
-  <button id="talk-fox" class="prompt"><kbd>E</kbd><span>Falar com a raposa</span></button>
+    <div id="fox" class="hidden"></div>
+    <button id="talk-fox" class="prompt stage-fox-prompt"><kbd>E</kbd><span>Falar com a raposa</span></button>
 
-  <div id="dialogue" class="dialogue hidden">
-    <span>RAPOSA</span><p id="dialogue-text"></p>
-    <button id="dialogue-next"><kbd>E</kbd> Continuar</button>
-  </div>
-
-  <div id="paris-game" class="game-card paris-game hidden">
-    <div class="how-to"><b>COMO JOGAR</b><span>Siga as pegadas. Mova a garota apenas para uma casa vizinha com uma pegada.</span></div>
-    <div class="paris-game-head">
-      <div><span class="kicker">MINIGAME 01</span><h2>Encontre a raposa</h2></div>
-      <span id="paris-steps" class="round-pill">0 / 5 passos</span>
+    <div id="dialogue" class="dialogue stage-dialogue hidden">
+      <span>RAPOSA</span><p id="dialogue-text"></p>
+      <button id="dialogue-next"><kbd>E</kbd> Continuar</button>
     </div>
-    <div class="paris-board-wrap">
-      <div id="paris-board" class="paris-board"></div>
-      <div class="move-pad">
-        <button data-move="up">↑</button>
-        <div><button data-move="left">←</button><button data-move="down">↓</button><button data-move="right">→</button></div>
-        <small>Você também pode usar as setas do teclado.</small>
+
+    <div id="paris-game" class="game-card paris-game stage-game-card hidden">
+      <div class="how-to"><b>COMO JOGAR</b><span>Siga as pegadas. Mova a garota apenas para uma casa vizinha com uma pegada.</span></div>
+      <div class="paris-game-head">
+        <div><span class="kicker">MINIGAME 01</span><h2>Encontre a raposa</h2></div>
+        <span id="paris-steps" class="round-pill">0 / 5 passos</span>
       </div>
+      <div class="paris-board-wrap">
+        <div id="paris-board" class="paris-board"></div>
+        <div class="move-pad">
+          <button data-move="up">↑</button>
+          <div><button data-move="left">←</button><button data-move="down">↓</button><button data-move="right">→</button></div>
+          <small>Você também pode usar as setas do teclado.</small>
+        </div>
+      </div>
+      <p id="paris-status" class="status">Comece pela pegada ao lado da garota.</p>
     </div>
-    <p id="paris-status" class="status">Comece pela pegada ao lado da garota.</p>
   </div>
 </section>
 
-<section id="boutique" class="scene boutique-scene">
-  <div class="soft-bg boutique-bg"><div class="big-word">MAISON</div><div class="shop-window"></div></div>
-  <header class="topbar">
-    <div><span>CAPÍTULO II</span><strong>Maison Noire</strong></div>
-    <div class="topbar-right"><span>OBJETIVO</span><strong>Vista o manequim</strong></div>
-  </header>
+<section id="boutique" class="scene boutique-scene cinematic-scene">
+  <div class="cinematic-stage boutique-cinematic">
+    <header class="topbar stage-topbar boutique-stage-topbar">
+      <div><span>CAPÍTULO II</span><strong>Maison Noire</strong></div>
+      <div class="topbar-right"><span>OBJETIVO</span><strong>Monte o look da noite</strong></div>
+    </header>
 
-  <div class="boutique-shell">
-    <div class="boutique-copy">
-      <span class="kicker">MINIGAME 02</span>
-      <h2>Monte o look</h2>
-      <div class="how-to"><b>COMO JOGAR</b><span>Arraste uma peça de cada tipo para o manequim. O convite pede algo elegante, preto ou vinho e nada esportivo.</span></div>
-      <div class="dress-code"><span>PRETO / VINHO</span><span>ELEGANTE</span><span>DELICADO</span></div>
-      <p id="look-status" class="status">0 / 4 peças</p>
-    </div>
+    <div id="look-status" class="boutique-progress">1 / 4 peças</div>
+    <div id="boutique-feedback" class="boutique-feedback">Escolha sapato, acessório e detalhe.</div>
 
-    <div class="mannequin-panel">
-      <div class="mannequin-figure">
-        <div class="mannequin-head"></div><div class="mannequin-body"></div><div class="mannequin-leg left"></div><div class="mannequin-leg right"></div>
-      </div>
-      <div class="drop-slots">
-        <div class="drop-slot" data-slot="dress"><span>ROUPA</span><b>Solte aqui</b></div>
-        <div class="drop-slot" data-slot="shoes"><span>SAPATO</span><b>Solte aqui</b></div>
-        <div class="drop-slot" data-slot="jewel"><span>JOIA</span><b>Solte aqui</b></div>
-        <div class="drop-slot" data-slot="detail"><span>DETALHE</span><b>Solte aqui</b></div>
-      </div>
-    </div>
+    <button class="look-hotspot selected" data-look="dress-good" data-slot="dress" data-good="true" aria-label="Vestido vinho"></button>
+    <button class="look-hotspot" data-look="dress-bad" data-slot="dress" aria-label="Conjunto esportivo"></button>
 
-    <div id="wardrobe" class="wardrobe">
-      <button draggable="true" class="wardrobe-item good" data-slot="dress" data-name="Vestido vinho"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/hanger.svg" alt=""><b>Vestido vinho</b><small>renda · longo</small></button>
-      <button draggable="true" class="wardrobe-item" data-slot="dress" data-name="Conjunto esportivo"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/hanger.svg" alt=""><b>Conjunto esportivo</b><small>neon</small></button>
-      <button draggable="true" class="wardrobe-item good" data-slot="shoes" data-name="Salto preto"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/shoe.svg" alt=""><b>Salto preto</b><small>sola vermelha</small></button>
-      <button draggable="true" class="wardrobe-item" data-slot="shoes" data-name="Tênis"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/shoe.svg" alt=""><b>Tênis</b><small>esportivo</small></button>
-      <button draggable="true" class="wardrobe-item good" data-slot="jewel" data-name="Bracelete delicado"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/diamond.svg" alt=""><b>Bracelete</b><small>delicado</small></button>
-      <button draggable="true" class="wardrobe-item" data-slot="jewel" data-name="Corrente pesada"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/diamond.svg" alt=""><b>Corrente pesada</b><small>maximalista</small></button>
-      <button draggable="true" class="wardrobe-item good" data-slot="detail" data-name="Laço preto"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/bow.svg" alt=""><b>Laço preto</b><small>dark coquette</small></button>
-      <button draggable="true" class="wardrobe-item" data-slot="detail" data-name="Boné"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/bow.svg" alt=""><b>Boné</b><small>street</small></button>
-    </div>
-    <button id="finish-look" class="primary boutique-finish" disabled>Finalizar look</button>
+    <button class="look-hotspot" data-look="shoes-good" data-slot="shoes" data-good="true" aria-label="Salto preto"></button>
+    <button class="look-hotspot" data-look="shoes-bad" data-slot="shoes" aria-label="Tênis esportivo"></button>
+
+    <button class="look-hotspot" data-look="jewel-good" data-slot="jewel" data-good="true" aria-label="Bracelete delicado"></button>
+    <button class="look-hotspot" data-look="jewel-bad" data-slot="jewel" aria-label="Colar alternativo"></button>
+
+    <button class="look-hotspot" data-look="detail-good" data-slot="detail" data-good="true" aria-label="Laço preto"></button>
+    <button class="look-hotspot" data-look="detail-bad" data-slot="detail" aria-label="Boné esportivo"></button>
+
+    <button id="finish-look" class="boutique-final-hotspot" disabled aria-label="Finalizar look"></button>
   </div>
 </section>
 
@@ -195,6 +168,6 @@
 <div id="transition" class="transition"></div>
 <div id="toast" class="toast hidden"></div>
 </main>
-<script src="./story.js?v=20260925-varied1"></script>
+<script src="./story.js?v=20260925-cinematic1"></script>
 </body>
 </html>
