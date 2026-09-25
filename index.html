@@ -3,163 +3,283 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#070b10" />
+  <meta name="theme-color" content="#06080d" />
   <title>Winter Fox</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./winter-ui.css?v=20260925-story1" />
+  <link rel="stylesheet" href="./winter-ui.css?v=20260925-game2" />
 </head>
 <body>
-  <main id="app">
-    <section id="title-screen" class="screen title-screen is-active">
-      <div id="title-snow" class="snow-layer" aria-hidden="true"></div>
-      <div class="title-vignette" aria-hidden="true"></div>
+<main id="app">
 
-      <div class="title-content">
-        <div class="fox-emblem" aria-hidden="true">
-          <span></span><i></i><b></b>
-        </div>
-        <p class="eyebrow">A SMALL WINTER STORY</p>
-        <h1>WINTER FOX</h1>
-        <button id="start-button" class="primary-button" type="button">Começar</button>
+  <section id="title" class="screen title-screen active">
+    <div id="title-snow" class="snow-layer"></div>
+    <div class="title-vignette"></div>
+    <div class="title-content">
+      <div class="fox-mark" aria-hidden="true"></div>
+      <p class="eyebrow">A SMALL WINTER STORY</p>
+      <h1>WINTER FOX</h1>
+      <p class="title-sub">Uma noite fria. Oito pequenos jogos. Um presente no fim.</p>
+      <button id="start" class="main-button">Começar</button>
+    </div>
+  </section>
+
+  <section id="paris" class="screen story-screen paris-scene">
+    <div class="paris-bg">
+      <div class="moon"></div>
+      <div class="city city-a"></div><div class="city city-b"></div>
+      <svg class="eiffel" viewBox="0 0 180 360" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-linecap="square">
+          <path stroke-width="9" d="M89 14 L49 286 M91 14 L131 286"/>
+          <path stroke-width="8" d="M49 286 L22 343 M131 286 L158 343"/>
+          <path stroke-width="7" d="M39 300 H141 M53 246 H127 M63 188 H117 M72 126 H108 M80 70 H100"/>
+          <path stroke-width="4" d="M54 246 L116 188 M126 246 L64 188 M64 188 L108 126 M116 188 L72 126"/>
+          <path stroke-width="6" d="M15 343 H165"/>
+        </g>
+      </svg>
+      <div class="bridge"><i></i><b></b><em></em></div>
+      <div id="paris-snow" class="snow-layer"></div>
+    </div>
+    <header class="hud"><div><span>CAPÍTULO I</span><strong>Paris, 23:47</strong></div><div class="right"><span>OBJETIVO</span><strong id="paris-objective">Fale com a raposa</strong></div></header>
+
+    <div id="paris-fox-wrap" class="fox-wrap">
+      <div id="paris-fox" class="fox-sprite idle"></div>
+      <div class="fox-aura"></div>
+    </div>
+
+    <button id="fox-talk" class="pill-prompt"><kbd>E</kbd> falar com a raposa</button>
+
+    <div id="paris-dialogue" class="dialogue hidden">
+      <span>RAPOSA</span>
+      <p id="paris-line"></p>
+      <button id="paris-next"><kbd>E</kbd> continuar</button>
+    </div>
+
+    <div id="path-game" class="minigame-panel path-game hidden">
+      <p class="mini-label">SIGA AS PEGADAS</p>
+      <h2>Qual rua ela escolheu?</h2>
+      <p class="mini-help">Observe o brilho e escolha o caminho certo. São 4 esquinas.</p>
+      <div class="path-preview">
+        <div class="path-lane" data-lane="0"><span>↙</span><i class="paw">✦</i></div>
+        <div class="path-lane" data-lane="1"><span>↑</span><i class="paw">✦</i></div>
+        <div class="path-lane" data-lane="2"><span>↘</span><i class="paw">✦</i></div>
       </div>
-    </section>
-
-    <section id="paris-scene" class="screen story-scene">
-      <div class="paris-sky" aria-hidden="true">
-        <div class="moon"></div>
-        <div class="paris-haze"></div>
-
-        <div class="skyline skyline-back">
-          <span style="--x:3%;--w:10%;--h:22%"></span>
-          <span style="--x:14%;--w:8%;--h:31%"></span>
-          <span style="--x:25%;--w:12%;--h:25%"></span>
-          <span style="--x:39%;--w:9%;--h:34%"></span>
-          <span style="--x:51%;--w:13%;--h:27%"></span>
-          <span style="--x:67%;--w:10%;--h:36%"></span>
-          <span style="--x:80%;--w:9%;--h:26%"></span>
-          <span style="--x:90%;--w:11%;--h:33%"></span>
-        </div>
-
-        <svg class="eiffel" viewBox="0 0 180 360" aria-hidden="true">
-          <defs>
-            <linearGradient id="towerGlow" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#f8dfab"/>
-              <stop offset="1" stop-color="#ad7e48"/>
-            </linearGradient>
-          </defs>
-          <g fill="none" stroke="url(#towerGlow)" stroke-linecap="square">
-            <path stroke-width="9" d="M89 14 L49 286 M91 14 L131 286" />
-            <path stroke-width="8" d="M49 286 L22 343 M131 286 L158 343" />
-            <path stroke-width="7" d="M39 300 H141 M53 246 H127 M63 188 H117 M72 126 H108 M80 70 H100" />
-            <path stroke-width="4" d="M54 246 L116 188 M126 246 L64 188 M64 188 L108 126 M116 188 L72 126 M72 126 L100 70 M108 126 L80 70" />
-            <path stroke-width="6" d="M15 343 H165" />
-          </g>
-        </svg>
-
-        <div class="window-lights" aria-hidden="true"></div>
-        <div class="river">
-          <div class="river-glow"></div>
-        </div>
-        <div class="bridge">
-          <div class="bridge-rail"></div>
-          <div class="bridge-arch arch-a"></div>
-          <div class="bridge-arch arch-b"></div>
-          <div class="bridge-arch arch-c"></div>
-        </div>
-
-        <div class="lamp lamp-left"><i></i><b></b></div>
-        <div class="lamp lamp-right"><i></i><b></b></div>
-        <div id="paris-snow" class="snow-layer scene-snow" aria-hidden="true"></div>
+      <div class="path-buttons">
+        <button data-path="0">Esquerda</button>
+        <button data-path="1">Reto</button>
+        <button data-path="2">Direita</button>
       </div>
+      <div class="mini-status"><span id="path-progress">0 / 4</span><b id="path-status"></b></div>
+    </div>
+  </section>
 
-      <header class="story-hud">
-        <div>
-          <span>CAPÍTULO I</span>
-          <strong>Paris, 23:47</strong>
+  <section id="boutique" class="screen story-screen boutique-scene">
+    <div class="boutique-bg">
+      <div class="boutique-window"></div>
+      <div class="mirror"></div>
+      <div class="rack rack-a"></div><div class="rack rack-b"></div>
+      <div class="boutique-lamp"></div>
+    </div>
+    <header class="hud"><div><span>CAPÍTULO II</span><strong>Maison Noire</strong></div><div class="right"><span>MINIGAME</span><strong>Monte o look</strong></div></header>
+
+    <div class="boutique-layout">
+      <div class="mannequin-card">
+        <div class="mannequin">
+          <div class="head"></div><div class="torso"></div><div class="legs"></div>
         </div>
-        <div class="hud-objective">
-          <span>OBJETIVO</span>
-          <strong id="story-objective">Encontre a raposa</strong>
+        <div class="outfit-slots">
+          <button class="outfit-slot" data-slot="dress">VESTIDO <span>solte aqui</span></button>
+          <button class="outfit-slot" data-slot="shoes">SAPATO <span>solte aqui</span></button>
+          <button class="outfit-slot" data-slot="jewel">JOIA <span>solte aqui</span></button>
+          <button class="outfit-slot" data-slot="detail">DETALHE <span>solte aqui</span></button>
         </div>
-      </header>
-
-      <div class="paris-caption">
-        <span class="caption-line"></span>
-        <p>Uma noite fria. Uma cidade conhecida. Algo está esperando por você.</p>
-      </div>
-
-      <div id="fox-wrap" class="fox-wrap fox-start">
-        <div id="story-fox" class="story-fox idle" role="button" tabindex="0" aria-label="Raposa"></div>
-        <div class="fox-glow"></div>
-      </div>
-
-      <button id="fox-prompt" class="interaction-prompt" type="button">
-        <kbd>E</kbd>
-        <span>falar com a raposa</span>
-      </button>
-
-      <section id="story-dialogue" class="story-dialogue hidden">
-        <div class="speaker">RAPOSA</div>
-        <p id="story-dialogue-text"></p>
-        <button id="dialogue-next" type="button"><kbd>E</kbd> continuar</button>
-      </section>
-    </section>
-
-    <section id="cheese-scene" class="screen story-scene cheese-scene">
-      <div class="cafe-bg" aria-hidden="true">
-        <div class="cafe-window">
-          <div class="mini-eiffel"></div>
-          <div id="cafe-snow" class="snow-layer small-snow"></div>
-        </div>
-        <div class="cafe-lamp"></div>
-        <div class="cafe-table"></div>
       </div>
 
-      <header class="story-hud">
-        <div>
-          <span>CAPÍTULO II</span>
-          <strong>Le petit café</strong>
+      <div class="wardrobe">
+        <p class="mini-label">DARK COQUETTE × OLD MONEY</p>
+        <h2>Prepare-a para a noite.</h2>
+        <p class="mini-help">Arraste ou clique em uma peça e depois no espaço correspondente.</p>
+        <div id="wardrobe-items" class="wardrobe-items">
+          <button draggable="true" class="fashion-item good wine-dress" data-slot="dress" data-name="Vestido vinho de renda">Vestido vinho<br><small>renda, justo e longo</small></button>
+          <button draggable="true" class="fashion-item bad neon-dress" data-slot="dress" data-name="Vestido neon">Vestido neon<br><small>não combina nada</small></button>
+          <button draggable="true" class="fashion-item good heel" data-slot="shoes" data-name="Salto de sola vermelha">Salto preto<br><small>sola vermelha</small></button>
+          <button draggable="true" class="fashion-item bad sneaker" data-slot="shoes" data-name="Tênis esportivo">Tênis esportivo<br><small>hoje não</small></button>
+          <button draggable="true" class="fashion-item good bracelet" data-slot="jewel" data-name="Bracelete trevo">Bracelete<br><small>trevo delicado</small></button>
+          <button draggable="true" class="fashion-item bad chain" data-slot="jewel" data-name="Corrente pesada">Corrente pesada<br><small>exagerada</small></button>
+          <button draggable="true" class="fashion-item good bow" data-slot="detail" data-name="Laço preto">Laço preto<br><small>perfeito</small></button>
+          <button draggable="true" class="fashion-item bad cap" data-slot="detail" data-name="Boné">Boné<br><small>definitivamente não</small></button>
         </div>
-        <div class="hud-objective">
-          <span>OBJETIVO</span>
-          <strong>Escolha o queijo certo</strong>
-        </div>
-      </header>
-
-      <div class="puzzle-card">
-        <span class="puzzle-kicker">PRIMEIRO TESTE</span>
-        <h2>Uma escolha simples.</h2>
-        <p>A raposa não quer o queijo mais forte, nem o mais azul. Ela escolhe o que combina com uma noite fria em Paris.</p>
-
-        <div class="cheese-options">
-          <button class="cheese-option" data-cheese="blue">
-            <span class="cheese-art blue-cheese"></span>
-            <strong>Bleu</strong>
-            <small>forte e azul</small>
-          </button>
-
-          <button class="cheese-option" data-cheese="brie">
-            <span class="cheese-art brie-cheese"></span>
-            <strong>Brie</strong>
-            <small>macio e suave</small>
-          </button>
-
-          <button class="cheese-option" data-cheese="aged">
-            <span class="cheese-art aged-cheese"></span>
-            <strong>Comté</strong>
-            <small>curado e intenso</small>
-          </button>
-        </div>
-
-        <div id="puzzle-feedback" class="puzzle-feedback" aria-live="polite"></div>
+        <button id="check-look" class="action-button">Finalizar look</button>
+        <p id="look-status" class="feedback"></p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <div id="scene-transition" class="scene-transition" aria-hidden="true"></div>
-  </main>
+  <section id="cafe" class="screen story-screen cafe-scene">
+    <div class="cafe-bg">
+      <div class="cafe-window"><div class="mini-tower"></div><div id="cafe-snow" class="snow-layer"></div></div>
+      <div class="counter"></div><div class="pendant p1"></div><div class="pendant p2"></div>
+    </div>
+    <header class="hud"><div><span>CAPÍTULO III</span><strong>Le Petit Café</strong></div><div class="right"><span>MINIGAME</span><strong>Prepare os pedidos</strong></div></header>
 
-  <script src="./story.js?v=20260925-story1"></script>
+    <div class="cafe-game">
+      <div class="order-board">
+        <span class="mini-label">PEDIDO <b id="order-number">1</b>/3</span>
+        <h2 id="order-title">Noite parisiense</h2>
+        <p id="order-text"></p>
+        <div class="timer"><i id="order-timer"></i></div>
+        <div id="tray" class="tray"></div>
+        <button id="serve-order" class="action-button">Servir bandeja</button>
+        <p id="order-status" class="feedback"></p>
+      </div>
+
+      <div id="food-shelf" class="food-shelf">
+        <button data-food="brie">🧀<span>Brie</span></button>
+        <button data-food="king">🧀<span>Queijo do reino</span></button>
+        <button data-food="wine">🍷<span>Vinho gelado</span></button>
+        <button data-food="pudding">🍮<span>Pudim Ninho + Nutella</span></button>
+        <button data-food="milkshake">🥛<span>Milkshake vanilla</span></button>
+        <button data-food="steak">🥩<span>Picanha mal passada</span></button>
+        <button data-food="sushi">🍣<span>Sushi hot</span></button>
+        <button data-food="strawberry">🍓<span>Morango com doce de leite</span></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="witch" class="screen story-screen witch-scene">
+    <div class="witch-bg"><div class="witch-moon"></div><div class="shelves"></div><div class="candle c1"></div><div class="candle c2"></div><div class="cauldron"><i></i></div></div>
+    <header class="hud"><div><span>CAPÍTULO IV</span><strong>Ateliê da Bruxa</strong></div><div class="right"><span>MINIGAME</span><strong>Memorize o ritual</strong></div></header>
+
+    <div class="witch-game">
+      <p class="mini-label">RITUAL DA NOITE</p>
+      <h2>Repita a sequência.</h2>
+      <p class="mini-help">Os ingredientes vão brilhar. Depois clique neles na mesma ordem.</p>
+      <div id="ingredient-grid" class="ingredient-grid">
+        <button data-ing="lily"><span>⚜</span><b>Lírio</b></button>
+        <button data-ing="spider"><span>✺</span><b>Lírio-aranha</b></button>
+        <button data-ing="vanilla"><span>◌</span><b>Baunilha</b></button>
+        <button data-ing="bow"><span>୨୧</span><b>Laço preto</b></button>
+        <button data-ing="rose"><span>✿</span><b>Rosa</b></button>
+      </div>
+      <div class="ritual-row"><span>Rodada <b id="ritual-round">1</b>/3</span><button id="start-ritual" class="action-button">Ver sequência</button></div>
+      <p id="ritual-status" class="feedback"></p>
+    </div>
+  </section>
+
+  <section id="apartment" class="screen story-screen apartment-scene">
+    <div class="room">
+      <div class="room-wall"></div><div class="window-night"></div><div class="sofa"></div><div class="rug"></div><div class="desk"></div><div class="bed"></div>
+      <button class="hidden-object perfume" data-find="Perfume doce" aria-label="Perfume doce">♢</button>
+      <button class="hidden-object notebook" data-find="Caderno" aria-label="Caderno">▤</button>
+      <button class="hidden-object bracelet-object" data-find="Bracelete" aria-label="Bracelete">◌</button>
+      <button class="hidden-object bow-object" data-find="Laço preto" aria-label="Laço preto">୨୧</button>
+      <button class="hidden-object rose-object" data-find="Rosa" aria-label="Rosa">✿</button>
+    </div>
+    <header class="hud"><div><span>CAPÍTULO V</span><strong>Um apartamento pequeno</strong></div><div class="right"><span>MINIGAME</span><strong>Objetos escondidos</strong></div></header>
+
+    <div class="find-panel">
+      <p class="mini-label">ENCONTRE 5 COISAS</p>
+      <h2>Um cantinho que parece dela.</h2>
+      <div id="find-list" class="find-list">
+        <span data-label="Perfume doce">Perfume doce</span>
+        <span data-label="Caderno">Caderno</span>
+        <span data-label="Bracelete">Bracelete</span>
+        <span data-label="Laço preto">Laço preto</span>
+        <span data-label="Rosa">Rosa</span>
+      </div>
+      <p id="find-status" class="feedback">0 / 5 encontrados</p>
+    </div>
+  </section>
+
+  <section id="rhythm" class="screen story-screen rhythm-scene">
+    <div class="rhythm-bg"><div class="record"></div><div class="equalizer"></div></div>
+    <header class="hud"><div><span>CAPÍTULO VI</span><strong>Depois da meia-noite</strong></div><div class="right"><span>MINIGAME</span><strong>Ritmo</strong></div></header>
+
+    <div class="rhythm-layout">
+      <div>
+        <p class="mini-label">RITMO NOTURNO</p>
+        <h2>Acerte as notas.</h2>
+        <p class="mini-help">Use <b>A S D F</b> ou clique nas pistas quando a nota chegar na linha.</p>
+        <div class="rhythm-stats"><span>Pontos <b id="rhythm-score">0</b></span><span>Sequência <b id="rhythm-combo">0</b></span></div>
+        <button id="start-rhythm" class="action-button">Começar música</button>
+        <p id="rhythm-status" class="feedback"></p>
+      </div>
+      <div id="rhythm-board" class="rhythm-board">
+        <div class="lane" data-key="a"><b>A</b></div>
+        <div class="lane" data-key="s"><b>S</b></div>
+        <div class="lane" data-key="d"><b>D</b></div>
+        <div class="lane" data-key="f"><b>F</b></div>
+        <div class="hit-line"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="drive" class="screen story-screen drive-scene">
+    <div class="drive-sky"><div class="mountains"></div><div id="drive-snow" class="snow-layer"></div></div>
+    <header class="hud"><div><span>CAPÍTULO VII</span><strong>Estrada de inverno</strong></div><div class="right"><span>MINIGAME</span><strong>Dirija na neve</strong></div></header>
+
+    <div class="drive-info">
+      <p class="mini-label">GTR NA NEVE</p>
+      <h2>Pegue as rosas.</h2>
+      <p>← → ou A/D para trocar de faixa. Evite as barreiras.</p>
+      <div class="drive-stats"><span>🌹 <b id="rose-count">0</b>/6</span><span>♥ <b id="drive-hearts">3</b></span></div>
+      <button id="start-drive" class="action-button">Ligar o carro</button>
+      <p id="drive-status" class="feedback"></p>
+    </div>
+
+    <div id="road" class="road">
+      <div class="road-lines"></div>
+      <div id="car" class="car"><i></i><b></b></div>
+    </div>
+  </section>
+
+  <section id="journal" class="screen story-screen journal-scene">
+    <div class="journal-bg"><div class="desk-light"></div></div>
+    <header class="hud"><div><span>CAPÍTULO VIII</span><strong>O caderno</strong></div><div class="right"><span>ÚLTIMA ESCOLHA</span><strong>Monte uma página do futuro</strong></div></header>
+
+    <div class="journal-layout">
+      <div class="notebook-page">
+        <p class="handwrite">algum dia...</p>
+        <div id="future-page" class="future-page">
+          <div data-future-slot="city"><span>cidade</span></div>
+          <div data-future-slot="home"><span>casa</span></div>
+          <div data-future-slot="flower"><span>flor</span></div>
+          <div data-future-slot="night"><span>noite perfeita</span></div>
+        </div>
+      </div>
+      <div class="future-options">
+        <p class="mini-label">SALVE 4 PINS</p>
+        <h2>Como seria uma página perfeita?</h2>
+        <div class="pin-groups">
+          <div><span>CIDADE</span><button data-future="city" data-value="Paris">Paris</button><button data-future="city" data-value="Nova York">Nova York</button><button data-future="city" data-value="Suíça">Suíça</button></div>
+          <div><span>CASA</span><button data-future="home" data-value="Apartamento pequeno">Apê pequeno</button><button data-future="home" data-value="Casa vitoriana">Vitoriana</button><button data-future="home" data-value="Minimalista branca">Minimalista</button></div>
+          <div><span>FLOR</span><button data-future="flower" data-value="Rosas">Rosas</button><button data-future="flower" data-value="Lírios">Lírios</button><button data-future="flower" data-value="Lírio-aranha vermelho">Lírio-aranha</button></div>
+          <div><span>NOITE</span><button data-future="night" data-value="Vinho gelado + frio">Vinho + frio</button><button data-future="night" data-value="Filme de romance + manta">Filme + manta</button><button data-future="night" data-value="Paris depois da meia-noite">Paris tarde</button></div>
+        </div>
+        <button id="finish-journal" class="action-button" disabled>Fechar o caderno</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="finale" class="screen finale-scene">
+    <div id="final-snow" class="snow-layer"></div>
+    <div class="final-glow"></div>
+    <div class="final-flowers"><span>✿</span><span>⚜</span><span>✺</span><span>✿</span></div>
+    <div class="final-fox fox-sprite idle"></div>
+    <div class="final-card">
+      <p class="eyebrow">FIM DA HISTÓRIA</p>
+      <h1>Feliz aniversário.</h1>
+      <p>Eu quis montar um pequeno mundo com um monte de coisas que lembram você — frio, Paris, coisas bonitas, um pouco de bruxaria, comida, moda e uma raposa te guiando até aqui.</p>
+      <p class="final-small">E ainda assim, nenhuma dessas coisas é tão especial quanto você é pra mim.</p>
+      <button id="replay" class="main-button">Jogar de novo</button>
+    </div>
+  </section>
+
+  <div id="transition" class="transition"></div>
+  <div id="toast" class="toast hidden"></div>
+</main>
+
+<script src="./story.js?v=20260925-game2"></script>
 </body>
 </html>
