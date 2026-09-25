@@ -370,6 +370,12 @@ class GameScene extends Phaser.Scene {
     this.dialogueOpen = false;
     this.dialogueIndex = 0;
     this.foxTalked = false;
+    this.foxState = "waiting";
+    this.foxTarget = null;
+    this.foxGuideStage = 0;
+    this.afterDialogue = null;
+    this.lastFootstepAt = 0;
+    this.lastSnowKickAt = 0;
   }
 
   create() {
@@ -463,21 +469,44 @@ class GameScene extends Phaser.Scene {
 
     const foxFrames = this.textures.get("fox").frameTotal || 1;
     const foxFrame = foxFrames >= 12 ? 7 : 0;
-    const foxScale = foxFrames >= 12 ? 1.15 : 3.4;
-    this.fox = this.physics.add.staticImage(WORLD_WIDTH * .67, WORLD_HEIGHT * .43, "fox", foxFrame)
+    const foxScale = foxFrames >= 12 ? 1.55 : 3.6;
+
+    if (foxFrames >= 8 && !this.anims.exists("fox-walk")) {
+      this.anims.create({
+        key: "fox-walk",
+        frames: [4, 5, 6, 7].map(frame => ({ key: "fox", frame })),
+        frameRate: 9,
+        repeat: -1
+      });
+    }
+
+    this.fox = this.physics.add.sprite(WORLD_WIDTH * .67, WORLD_HEIGHT * .43, "fox", foxFrame)
       .setScale(foxScale)
       .setDepth(520)
-      .setTint(0xe49b55);
+      .setImmovable(true);
+
+    this.fox.body.setAllowGravity(false);
+    this.fox.body.setSize(22, 16);
+    this.fox.body.setOffset(13, 37);
 
     this.foxMarker = this.add.ellipse(
       this.fox.x,
-      this.fox.y + 12,
-      20,
-      8,
+      this.fox.y + 14,
+      28,
+      10,
       0xe49b55,
-      0.18
+      0.20
     ).setDepth(514);
-    this.fox.refreshBody();
+
+    this.foxPointer = this.add.triangle(
+      this.fox.x,
+      this.fox.y - 34,
+      0, 0,
+      8, 0,
+      4, 6,
+      0xf1b56f,
+      0.86
+    ).setDepth(620);
 
     this.rune = this.physics.add.staticImage(WORLD_WIDTH * .82, WORLD_HEIGHT * .29, "rune")
       .setScale(1.7)
@@ -506,9 +535,10 @@ class GameScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
 
     this.tweens.add({
-      targets: this.fox,
-      y: this.fox.y - 4,
-      duration: 1500,
+      targets: this.foxPointer,
+      y: this.foxPointer.y - 5,
+      alpha: { from: 0.52, to: 0.95 },
+      duration: 820,
       yoyo: true,
       repeat: -1,
       ease: "Sine.inOut"
@@ -627,8 +657,13 @@ class GameScene extends Phaser.Scene {
       this.playerArrow.setPosition(this.player.x, this.player.y - 26);
     }
     if (this.foxMarker) {
-      this.foxMarker.setPosition(this.fox.x, this.fox.y + 12);
+      this.foxMarker.setPosition(this.fox.x, this.fox.y + 14);
     }
+    if (this.foxPointer) {
+      this.foxPointer.setPosition(this.fox.x, this.fox.y - 34);
+    }
+
+    this.updateFoxGuide();
 
     if (this.dialogueOpen) {
       this.player.setVelocity(0);
@@ -664,6 +699,16 @@ class GameScene extends Phaser.Scene {
         this.player.setFlipX(false);
         this.player.anims.play("hero-down-walk", true);
       }
+
+      if (this.time.now - this.lastFootstepAt > 285) {
+        this.lastFootstepAt = this.time.now;
+        if (window.WinterAudio) window.WinterAudio.play("step");
+      }
+
+      if (this.time.now - this.lastSnowKickAt > 115) {
+        this.lastSnowKickAt = this.time.now;
+        this.kickSnow();
+      }
     } else {
       this.player.setVelocity(0);
       this.player.anims.stop();
@@ -686,11 +731,12 @@ class GameScene extends Phaser.Scene {
     const foxDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fox.x, this.fox.y);
     const runeDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.rune.x, this.rune.y);
 
-    if (foxDistance < 105) {
-      this.setPrompt("Conversar com a raposa");
-      ui.objective.textContent = "Converse com a raposa";
+    if (foxDistance < 105 && this.foxState !== "moving") {
+      this.setPrompt(this.foxTalked ? "Falar com a raposa" : "Conversar com a raposa");
+      ui.objective.textContent = this.foxTalked ? "Acompanhe a raposa" : "Converse com a raposa";
       if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) {
         if (window.WinterAudio) window.WinterAudio.play("interact");
+        this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 10);
         this.startFoxDialogue();
       }
     } else if (runeDistance < 90) {
@@ -698,13 +744,136 @@ class GameScene extends Phaser.Scene {
       ui.objective.textContent = "Observe o símbolo";
       if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) {
         if (window.WinterAudio) window.WinterAudio.play("rune");
+        this.burstSparkles(this.rune.x, this.rune.y, 0x9be6ef, 14);
+        this.cameras.main.shake(90, 0.0012);
         this.openDialogue([
           ["PEDRA RÚNICA", "Um símbolo foi gravado no gelo. Você tem a sensação de que ainda não deveria entendê-lo."]
         ]);
       }
     } else {
       hide(ui.prompt);
-      ui.objective.textContent = this.foxTalked ? "Explore a floresta" : "Encontre a raposa";
+      ui.objective.textContent = this.foxTalked ? "Siga a raposa" : "Encontre a raposa";
+    }
+  }
+
+  sendFoxAhead() {
+    const guidePoints = [
+      { x: WORLD_WIDTH * 0.59, y: WORLD_HEIGHT * 0.50 },
+      { x: WORLD_WIDTH * 0.53, y: WORLD_HEIGHT * 0.58 }
+    ];
+
+    const target = guidePoints[Math.min(this.foxGuideStage, guidePoints.length - 1)];
+    if (!target) return;
+
+    this.foxGuideStage += 1;
+    this.foxTarget = target;
+    this.foxState = "moving";
+    ui.objective.textContent = "Siga a raposa";
+
+    this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 8);
+    if (window.WinterAudio) window.WinterAudio.play("fox");
+
+    if (this.anims.exists("fox-walk")) {
+      this.fox.anims.play("fox-walk", true);
+    }
+  }
+
+  updateFoxGuide() {
+    if (!this.fox || this.foxState !== "moving" || !this.foxTarget) return;
+
+    const dx = this.foxTarget.x - this.fox.x;
+    const dy = this.foxTarget.y - this.fox.y;
+    const distance = Math.hypot(dx, dy);
+
+    if (distance < 9) {
+      this.fox.setVelocity(0);
+      this.fox.anims.stop();
+      this.foxState = "waiting";
+      this.foxTarget = null;
+      this.fox.setAngle(0);
+      this.cameras.main.shake(70, 0.0008);
+      this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 6);
+      return;
+    }
+
+    const speed = 118;
+    this.fox.setVelocity((dx / distance) * speed, (dy / distance) * speed);
+
+    if (Math.abs(dx) > 2) {
+      this.fox.setFlipX(dx < 0);
+    }
+
+    if (this.anims.exists("fox-walk")) {
+      this.fox.anims.play("fox-walk", true);
+    }
+
+    if (Math.random() < 0.08) {
+      const puff = this.add.circle(
+        this.fox.x + Phaser.Math.Between(-6, 6),
+        this.fox.y + 18,
+        Phaser.Math.FloatBetween(1.2, 2.4),
+        0xffffff,
+        Phaser.Math.FloatBetween(0.22, 0.42)
+      ).setDepth(512);
+
+      this.tweens.add({
+        targets: puff,
+        y: puff.y + Phaser.Math.Between(4, 9),
+        x: puff.x + Phaser.Math.Between(-5, 5),
+        alpha: 0,
+        scale: 1.7,
+        duration: Phaser.Math.Between(320, 520),
+        onComplete: () => puff.destroy()
+      });
+    }
+  }
+
+  kickSnow() {
+    for (let i = 0; i < 2; i++) {
+      const puff = this.add.circle(
+        this.player.x + Phaser.Math.Between(-7, 7),
+        this.player.y + 20,
+        Phaser.Math.FloatBetween(1.2, 2.6),
+        0xffffff,
+        Phaser.Math.FloatBetween(0.20, 0.42)
+      ).setDepth(492);
+
+      this.tweens.add({
+        targets: puff,
+        x: puff.x + Phaser.Math.Between(-7, 7),
+        y: puff.y + Phaser.Math.Between(3, 9),
+        alpha: 0,
+        scale: Phaser.Math.FloatBetween(1.35, 1.9),
+        duration: Phaser.Math.Between(300, 480),
+        ease: "Sine.out",
+        onComplete: () => puff.destroy()
+      });
+    }
+  }
+
+  burstSparkles(x, y, color, count = 8) {
+    for (let i = 0; i < count; i++) {
+      const sparkle = this.add.circle(
+        x + Phaser.Math.Between(-8, 8),
+        y + Phaser.Math.Between(-6, 8),
+        Phaser.Math.FloatBetween(1.1, 2.1),
+        color,
+        Phaser.Math.FloatBetween(0.55, 0.9)
+      ).setDepth(1800);
+
+      const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
+      const distance = Phaser.Math.Between(12, 30);
+
+      this.tweens.add({
+        targets: sparkle,
+        x: sparkle.x + Math.cos(angle) * distance,
+        y: sparkle.y + Math.sin(angle) * distance,
+        alpha: 0,
+        scale: 0.35,
+        duration: Phaser.Math.Between(320, 560),
+        ease: "Cubic.out",
+        onComplete: () => sparkle.destroy()
+      });
     }
   }
 
@@ -727,7 +896,21 @@ class GameScene extends Phaser.Scene {
   }
 
   startFoxDialogue() {
+    if (this.foxTalked) {
+      this.afterDialogue = () => {
+        this.sendFoxAhead();
+      };
+      this.openDialogue([
+        ["RAPOSA", "Isso. Continue me seguindo."]
+      ]);
+      return;
+    }
+
     this.foxTalked = true;
+    this.afterDialogue = () => {
+      this.sendFoxAhead();
+    };
+
     this.openDialogue([
       ["RAPOSA", "Você finalmente chegou."],
       ["RAPOSA", "Este lugar já teve cores. O inverno ficou com quase todas elas."],
@@ -757,6 +940,10 @@ class GameScene extends Phaser.Scene {
     if (this.dialogueIndex >= this.dialogueLines.length) {
       this.dialogueOpen = false;
       hide(ui.dialogue);
+
+      const callback = this.afterDialogue;
+      this.afterDialogue = null;
+      if (callback) this.time.delayedCall(180, callback);
       return;
     }
     this.renderDialogue();
