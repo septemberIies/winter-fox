@@ -359,11 +359,15 @@ class GameScene extends Phaser.Scene {
     if (foxDistance < 105) {
       this.setPrompt("Conversar com a raposa");
       ui.objective.textContent = "Converse com a raposa";
-      if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) this.startFoxDialogue();
+      if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) {
+        if (window.WinterAudio) window.WinterAudio.play("interact");
+        this.startFoxDialogue();
+      }
     } else if (runeDistance < 90) {
       this.setPrompt("Observar a pedra rúnica");
       ui.objective.textContent = "Observe o símbolo";
       if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) {
+        if (window.WinterAudio) window.WinterAudio.play("rune");
         this.openDialogue([
           ["PEDRA RÚNICA", "Um símbolo foi gravado no gelo. Você tem a sensação de que ainda não deveria entendê-lo."]
         ]);
@@ -418,6 +422,7 @@ class GameScene extends Phaser.Scene {
   }
 
   advanceDialogue() {
+    if (window.WinterAudio) window.WinterAudio.play("dialogue");
     this.dialogueIndex += 1;
     if (this.dialogueIndex >= this.dialogueLines.length) {
       this.dialogueOpen = false;
@@ -458,6 +463,10 @@ function startGame() {
   const app = document.querySelector("#app");
   const gameRoot = document.querySelector("#game");
   app.classList.remove("is-title");
+  if (window.WinterAudio) {
+    window.WinterAudio.ensure();
+    window.WinterAudio.startWind();
+  }
   gameRoot.style.display = "block";
   gameRoot.style.background = "#05070b";
   hide(ui.title);
