@@ -14,7 +14,9 @@ const BASE_WORLD_HEIGHT = BASE_WORLD_ROWS * TILE * TILE_SCALE;
 const ASSETS = {
   winterTiles: "https://raw.githubusercontent.com/Tiddybub/2d-assets/main/misc/tiny-ski/Tilemap/tilemap_packed.png",
   girl: "https://raw.githubusercontent.com/Tiddybub/2d-assets/main/characters/oga-miss-princess-animated-16x16/missprincess.png",
-  fox: "https://raw.githubusercontent.com/AntumDeluge/game-resources/master/sprite/animal/fox/PNG/48x64/fox-NESW.png"
+  foxIdle: "https://raw.githubusercontent.com/dowoonlee/ai-service-usage/main/Sources/ClaudeUsage/Resources/wild-animals/Fox/Fox_Idle.png",
+  foxWalk: "https://raw.githubusercontent.com/dowoonlee/ai-service-usage/main/Sources/ClaudeUsage/Resources/wild-animals/Fox/Fox_Walk.png",
+  foxRun: "https://raw.githubusercontent.com/dowoonlee/ai-service-usage/main/Sources/ClaudeUsage/Resources/wild-animals/Fox/Fox_Run.png"
 };
 
 const ui = {
@@ -89,8 +91,18 @@ class BootScene extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16
     });
-    this.load.image("foxgen", window.WINTER_GENERATED_ASSETS.fox);
-    this.load.image("treegen", window.WINTER_GENERATED_ASSETS.trees);
+    this.load.spritesheet("fox-public-idle", ASSETS.foxIdle, {
+      frameWidth: 64,
+      frameHeight: 36
+    });
+    this.load.spritesheet("fox-public-walk", ASSETS.foxWalk, {
+      frameWidth: 64,
+      frameHeight: 36
+    });
+    this.load.spritesheet("fox-public-run", ASSETS.foxRun, {
+      frameWidth: 64,
+      frameHeight: 36
+    });
 
     this.load.on("loaderror", file => {
       console.warn("Asset não carregou:", file.key);
@@ -100,68 +112,16 @@ class BootScene extends Phaser.Scene {
   create() {
     this.makeFallbackTextures();
 
-    if (this.textures.exists("winter")) {
-      this.textures.get("winter").setFilter(Phaser.Textures.FilterMode.NEAREST);
-    }
-    if (this.textures.exists("girl")) {
-      this.textures.get("girl").setFilter(Phaser.Textures.FilterMode.NEAREST);
-    }
-    if (this.textures.exists("foxgen")) {
-      this.textures.get("foxgen").setFilter(Phaser.Textures.FilterMode.NEAREST);
-    }
-    if (this.textures.exists("treegen")) {
-      this.textures.get("treegen").setFilter(Phaser.Textures.FilterMode.NEAREST);
-    }
-
-    // The generated fox sheet is artistic, not a uniform grid.
-    // Define exact frame rectangles around each pose.
-    if (this.textures.exists("foxgen")) {
-      const foxTexture = this.textures.get("foxgen");
-      const addFoxFrame = (name, x, y, w, h) => {
-        if (!foxTexture.frames[name]) foxTexture.add(name, 0, x, y, w, h);
-      };
-
-      // right walk
-      addFoxFrame("right0", 180, 60, 300, 190);
-      addFoxFrame("right1", 455, 60, 300, 190);
-      addFoxFrame("right2", 730, 60, 285, 190);
-      addFoxFrame("right3", 985, 60, 290, 190);
-
-      // left walk
-      addFoxFrame("left0", 200, 240, 300, 190);
-      addFoxFrame("left1", 490, 240, 280, 190);
-      addFoxFrame("left2", 740, 240, 285, 190);
-      addFoxFrame("left3", 995, 240, 290, 190);
-
-      // walking away / up
-      addFoxFrame("up0", 270, 435, 180, 220);
-      addFoxFrame("up1", 510, 435, 180, 220);
-      addFoxFrame("up2", 755, 435, 180, 220);
-      addFoxFrame("up3", 995, 435, 180, 220);
-
-      // walking toward camera / down
-      addFoxFrame("down0", 255, 640, 190, 220);
-      addFoxFrame("down1", 505, 640, 190, 220);
-      addFoxFrame("down2", 735, 640, 190, 220);
-      addFoxFrame("down3", 995, 640, 190, 220);
-
-      // same fox: standing and sitting
-      addFoxFrame("idle", 480, 850, 250, 200);
-      addFoxFrame("sit", 735, 850, 250, 200);
-    }
-
-    // Exact five tree variants from the generated tree sheet.
-    if (this.textures.exists("treegen")) {
-      const treeTexture = this.textures.get("treegen");
-      const addTreeFrame = (name, x, y, w, h) => {
-        if (!treeTexture.frames[name]) treeTexture.add(name, 0, x, y, w, h);
-      };
-
-      addTreeFrame("tree0", 48, 634, 176, 233);
-      addTreeFrame("tree1", 260, 622, 185, 245);
-      addTreeFrame("tree2", 491, 472, 232, 395);
-      addTreeFrame("tree3", 769, 455, 260, 412);
-      addTreeFrame("tree4", 1067, 277, 350, 590);
+    for (const key of [
+      "winter",
+      "girl",
+      "fox-public-idle",
+      "fox-public-walk",
+      "fox-public-run"
+    ]) {
+      if (this.textures.exists(key)) {
+        this.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
+      }
     }
 
     hide(ui.loading);
@@ -631,37 +591,54 @@ class GameScene extends Phaser.Scene {
       });
     }
 
-    this.foxFacing = "down";
+    this.foxFacing = "left";
+    this.hasPublicFox =
+      this.textures.exists("fox-public-idle") &&
+      this.textures.exists("fox-public-walk");
 
-    if (!this.anims.exists("foxgen-walk-right")) {
-      const makeFoxWalk = (key, names) => {
+    if (this.hasPublicFox && !this.anims.exists("fox-public-idle-anim")) {
+      this.anims.create({
+        key: "fox-public-idle-anim",
+        frames: this.anims.generateFrameNumbers("fox-public-idle", { start: 0, end: 5 }),
+        frameRate: 4,
+        repeat: -1
+      });
+
+      this.anims.create({
+        key: "fox-public-walk-anim",
+        frames: this.anims.generateFrameNumbers("fox-public-walk", { start: 0, end: 7 }),
+        frameRate: 8,
+        repeat: -1
+      });
+
+      if (this.textures.exists("fox-public-run")) {
         this.anims.create({
-          key,
-          frames: names.map(frame => ({ key: "foxgen", frame })),
-          frameRate: 8,
+          key: "fox-public-run-anim",
+          frames: this.anims.generateFrameNumbers("fox-public-run", { start: 0, end: 5 }),
+          frameRate: 10,
           repeat: -1
         });
-      };
-
-      makeFoxWalk("foxgen-walk-right", ["right0", "right1", "right2", "right3"]);
-      makeFoxWalk("foxgen-walk-left", ["left0", "left1", "left2", "left3"]);
-      makeFoxWalk("foxgen-walk-up", ["up0", "up1", "up2", "up3"]);
-      makeFoxWalk("foxgen-walk-down", ["down0", "down1", "down2", "down3"]);
+      }
     }
 
     this.fox = this.physics.add.sprite(
       BASE_WORLD_WIDTH * .67,
       BASE_WORLD_HEIGHT * .43,
-      "foxgen",
-      "idle"
+      this.hasPublicFox ? "fox-public-idle" : "fox",
+      0
     )
-      .setScale(0.28)
+      .setScale(this.hasPublicFox ? 1.45 : 3.4)
       .setDepth(520)
       .setImmovable(true);
 
     this.fox.body.setAllowGravity(false);
-    this.fox.body.setSize(90, 45);
-    this.fox.body.setOffset(80, 120);
+    if (this.hasPublicFox) {
+      this.fox.body.setSize(42, 15);
+      this.fox.body.setOffset(11, 19);
+    } else {
+      this.fox.body.setSize(12, 9);
+      this.fox.body.setOffset(2, 7);
+    }
     this.setFoxIdle();
 
     this.foxMarker = this.add.ellipse(
@@ -786,33 +763,33 @@ class GameScene extends Phaser.Scene {
     this.time.delayedCall(7000, () => hide(ui.controls));
   }
 
-  addGeneratedTree(x, groundY, frame = 2, alpha = 0.96, extraScale = 1) {
-    const scales = [0.24, 0.25, 0.20, 0.20, 0.17];
-    const scale = (scales[frame] || 0.20) * extraScale;
+  addWinterTree(x, groundY, variant = 0, scale = 1, alpha = 0.97) {
+    if (!this.textures.exists("winter")) return null;
 
-    const tree = this.obstacles.create(x, groundY, "treegen", `tree${frame}`)
-      .setOrigin(0.5, 1)
-      .setScale(scale)
-      .setDepth(100 + groundY)
+    const topId = variant === 1 ? 8 : 7;
+    const bottomId = variant === 1 ? 20 : 19;
+    const spriteScale = TILE_SCALE * scale;
+    const cellStep = TILE * spriteScale;
+    const depth = 100 + groundY;
+
+    this.add.image(x, groundY - cellStep, "winter", topId - 1)
+      .setScale(spriteScale)
+      .setDepth(depth)
       .setAlpha(alpha);
 
-    tree.refreshBody();
+    const trunk = this.obstacles.create(x, groundY, "winter", bottomId - 1)
+      .setScale(spriteScale)
+      .setDepth(depth)
+      .setAlpha(alpha);
 
-    // Collision only around the trunk/base.
-    const frameData = tree.frame;
-    const bw = Math.max(45, frameData.realWidth * 0.26);
-    const bh = Math.max(28, frameData.realHeight * 0.12);
-    tree.body.setSize(bw, bh);
-    tree.body.setOffset(
-      (frameData.realWidth - bw) / 2,
-      frameData.realHeight - bh
-    );
-
-    return tree;
+    trunk.refreshBody();
+    trunk.body.setSize(10, 7);
+    trunk.body.setOffset(3, 8);
+    return trunk;
   }
 
   buildMap() {
-    const collidable = new Set([8, 20, 21, 22, 23, 24, 32, 34, 35, 36, 70, 80, 82]);
+    const collidable = new Set([21, 22, 23, 24, 34, 35, 36, 70, 80, 82]);
 
     for (let row = 0; row < WORLD_ROWS; row++) {
       for (let col = 0; col < WORLD_COLS; col++) {
@@ -820,7 +797,6 @@ class GameScene extends Phaser.Scene {
         const idx = inOriginalMap ? (row * BASE_WORLD_COLS + col) : -1;
         const x = col * TILE * TILE_SCALE;
         const y = row * TILE * TILE_SCALE;
-
         const terrainId = inOriginalMap ? TERRAIN[idx] : 3;
 
         if (this.textures.exists("winter") && terrainId > 0) {
@@ -831,17 +807,12 @@ class GameScene extends Phaser.Scene {
         }
 
         let objectId = inOriginalMap ? OBJECTS[idx] : 0;
-
-        // Remove decorative people/NPCs.
         if ([59, 60, 71, 84].includes(objectId)) objectId = 0;
-
         if (!objectId) continue;
 
         const cx = x + (TILE * TILE_SCALE) / 2;
         const cy = y + (TILE * TILE_SCALE) / 2;
 
-        // Original tall pines are atlas pairs (7/19 and 8/20).
-        // Replace both styles with ONE cohesive generated tree family.
         if (objectId === 7 || objectId === 8) {
           const expectedBottom = objectId === 7 ? 19 : 20;
           const below = row + 1 < BASE_WORLD_ROWS
@@ -849,8 +820,13 @@ class GameScene extends Phaser.Scene {
             : 0;
 
           if (below === expectedBottom) {
-            const frame = 2 + ((row + col) % 3);
-            this.addGeneratedTree(cx, y + (TILE * TILE_SCALE * 2), frame, 0.98);
+            this.addWinterTree(
+              cx,
+              cy + (TILE * TILE_SCALE),
+              objectId === 8 ? 1 : 0,
+              1,
+              0.98
+            );
             continue;
           }
         }
@@ -860,14 +836,17 @@ class GameScene extends Phaser.Scene {
           const above = row > 0
             ? OBJECTS[(row - 1) * BASE_WORLD_COLS + col]
             : 0;
-
           if (above === expectedTop) continue;
         }
 
-        // Original small pines.
         if (objectId === 31 || objectId === 32) {
-          const frame = (row + col) % 2;
-          this.addGeneratedTree(cx, y + (TILE * TILE_SCALE), frame, 0.97);
+          const tree = this.obstacles.create(cx, cy, "winter", objectId - 1)
+            .setScale(TILE_SCALE)
+            .setDepth(100 + cy)
+            .setAlpha(0.98);
+          tree.refreshBody();
+          tree.body.setSize(10, 7);
+          tree.body.setOffset(3, 8);
           continue;
         }
 
@@ -877,7 +856,6 @@ class GameScene extends Phaser.Scene {
           const obj = this.obstacles.create(cx, cy, "winter", objectId - 1)
             .setScale(TILE_SCALE)
             .setDepth(100 + cy);
-
           obj.refreshBody();
           obj.body.setSize(12, 8);
           obj.body.setOffset(2, 7);
@@ -889,17 +867,16 @@ class GameScene extends Phaser.Scene {
       }
     }
 
-    // Same generated tree family throughout the mysterious forest.
     const trees = [
-      [1540,170,4],[1700,190,2],[1870,165,3],[2055,195,4],[2240,170,2],[2410,210,3],
-      [1510,770,3],[1680,815,2],[1850,775,4],[2040,830,3],[2225,775,4],[2410,820,2],
-      [1590,420,1],[1800,400,3],[2000,455,2],[2180,415,4],[2350,460,1],
-      [1570,1080,4],[1760,1040,2],[1960,1110,3],[2160,1060,4],[2370,1120,2],
-      [1580,1390,3],[1770,1450,4],[1980,1375,2],[2200,1460,3],[2400,1395,4]
+      [1540,170,0,.96],[1700,190,1,.90],[1870,165,0,1.02],[2055,195,1,.94],[2240,170,0,.98],[2410,210,1,.90],
+      [1510,770,1,.96],[1680,815,0,.90],[1850,775,0,1.02],[2040,830,1,.94],[2225,775,0,.98],[2410,820,1,.90],
+      [1590,420,0,.88],[1800,400,1,.98],[2000,455,0,.92],[2180,415,1,1.00],[2350,460,0,.88],
+      [1570,1080,1,1.00],[1760,1040,0,.90],[1960,1110,0,1.02],[2160,1060,1,.96],[2370,1120,0,.92],
+      [1580,1390,0,.94],[1770,1450,1,1.00],[1980,1375,0,.90],[2200,1460,1,1.02],[2400,1395,0,.96]
     ];
 
-    for (const [x, y, frame] of trees) {
-      this.addGeneratedTree(x, y, frame, 0.96);
+    for (const [x, y, variant, scale] of trees) {
+      this.addWinterTree(x, y, variant, scale, 0.97);
     }
   }
 
@@ -907,16 +884,16 @@ class GameScene extends Phaser.Scene {
     if (!this.rune) return;
 
     const trees = [
-      [this.rune.x - 185, this.rune.y - 70, 4],
-      [this.rune.x + 175, this.rune.y - 65, 3],
-      [this.rune.x - 195, this.rune.y + 150, 2],
-      [this.rune.x + 190, this.rune.y + 150, 4],
-      [this.rune.x - 75, this.rune.y - 165, 1],
-      [this.rune.x + 85, this.rune.y + 185, 2]
+      [this.rune.x - 185, this.rune.y - 70, 0, 1.03],
+      [this.rune.x + 175, this.rune.y - 65, 1, .98],
+      [this.rune.x - 195, this.rune.y + 150, 1, .94],
+      [this.rune.x + 190, this.rune.y + 150, 0, 1.02],
+      [this.rune.x - 75, this.rune.y - 165, 0, .88],
+      [this.rune.x + 85, this.rune.y + 185, 1, .90]
     ];
 
-    for (const [x, y, frame] of trees) {
-      this.addGeneratedTree(x, y, frame, 0.97);
+    for (const [x, y, variant, scale] of trees) {
+      this.addWinterTree(x, y, variant, scale, 0.98);
     }
   }
 
@@ -1109,31 +1086,41 @@ class GameScene extends Phaser.Scene {
     if (!this.fox) return;
 
     this.fox.setVelocity(0);
-    this.fox.anims.stop();
-    this.fox.setTexture("foxgen", "idle");
-    this.fox.setFrame("idle");
-    this.fox.setScale(0.28);
-    this.fox.setFlipX(false);
     this.fox.setAngle(0);
+
+    if (this.hasPublicFox) {
+      if (this.fox.texture.key !== "fox-public-idle") {
+        this.fox.anims.stop();
+        this.fox.setTexture("fox-public-idle", 0);
+      }
+      this.fox.setScale(1.45);
+      this.fox.setFlipX(this.foxFacing === "right");
+
+      if (this.fox.anims.currentAnim?.key !== "fox-public-idle-anim") {
+        this.fox.anims.play("fox-public-idle-anim", true);
+      }
+    } else {
+      this.fox.anims.stop();
+      this.fox.setTexture("fox");
+      this.fox.setScale(3.4);
+    }
   }
 
   setFoxSitting() {
     if (!this.fox) return;
 
-    this.fox.setVelocity(0);
-    this.fox.anims.stop();
-    this.fox.setTexture("foxgen", "sit");
-    this.fox.setFrame("sit");
-    this.fox.setScale(0.30);
-    this.fox.setFlipX(false);
-    this.fox.setAngle(0);
+    this.setFoxIdle();
 
-    if (this.foxSitTween) this.foxSitTween.stop();
+    if (this.foxRestTween) {
+      this.foxRestTween.stop();
+      this.foxRestTween = null;
+    }
 
-    this.foxSitTween = this.tweens.add({
+    const baseScale = this.hasPublicFox ? 1.45 : 3.4;
+    this.foxRestTween = this.tweens.add({
       targets: this.fox,
-      scaleY: { from: 0.30, to: 0.292 },
-      duration: 1150,
+      scaleY: { from: baseScale, to: baseScale * 0.975 },
+      duration: 1200,
       yoyo: true,
       repeat: -1,
       ease: "Sine.inOut"
@@ -1143,23 +1130,28 @@ class GameScene extends Phaser.Scene {
   playFoxWalk(dx, dy) {
     if (!this.fox) return;
 
-    if (this.foxSitTween) {
-      this.foxSitTween.stop();
-      this.foxSitTween = null;
+    if (this.foxRestTween) {
+      this.foxRestTween.stop();
+      this.foxRestTween = null;
     }
 
-    this.fox.setScale(0.28);
-    this.fox.setFlipX(false);
-
-    if (Math.abs(dx) >= Math.abs(dy)) {
+    if (Math.abs(dx) > 1) {
       this.foxFacing = dx < 0 ? "left" : "right";
-    } else {
-      this.foxFacing = dy < 0 ? "up" : "down";
     }
 
-    const animKey = `foxgen-walk-${this.foxFacing}`;
-    if (this.anims.exists(animKey)) {
-      this.fox.anims.play(animKey, true);
+    if (this.hasPublicFox) {
+      if (this.fox.texture.key !== "fox-public-walk") {
+        this.fox.anims.stop();
+        this.fox.setTexture("fox-public-walk", 0);
+      }
+      this.fox.setScale(1.45);
+      this.fox.setFlipX(this.foxFacing === "right");
+
+      if (this.fox.anims.currentAnim?.key !== "fox-public-walk-anim") {
+        this.fox.anims.play("fox-public-walk-anim", true);
+      }
+    } else {
+      this.fox.setScale(3.4);
     }
   }
 
