@@ -17,7 +17,7 @@ O projeto possui quatro minigames:
    - segure o botão para resfriar;
    - solte quando o marcador entrar na faixa perfeita;
    - são três rodadas progressivamente mais difíceis;
-   - a faixa diminui e a velocidade oscila para evitar decorar apenas o tempo.
+   - errou qualquer rodada, volta imediatamente para a Rodada 1;\n   - as faixas agora são menores e a velocidade oscila mais para dificultar o timing.
 
 3. **Ritual da bruxa**
    - observe a sequência de ingredientes;
@@ -35,3 +35,5 @@ Depois dos quatro jogos, aparece a tela final de aniversário.
 - Kenney — Pixel Platformer Food Expansion, CC0. Usado para comida/bebida e a taça.
 - Tabler Icons, MIT. Usado para garrafa, termômetro, floco de neve e outros ícones.
 - ScratchIO — Animated Wild Animals, CC0. Usado na raposa da tela final.
+
+- SVG Repo — Wine Bottle Alcohol, CC0. Usado como garrafa de vinho no desafio de resfriamento.
