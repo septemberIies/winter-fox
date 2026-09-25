@@ -570,11 +570,15 @@ class GameScene extends Phaser.Scene {
 
     this.rune.refreshBody();
 
+    this.createRuneClearing();
+    this.createMysteryAmbience();
+
     this.physics.add.collider(this.player, this.obstacles);
     this.physics.add.collider(this.player, this.fox);
     this.physics.add.collider(this.player, this.rune);
 
     this.cameras.main.startFollow(this.player, true, .075, .075);
+    this.cameras.main.centerOn(this.player.x, this.player.y);
     this.cameras.main.setZoom(1.0);
 
     this.keys = this.input.keyboard.addKeys({
@@ -717,28 +721,31 @@ class GameScene extends Phaser.Scene {
         }
       }
 
-      // Rune clearing ring.
-      const clearingProps = [
-        [this.rune.x - 150, this.rune.y - 95, 31],
-        [this.rune.x + 135, this.rune.y - 75, 31],
-        [this.rune.x - 170, this.rune.y + 85, 19],
-        [this.rune.x + 155, this.rune.y + 105, 19],
-        [this.rune.x - 40, this.rune.y - 145, 7],
-        [this.rune.x + 55, this.rune.y + 155, 7]
-      ];
-
-      for (const [x, y, objectId] of clearingProps) {
-        const obj = this.obstacles.create(x, y, "winter", objectId - 1)
-          .setScale(TILE_SCALE)
-          .setDepth(100 + y)
-          .setAlpha(0.96);
-        obj.refreshBody();
-        obj.body.setSize(12, 8);
-        obj.body.setOffset(2, 7);
-      }
     }
+  }
 
-    this.createMysteryAmbience();
+  createRuneClearing() {
+    if (!this.textures.exists("winter") || !this.rune) return;
+
+    const clearingProps = [
+      [this.rune.x - 150, this.rune.y - 95, 31],
+      [this.rune.x + 135, this.rune.y - 75, 31],
+      [this.rune.x - 170, this.rune.y + 85, 19],
+      [this.rune.x + 155, this.rune.y + 105, 19],
+      [this.rune.x - 40, this.rune.y - 145, 7],
+      [this.rune.x + 55, this.rune.y + 155, 7]
+    ];
+
+    for (const [x, y, objectId] of clearingProps) {
+      const obj = this.obstacles.create(x, y, "winter", objectId - 1)
+        .setScale(TILE_SCALE)
+        .setDepth(100 + y)
+        .setAlpha(0.96);
+
+      obj.refreshBody();
+      obj.body.setSize(12, 8);
+      obj.body.setOffset(2, 7);
+    }
   }
 
   createMysteryAmbience() {
