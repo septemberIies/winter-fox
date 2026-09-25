@@ -336,3 +336,23 @@ body{font-family:"Manrope",system-ui,sans-serif;color:var(--text)}button{font:in
   border-radius:999px;
   background:rgba(255,255,255,.34);
 }
+
+/* MENU REBRAND */
+.menu-mark{
+  font:600 28px "Cormorant Garamond",serif;
+  color:#d8b27a;
+  line-height:1;
+  text-shadow:0 0 18px rgba(207,164,105,.18);
+}
+.title-card h1{
+  letter-spacing:.055em;
+}
+.title-card .primary{
+  background:#5d2135;
+  border-color:rgba(215,173,111,.28);
+  box-shadow:0 10px 28px rgba(65,18,35,.2);
+}
+.title-card .primary:hover{
+  background:#742943;
+  border-color:rgba(221,181,122,.48);
+}
