@@ -447,7 +447,7 @@ snow("final-snow",95);
       dot.className="click-heart-dot";
       dot.style.setProperty("--x",(px*1.25)+"px");
       dot.style.setProperty("--y",(py*1.25)+"px");
-      dot.style.setProperty("--delay",(i*5)+"ms");
+      dot.style.setProperty("--delay",(Math.random()*35)+"ms");
       heart.appendChild(dot);
     }
 
@@ -463,7 +463,7 @@ snow("final-snow",95);
     }
 
     document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),1000);
+    setTimeout(()=>heart.remove(),1550);
   }
 
   window.addEventListener("pointerdown",(e)=>{
