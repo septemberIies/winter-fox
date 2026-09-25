@@ -3,13 +3,71 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#090b0f" />
+  <meta name="theme-color" content="#070b10" />
   <title>Winter Fox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <main id="game-shell">
-    <div id="game"></div>
+  <main id="app">
+    <div id="game" aria-label="Winter Fox"></div>
+
+    <div class="screen-vignette" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <section id="title-screen" class="title-screen">
+      <div class="title-card">
+        <div class="eyebrow">uma pequena história no inverno</div>
+        <h1>WINTER FOX</h1>
+        <div class="title-rule"></div>
+        <p>Algumas coisas só aparecem quando o mundo perde suas cores.</p>
+        <button id="start-button" class="primary-button" type="button">
+          <span>Começar</span>
+          <span class="button-arrow">→</span>
+        </button>
+        <div class="title-hint">ENTER também funciona</div>
+      </div>
+    </section>
+
+    <header id="hud" class="hud hidden">
+      <div class="hud-section">
+        <span class="hud-kicker">LOCAL</span>
+        <strong id="area-name">Floresta de Inverno</strong>
+      </div>
+      <div class="hud-divider"></div>
+      <div class="hud-section hud-objective">
+        <span class="hud-kicker">OBJETIVO</span>
+        <strong id="objective-text">Encontre a raposa</strong>
+      </div>
+    </header>
+
+    <div id="interaction" class="interaction hidden">
+      <kbd>E</kbd>
+      <span id="interaction-text">Interagir</span>
+    </div>
+
+    <section id="dialogue" class="dialogue hidden" aria-live="polite">
+      <div class="dialogue-accent"></div>
+      <div class="dialogue-content">
+        <div id="dialogue-speaker" class="dialogue-speaker">RAPOSA</div>
+        <p id="dialogue-text"></p>
+      </div>
+      <div class="dialogue-next"><kbd>E</kbd><span>continuar</span></div>
+    </section>
+
+    <div id="controls" class="controls hidden">
+      <span><kbd>WASD</kbd> mover</span>
+      <i></i>
+      <span><kbd>E</kbd> interagir</span>
+    </div>
+
+    <div id="loading" class="loading">
+      <span class="loading-mark">✦</span>
+      <span>Preparando o inverno…</span>
+    </div>
+
     <noscript>Você precisa ativar o JavaScript para jogar Winter Fox.</noscript>
   </main>
 
