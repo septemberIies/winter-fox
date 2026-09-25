@@ -766,46 +766,38 @@ class GameScene extends Phaser.Scene {
   addWinterTree(x, groundY, variant = 0, scale = 1, alpha = 0.97) {
     if (!this.textures.exists("winter")) return null;
 
-    const topId = variant === 1 ? 8 : 7;
-    const bottomId = variant === 1 ? 20 : 19;
+    const frame = variant === 1 ? 31 : 30;
     const spriteScale = TILE_SCALE * scale;
-    const cellStep = TILE * spriteScale;
 
-    // Keep the full two-tile tree inside the world.
-    // Without this, trees near the far-right/top/bottom edge can be visibly cropped
-    // because the camera cannot move beyond the world bounds.
     const halfWidth = (TILE * spriteScale) / 2;
-    const sideMargin = Math.max(72, halfWidth + 36);
-    const topMargin = cellStep + 36;
-    const bottomMargin = 42;
+    const sideMargin = Math.max(72, halfWidth + 30);
+    const topMargin = Math.max(72, halfWidth + 30);
+    const bottomMargin = 48;
 
     const safeX = Phaser.Math.Clamp(
       x,
       sideMargin,
       WORLD_WIDTH - sideMargin
     );
-    const safeGroundY = Phaser.Math.Clamp(
+
+    const safeY = Phaser.Math.Clamp(
       groundY,
       topMargin,
       WORLD_HEIGHT - bottomMargin
     );
 
-    const depth = 100 + safeGroundY;
-
-    this.add.image(safeX, safeGroundY - cellStep, "winter", topId - 1)
+    const tree = this.obstacles.create(safeX, safeY, "winter", frame)
       .setScale(spriteScale)
-      .setDepth(depth)
+      .setDepth(100 + safeY)
       .setAlpha(alpha);
 
-    const trunk = this.obstacles.create(safeX, safeGroundY, "winter", bottomId - 1)
-      .setScale(spriteScale)
-      .setDepth(depth)
-      .setAlpha(alpha);
+    tree.refreshBody();
 
-    trunk.refreshBody();
-    trunk.body.setSize(10, 7);
-    trunk.body.setOffset(3, 8);
-    return trunk;
+    // Collision only at the base/trunk so the canopy doesn't block movement.
+    tree.body.setSize(8, 5);
+    tree.body.setOffset(4, 10);
+
+    return tree;
   }
 
   buildMap() {
@@ -844,13 +836,14 @@ class GameScene extends Phaser.Scene {
               cx,
               cy + (TILE * TILE_SCALE),
               objectId === 8 ? 1 : 0,
-              1,
+              objectId === 8 ? 1.34 : 1.42,
               0.98
             );
             continue;
           }
         }
 
+        // Bottom halves are never rendered anymore.
         if (objectId === 19 || objectId === 20) {
           const expectedTop = objectId === 19 ? 7 : 8;
           const above = row > 0
@@ -859,14 +852,16 @@ class GameScene extends Phaser.Scene {
           if (above === expectedTop) continue;
         }
 
+        // Existing standalone pines also go through the same helper,
+        // so every green tree uses the exact same complete-sprite path.
         if (objectId === 31 || objectId === 32) {
-          const tree = this.obstacles.create(cx, cy, "winter", objectId - 1)
-            .setScale(TILE_SCALE)
-            .setDepth(100 + cy)
-            .setAlpha(0.98);
-          tree.refreshBody();
-          tree.body.setSize(10, 7);
-          tree.body.setOffset(3, 8);
+          this.addWinterTree(
+            cx,
+            cy,
+            objectId === 32 ? 1 : 0,
+            objectId === 32 ? 0.92 : 0.86,
+            0.98
+          );
           continue;
         }
 
@@ -888,7 +883,7 @@ class GameScene extends Phaser.Scene {
     }
 
     const trees = [
-      [1540,170,0,.96],[1700,190,1,.90],[1870,165,0,1.02],[2055,195,1,.94],[2240,170,0,.98],[2360,210,1,.90],
+      [1540,170,0,1.18],[1700,190,1,1.06],[1870,165,0,1.22],[2055,195,1,1.10],[2240,170,0,1.18],[2360,210,1,1.06],
       [1510,770,1,.96],[1680,815,0,.90],[1850,775,0,1.02],[2040,830,1,.94],[2225,775,0,.98],[2360,820,1,.90],
       [1590,420,0,.88],[1800,400,1,.98],[2000,455,0,.92],[2180,415,1,1.00],[2320,460,0,.88],
       [1570,1080,1,1.00],[1760,1040,0,.90],[1960,1110,0,1.02],[2160,1060,1,.96],[2330,1120,0,.92],
