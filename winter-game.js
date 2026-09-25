@@ -731,7 +731,7 @@ class GameScene extends Phaser.Scene {
     const foxDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fox.x, this.fox.y);
     const runeDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.rune.x, this.rune.y);
 
-    if (foxDistance < 105 && this.foxState !== "moving") {
+    if (foxDistance < 105 && (this.foxState === "waiting" || this.foxState === "arrived")) {
       this.setPrompt(this.foxTalked ? "Falar com a raposa" : "Conversar com a raposa");
       ui.objective.textContent = this.foxTalked ? "Acompanhe a raposa" : "Converse com a raposa";
       if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) {
@@ -757,17 +757,32 @@ class GameScene extends Phaser.Scene {
   }
 
   sendFoxAhead() {
-    const guidePoints = [
-      { x: WORLD_WIDTH * 0.59, y: WORLD_HEIGHT * 0.50 },
-      { x: WORLD_WIDTH * 0.53, y: WORLD_HEIGHT * 0.58 }
-    ];
+    if (!this.foxGuidePoints) {
+      this.foxGuidePoints = [
+        { x: WORLD_WIDTH * 0.59, y: WORLD_HEIGHT * 0.50 },
+        { x: WORLD_WIDTH * 0.63, y: WORLD_HEIGHT * 0.45 },
+        { x: WORLD_WIDTH * 0.68, y: WORLD_HEIGHT * 0.40 },
+        { x: WORLD_WIDTH * 0.73, y: WORLD_HEIGHT * 0.35 },
+        { x: WORLD_WIDTH * 0.78, y: WORLD_HEIGHT * 0.31 }
+      ];
+    }
 
-    const target = guidePoints[Math.min(this.foxGuideStage, guidePoints.length - 1)];
-    if (!target) return;
+    if (this.foxGuideStage >= this.foxGuidePoints.length) {
+      this.foxState = "arrived";
+      this.foxTarget = null;
+      this.fox.setVelocity(0);
+      this.fox.anims.stop();
+      this.foxPointer.setVisible(false);
+      ui.objective.textContent = "Observe o símbolo";
+      this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 10);
+      if (window.WinterAudio) window.WinterAudio.play("fox");
+      return;
+    }
 
+    this.foxTarget = this.foxGuidePoints[this.foxGuideStage];
     this.foxGuideStage += 1;
-    this.foxTarget = target;
     this.foxState = "moving";
+    this.foxPointer.setVisible(true);
     ui.objective.textContent = "Siga a raposa";
 
     this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 8);
@@ -779,7 +794,30 @@ class GameScene extends Phaser.Scene {
   }
 
   updateFoxGuide() {
-    if (!this.fox || this.foxState !== "moving" || !this.foxTarget) return;
+    if (!this.fox) return;
+
+    if (this.foxState === "waiting_for_player") {
+      const playerDistance = Phaser.Math.Distance.Between(
+        this.player.x,
+        this.player.y,
+        this.fox.x,
+        this.fox.y
+      );
+
+      ui.objective.textContent = "Alcance a raposa";
+
+      if (playerDistance < 145) {
+        this.foxState = "pausing";
+        ui.objective.textContent = "Siga a raposa";
+
+        this.time.delayedCall(420, () => {
+          if (this.foxState === "pausing") this.sendFoxAhead();
+        });
+      }
+      return;
+    }
+
+    if (this.foxState !== "moving" || !this.foxTarget) return;
 
     const dx = this.foxTarget.x - this.fox.x;
     const dy = this.foxTarget.y - this.fox.y;
@@ -788,15 +826,22 @@ class GameScene extends Phaser.Scene {
     if (distance < 9) {
       this.fox.setVelocity(0);
       this.fox.anims.stop();
-      this.foxState = "waiting";
       this.foxTarget = null;
       this.fox.setAngle(0);
-      this.cameras.main.shake(70, 0.0008);
-      this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 6);
+
+      const hasMore = this.foxGuideStage < this.foxGuidePoints.length;
+
+      if (!hasMore) {
+        this.sendFoxAhead();
+        return;
+      }
+
+      this.foxState = "waiting_for_player";
+      this.burstSparkles(this.fox.x, this.fox.y, 0xf0b66f, 5);
       return;
     }
 
-    const speed = 118;
+    const speed = 126;
     this.fox.setVelocity((dx / distance) * speed, (dy / distance) * speed);
 
     if (Math.abs(dx) > 2) {
