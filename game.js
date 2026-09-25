@@ -158,21 +158,6 @@ class TitleScene extends Phaser.Scene {
       }
     }
 
-    const titleFoxFrames = this.textures.get("fox").frameTotal || 1;
-    const titleFoxFrame = titleFoxFrames >= 12 ? 7 : 0;
-    const fox = this.add.image(GAME_WIDTH / 2, GAME_HEIGHT * .61, "fox", titleFoxFrame)
-      .setScale(titleFoxFrames >= 12 ? 1.25 : 3)
-      .setAlpha(.82);
-
-    this.tweens.add({
-      targets: fox,
-      y: fox.y - 6,
-      duration: 1800,
-      yoyo: true,
-      repeat: -1,
-      ease: "Sine.inOut"
-    });
-
     show(ui.title);
     hide(ui.hud);
     hide(ui.controls);
