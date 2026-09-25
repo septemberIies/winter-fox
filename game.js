@@ -1,348 +1,388 @@
-const GAME_WIDTH = 960;
-const GAME_HEIGHT = 540;
+const GAME_WIDTH = 1280;
+const GAME_HEIGHT = 720;
+const TILE = 16;
+const TILE_SCALE = 3;
+const WORLD_COLS = 31;
+const WORLD_ROWS = 18;
+const WORLD_WIDTH = WORLD_COLS * TILE * TILE_SCALE;
+const WORLD_HEIGHT = WORLD_ROWS * TILE * TILE_SCALE;
+
+const ASSETS = {
+  winterTiles: "https://raw.githubusercontent.com/Tiddybub/2d-assets/main/misc/tiny-ski/Tilemap/tilemap_packed.png",
+  girl: "https://raw.githubusercontent.com/Tiddybub/2d-assets/main/characters/oga-miss-princess-animated-16x16/missprincess.png",
+  fox: "https://opengameart.org/sites/default/files/fox_6.png"
+};
+
+const ui = {
+  title: document.querySelector("#title-screen"),
+  start: document.querySelector("#start-button"),
+  hud: document.querySelector("#hud"),
+  area: document.querySelector("#area-name"),
+  objective: document.querySelector("#objective-text"),
+  prompt: document.querySelector("#interaction"),
+  promptText: document.querySelector("#interaction-text"),
+  dialogue: document.querySelector("#dialogue"),
+  speaker: document.querySelector("#dialogue-speaker"),
+  text: document.querySelector("#dialogue-text"),
+  controls: document.querySelector("#controls"),
+  loading: document.querySelector("#loading")
+};
+
+function hide(el) { el.classList.add("hidden"); }
+function show(el) { el.classList.remove("hidden"); }
+
+const TERRAIN = [
+  3,3,4,3,3,3,3,5,1,1,1,1,2,3,3,3,5,1,1,1,1,1,1,1,6,2,3,3,3,3,3,
+  3,4,3,3,3,3,3,5,6,1,1,1,2,4,3,3,5,1,1,1,1,1,1,6,1,2,4,3,3,3,3,
+  3,3,3,3,3,4,3,5,1,6,1,1,2,3,3,3,5,1,1,1,1,1,1,1,1,2,3,3,3,3,3,
+  3,3,3,3,3,3,4,5,1,1,1,1,2,3,3,3,5,1,1,1,1,6,1,1,1,2,3,4,3,3,3,
+  4,3,3,3,3,3,77,78,1,6,1,1,2,3,3,3,16,1,1,1,1,1,1,1,1,2,3,3,3,3,3,
+  3,3,3,3,3,3,5,1,1,1,1,1,2,3,3,4,3,29,1,1,1,1,1,1,1,2,3,3,3,3,3,
+  3,3,3,3,3,3,5,1,1,1,1,1,2,3,3,3,3,3,18,1,1,1,1,1,1,2,3,3,3,3,3,
+  3,3,3,3,3,3,5,1,1,1,1,1,2,3,3,3,3,3,5,1,1,1,1,1,61,62,3,3,3,3,3,
+  3,3,3,3,3,3,5,1,1,1,1,14,15,3,3,3,3,3,5,1,1,1,1,1,2,3,3,3,3,3,3,
+  3,3,3,3,3,3,5,1,1,1,1,13,27,3,3,3,3,3,5,1,1,1,1,1,2,3,3,3,3,3,3,
+  3,3,3,3,3,3,5,1,1,1,1,2,3,3,3,3,3,3,5,1,1,1,1,1,2,3,3,3,3,3,3,
+  3,3,3,3,3,3,5,1,1,1,1,2,3,63,64,3,3,40,30,1,1,1,1,1,2,3,3,3,3,4,3,
+  3,3,3,3,3,3,5,1,1,1,1,25,39,3,3,3,40,41,53,1,1,1,1,1,2,4,3,3,3,3,3,
+  3,3,3,3,3,4,5,1,1,1,1,50,51,3,3,37,52,53,1,1,1,1,1,1,2,3,4,3,3,3,3,
+  3,4,3,3,3,3,16,17,1,1,1,1,2,3,3,3,5,1,1,1,1,1,1,1,2,3,3,3,3,3,3,
+  3,3,3,3,4,3,28,29,17,1,6,1,2,3,3,3,65,66,1,1,1,6,1,14,15,3,3,3,3,3,4,
+  3,3,3,3,3,4,3,28,29,17,1,1,2,3,3,4,3,5,1,1,1,1,6,13,27,3,3,3,3,3,3,
+  3,3,3,3,3,3,3,3,28,18,1,1,2,3,4,3,3,5,1,1,1,1,1,2,3,3,3,4,3,3,3
+];
+
+const OBJECTS = [
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,7,0,0,0,
+  31,0,0,0,7,0,31,0,0,0,0,22,0,0,0,0,0,20,0,0,0,0,0,0,0,0,0,19,7,31,0,
+  0,0,7,0,19,0,0,0,0,0,0,0,0,0,0,0,0,0,0,21,31,0,0,0,0,0,0,0,19,0,0,
+  0,0,19,0,0,0,0,0,0,0,22,0,0,0,80,0,0,0,7,0,0,0,8,0,0,0,0,0,0,0,7,
+  0,0,0,31,0,0,0,0,8,0,0,0,0,0,60,0,0,0,19,7,0,0,20,0,0,0,0,0,0,0,19,
+  0,23,24,0,0,0,0,0,20,0,0,22,0,0,71,0,0,0,0,19,32,0,0,0,82,0,0,0,31,0,0,
+  0,0,0,0,0,0,0,0,0,32,0,0,0,0,0,0,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,59,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,84,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,7,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,7,0,19,0,0,0,0,0,19,7,0,0,0,0,0,0,0,31,0,7,31,32,0,0,0,0,35,36,0,0,
+  0,19,7,0,0,0,0,0,0,0,19,0,0,0,0,0,0,11,0,0,19,0,0,70,0,0,0,0,0,0,31,
+  0,0,19,0,0,0,0,0,31,0,0,34,0,0,0,0,0,11,0,8,0,0,0,0,0,0,7,0,31,0,0,
+  0,0,0,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,11,20,0,0,0,0,0,0,19,7,0,31,0,
+  0,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,21,0,0,0,0,0,0,19,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,21,0,0,0,0,0,0,31,0,0,0,0,0
+];
 
 class BootScene extends Phaser.Scene {
-  constructor() {
-    super("boot");
+  constructor() { super("boot"); }
+
+  preload() {
+    this.load.spritesheet("winter", ASSETS.winterTiles, {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    this.load.spritesheet("girl", ASSETS.girl, {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    this.load.image("fox", ASSETS.fox);
+
+    this.load.on("loaderror", file => {
+      console.warn("Asset não carregou:", file.key);
+    });
   }
 
   create() {
-    this.makeTextures();
+    this.makeFallbackTextures();
+
+    if (this.textures.exists("winter")) {
+      this.textures.get("winter").setFilter(Phaser.Textures.FilterMode.NEAREST);
+    }
+    if (this.textures.exists("girl")) {
+      this.textures.get("girl").setFilter(Phaser.Textures.FilterMode.NEAREST);
+    }
+
+    hide(ui.loading);
     this.scene.start("title");
   }
 
-  makeTextures() {
-    const g = this.make.graphics({ x: 0, y: 0, add: false });
+  makeFallbackTextures() {
+    const g = this.make.graphics({ add: false });
 
-    // Player — small monochrome traveller.
-    g.fillStyle(0xf2f2f2, 1);
-    g.fillRect(7, 2, 10, 8);
-    g.fillStyle(0x22262d, 1);
-    g.fillRect(5, 10, 14, 12);
-    g.fillStyle(0xc9cdd2, 1);
-    g.fillRect(7, 22, 5, 8);
-    g.fillRect(12, 22, 5, 8);
-    g.fillStyle(0x111318, 1);
-    g.fillRect(8, 5, 2, 2);
-    g.fillRect(14, 5, 2, 2);
-    g.generateTexture("player", 24, 32);
-    g.clear();
+    if (!this.textures.exists("girl")) {
+      g.fillStyle(0xe8edf2);
+      g.fillRoundedRect(5, 2, 6, 6, 2);
+      g.fillStyle(0x202731);
+      g.fillRect(4, 8, 8, 7);
+      g.fillStyle(0x503a36);
+      g.fillRect(4, 2, 8, 3);
+      g.generateTexture("girl", 16, 16);
+      g.clear();
+    }
 
-    // Fox — white fox with a darker tail tip.
-    g.fillStyle(0xf8f8f5, 1);
-    g.fillTriangle(6, 9, 10, 1, 13, 9);
-    g.fillTriangle(17, 9, 20, 1, 23, 10);
-    g.fillEllipse(15, 13, 17, 13);
-    g.fillEllipse(16, 24, 24, 12);
-    g.fillStyle(0x1c2026, 1);
-    g.fillRect(11, 11, 2, 2);
-    g.fillRect(18, 11, 2, 2);
-    g.fillRect(15, 15, 2, 2);
-    g.fillStyle(0xa7adb5, 1);
-    g.fillTriangle(24, 22, 31, 17, 30, 28);
-    g.generateTexture("fox", 34, 32);
-    g.clear();
+    if (!this.textures.exists("fox")) {
+      g.fillStyle(0xf2f2ef);
+      g.fillTriangle(3, 7, 5, 2, 7, 7);
+      g.fillTriangle(9, 7, 11, 2, 13, 7);
+      g.fillEllipse(8, 9, 10, 8);
+      g.fillEllipse(9, 14, 12, 5);
+      g.generateTexture("fox", 16, 18);
+      g.clear();
+    }
 
-    // Tree.
-    g.fillStyle(0x2c3037, 1);
-    g.fillRect(14, 28, 8, 24);
-    g.fillStyle(0x11151b, 1);
-    g.fillTriangle(18, 0, 1, 30, 35, 30);
-    g.fillStyle(0x252b32, 1);
-    g.fillTriangle(18, 10, 0, 40, 36, 40);
-    g.fillStyle(0xe5e8eb, 0.9);
-    g.fillTriangle(18, 2, 8, 18, 28, 18);
-    g.fillTriangle(18, 14, 7, 30, 29, 30);
-    g.generateTexture("tree", 36, 54);
-    g.clear();
-
-    // Rock.
-    g.fillStyle(0x3a4048, 1);
-    g.fillEllipse(15, 10, 28, 18);
-    g.fillStyle(0x7d858f, 0.55);
-    g.fillEllipse(11, 7, 12, 6);
-    g.generateTexture("rock", 30, 20);
-    g.clear();
-
-    // Rune stone / future puzzle hook.
-    g.fillStyle(0x323841, 1);
-    g.fillRoundedRect(2, 4, 28, 36, 5);
-    g.lineStyle(2, 0xdde5ef, 0.75);
-    g.strokeCircle(16, 20, 7);
-    g.lineBetween(16, 13, 16, 27);
-    g.generateTexture("rune", 32, 42);
+    g.fillStyle(0x303843);
+    g.fillRoundedRect(2, 2, 20, 28, 4);
+    g.lineStyle(2, 0xd8e1ea, .8);
+    g.strokeCircle(12, 14, 6);
+    g.lineBetween(12, 8, 12, 20);
+    g.generateTexture("rune", 24, 32);
     g.destroy();
   }
 }
 
 class TitleScene extends Phaser.Scene {
-  constructor() {
-    super("title");
-  }
+  constructor() { super("title"); }
 
   create() {
-    const { width, height } = this.scale;
+    this.cameras.main.setBackgroundColor("#070b10");
+    this.createSnow(110);
 
-    this.cameras.main.setBackgroundColor("#090b0f");
-
-    for (let i = 0; i < 85; i++) {
-      const x = Phaser.Math.Between(0, width);
-      const y = Phaser.Math.Between(-20, height);
-      const size = Phaser.Math.Between(1, 3);
-      const flake = this.add.circle(x, y, size, 0xf5f7fa, Phaser.Math.FloatBetween(0.2, 0.8));
-      this.tweens.add({
-        targets: flake,
-        y: height + 30,
-        x: x + Phaser.Math.Between(-45, 45),
-        duration: Phaser.Math.Between(5000, 11000),
-        repeat: -1,
-        delay: Phaser.Math.Between(-9000, 0)
-      });
+    if (this.textures.exists("winter")) {
+      for (let x = 0; x < GAME_WIDTH; x += 48) {
+        for (let y = GAME_HEIGHT * .68; y < GAME_HEIGHT; y += 48) {
+          this.add.image(x, y, "winter", 2)
+            .setOrigin(0)
+            .setScale(3)
+            .setAlpha(.34);
+        }
+      }
     }
 
-    this.add.text(width / 2, height * 0.31, "WINTER FOX", {
-      fontFamily: "Georgia, serif",
-      fontSize: "54px",
-      color: "#f3f4f6",
-      letterSpacing: 12
-    }).setOrigin(0.5);
+    const fox = this.add.image(GAME_WIDTH / 2, GAME_HEIGHT * .61, "fox")
+      .setScale(this.textures.get("fox").getSourceImage().width > 32 ? .42 : 3)
+      .setAlpha(.72);
 
-    this.add.text(width / 2, height * 0.42, "uma pequena história no inverno", {
-      fontFamily: "Georgia, serif",
-      fontSize: "18px",
-      color: "#8f98a4",
-      fontStyle: "italic"
-    }).setOrigin(0.5);
-
-    const fox = this.add.image(width / 2, height * 0.57, "fox").setScale(2.4);
     this.tweens.add({
       targets: fox,
       y: fox.y - 6,
-      duration: 1500,
+      duration: 1800,
       yoyo: true,
       repeat: -1,
       ease: "Sine.inOut"
     });
 
-    const start = this.add.text(width / 2, height * 0.76, "[ COMEÇAR ]", {
-      fontFamily: "Arial, sans-serif",
-      fontSize: "18px",
-      color: "#f3f4f6",
-      letterSpacing: 4,
-      backgroundColor: "#11151b",
-      padding: { left: 22, right: 22, top: 12, bottom: 12 }
-    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    show(ui.title);
+    hide(ui.hud);
+    hide(ui.controls);
+    hide(ui.prompt);
+    hide(ui.dialogue);
+  }
 
-    start.on("pointerover", () => start.setColor("#ffffff").setBackgroundColor("#2a3038"));
-    start.on("pointerout", () => start.setColor("#f3f4f6").setBackgroundColor("#11151b"));
-    start.on("pointerdown", () => this.scene.start("game"));
-
-    this.input.keyboard.once("keydown-ENTER", () => this.scene.start("game"));
-
-    this.add.text(width / 2, height - 28, "ENTER ou clique para começar", {
-      fontFamily: "Arial, sans-serif",
-      fontSize: "12px",
-      color: "#59616c"
-    }).setOrigin(0.5);
+  createSnow(amount) {
+    for (let i = 0; i < amount; i++) {
+      const flake = this.add.circle(
+        Phaser.Math.Between(0, GAME_WIDTH),
+        Phaser.Math.Between(-30, GAME_HEIGHT),
+        Phaser.Math.Between(1, 3),
+        0xffffff,
+        Phaser.Math.FloatBetween(.18, .72)
+      );
+      this.tweens.add({
+        targets: flake,
+        y: GAME_HEIGHT + 30,
+        x: flake.x + Phaser.Math.Between(-60, 60),
+        duration: Phaser.Math.Between(6000, 13000),
+        delay: Phaser.Math.Between(-10000, 0),
+        repeat: -1
+      });
+    }
   }
 }
 
 class GameScene extends Phaser.Scene {
   constructor() {
     super("game");
-    this.dialogOpen = false;
-    this.dialogStep = 0;
+    this.dialogueOpen = false;
+    this.dialogueIndex = 0;
+    this.foxTalked = false;
   }
 
   create() {
-    this.worldW = 1800;
-    this.worldH = 1100;
-    this.cameras.main.setBackgroundColor("#d7dadd");
-    this.physics.world.setBounds(0, 0, this.worldW, this.worldH);
+    hide(ui.title);
+    show(ui.hud);
+    show(ui.controls);
+    ui.area.textContent = "Floresta de Inverno";
+    ui.objective.textContent = "Encontre a raposa";
 
-    this.createGround();
-    this.createForest();
-    this.createSnow();
+    this.physics.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+    this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+    this.cameras.main.setBackgroundColor("#cbd2d9");
 
-    this.player = this.physics.add.sprite(420, 760, "player");
-    this.player.setScale(1.5);
+    this.obstacles = this.physics.add.staticGroup();
+    this.buildMap();
+    this.createAtmosphere();
+
+    const girlFrameCount = this.textures.get("girl").frameTotal || 1;
+    this.player = this.physics.add.sprite(310, WORLD_HEIGHT - 165, "girl", 0);
+    this.player.setScale(3.25);
     this.player.setCollideWorldBounds(true);
-    this.player.body.setSize(15, 18);
-    this.player.body.setOffset(5, 12);
+    this.player.setDepth(500);
+    this.player.body.setSize(9, 7);
+    this.player.body.setOffset(3.5, 8);
 
-    this.fox = this.physics.add.staticImage(980, 535, "fox").setScale(1.65);
+    if (girlFrameCount >= 3) {
+      this.anims.create({
+        key: "girl-walk",
+        frames: [{ key: "girl", frame: 0 }, { key: "girl", frame: 1 }, { key: "girl", frame: 2 }],
+        frameRate: 7,
+        repeat: -1
+      });
+    }
+
+    const foxScale = this.textures.get("fox").getSourceImage().width > 32 ? .34 : 3.4;
+    this.fox = this.physics.add.staticImage(WORLD_WIDTH * .67, WORLD_HEIGHT * .43, "fox")
+      .setScale(foxScale)
+      .setDepth(520);
     this.fox.refreshBody();
 
-    this.rune = this.physics.add.staticImage(1300, 350, "rune").setScale(1.25);
+    this.rune = this.physics.add.staticImage(WORLD_WIDTH * .82, WORLD_HEIGHT * .29, "rune")
+      .setScale(1.7)
+      .setDepth(510);
     this.rune.refreshBody();
 
     this.physics.add.collider(this.player, this.obstacles);
     this.physics.add.collider(this.player, this.fox);
     this.physics.add.collider(this.player, this.rune);
 
-    this.cameras.main.setBounds(0, 0, this.worldW, this.worldH);
-    this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
-    this.cameras.main.setZoom(1.15);
+    this.cameras.main.startFollow(this.player, true, .075, .075);
+    this.cameras.main.setZoom(1.0);
 
     this.keys = this.input.keyboard.addKeys({
-      up: "W",
-      left: "A",
-      down: "S",
-      right: "D",
-      interact: "E"
+      up: "W", down: "S", left: "A", right: "D", interact: "E"
     });
     this.cursors = this.input.keyboard.createCursorKeys();
-
-    this.createHUD();
 
     this.tweens.add({
       targets: this.fox,
       y: this.fox.y - 4,
-      duration: 1350,
+      duration: 1500,
       yoyo: true,
       repeat: -1,
       ease: "Sine.inOut"
     });
 
-    this.fadeHint = this.add.text(
-      GAME_WIDTH / 2,
-      GAME_HEIGHT - 22,
-      "WASD / setas para andar  •  E para interagir",
-      {
-        fontFamily: "Arial, sans-serif",
-        fontSize: "13px",
-        color: "#e6e8eb",
-        backgroundColor: "#11151bcc",
-        padding: { left: 12, right: 12, top: 7, bottom: 7 }
-      }
-    ).setScrollFactor(0).setDepth(50).setOrigin(0.5);
-
-    this.tweens.add({
-      targets: this.fadeHint,
-      alpha: 0,
-      delay: 6500,
-      duration: 1200
-    });
+    this.time.delayedCall(7000, () => hide(ui.controls));
   }
 
-  createGround() {
-    const bg = this.add.graphics();
-    bg.fillStyle(0xc8ccd0, 1);
-    bg.fillRect(0, 0, this.worldW, this.worldH);
+  buildMap() {
+    const collidable = new Set([7, 8, 19, 20, 21, 22, 23, 24, 31, 32, 34, 35, 36, 59, 60, 70, 71, 80, 82, 84]);
 
-    // Soft frozen paths.
-    bg.fillStyle(0xb8bdc3, 0.55);
-    bg.fillEllipse(650, 650, 920, 340);
-    bg.fillEllipse(1120, 470, 720, 260);
+    for (let row = 0; row < WORLD_ROWS; row++) {
+      for (let col = 0; col < WORLD_COLS; col++) {
+        const idx = row * WORLD_COLS + col;
+        const x = col * TILE * TILE_SCALE;
+        const y = row * TILE * TILE_SCALE;
+        const terrainId = TERRAIN[idx];
 
-    // Dark frozen pond as a future black/white puzzle area.
-    bg.fillStyle(0x5e6670, 0.55);
-    bg.fillEllipse(1360, 760, 560, 270);
-    bg.lineStyle(3, 0xe8ebee, 0.22);
-    bg.strokeEllipse(1360, 760, 530, 245);
+        if (this.textures.exists("winter") && terrainId > 0) {
+          this.add.image(x, y, "winter", terrainId - 1)
+            .setOrigin(0)
+            .setScale(TILE_SCALE)
+            .setDepth(0);
+        }
 
-    for (let i = 0; i < 80; i++) {
-      bg.fillStyle(0xffffff, Phaser.Math.FloatBetween(0.06, 0.18));
-      bg.fillCircle(
-        Phaser.Math.Between(20, this.worldW - 20),
-        Phaser.Math.Between(20, this.worldH - 20),
-        Phaser.Math.Between(1, 4)
-      );
+        const objectId = OBJECTS[idx];
+        if (!objectId || !this.textures.exists("winter")) continue;
+
+        const cx = x + (TILE * TILE_SCALE) / 2;
+        const cy = y + (TILE * TILE_SCALE) / 2;
+
+        if (collidable.has(objectId)) {
+          const obj = this.obstacles.create(cx, cy, "winter", objectId - 1)
+            .setScale(TILE_SCALE)
+            .setDepth(100 + cy);
+          obj.refreshBody();
+          obj.body.setSize(12, 8);
+          obj.body.setOffset(2, 7);
+        } else {
+          this.add.image(cx, cy, "winter", objectId - 1)
+            .setScale(TILE_SCALE)
+            .setDepth(80 + cy);
+        }
+      }
     }
   }
 
-  createForest() {
-    this.obstacles = this.physics.add.staticGroup();
-
-    const trees = [
-      [130,120],[260,170],[390,100],[520,160],[690,110],[850,150],[1010,105],[1180,155],[1360,100],[1540,160],[1690,115],
-      [100,360],[165,520],[110,720],[200,930],
-      [1710,340],[1640,500],[1710,700],[1600,930],
-      [350,980],[520,1010],[710,955],[920,1015],[1120,970],[1330,1010],[1480,950],
-      [550,420],[690,360],[800,300],[1170,300],[1480,380],[330,520],[290,690],[1500,590]
-    ];
-
-    trees.forEach(([x, y]) => {
-      const tree = this.obstacles.create(x, y, "tree").setScale(1.7);
-      tree.refreshBody();
-      tree.body.setSize(22, 28);
-      tree.body.setOffset(7, 25);
-    });
-
-    const rocks = [
-      [470,650],[610,780],[820,620],[1110,680],[1220,520],[1420,590],[1040,850],[750,900]
-    ];
-
-    rocks.forEach(([x, y]) => {
-      const rock = this.obstacles.create(x, y, "rock").setScale(1.3);
-      rock.refreshBody();
-    });
-  }
-
-  createSnow() {
-    this.snowflakes = [];
-
-    for (let i = 0; i < 110; i++) {
+  createAtmosphere() {
+    this.snow = [];
+    for (let i = 0; i < 105; i++) {
       const flake = this.add.circle(
         Phaser.Math.Between(0, GAME_WIDTH),
         Phaser.Math.Between(0, GAME_HEIGHT),
         Phaser.Math.Between(1, 3),
         0xffffff,
-        Phaser.Math.FloatBetween(0.25, 0.75)
-      ).setScrollFactor(0).setDepth(40);
-
-      flake.speed = Phaser.Math.FloatBetween(0.35, 1.15);
-      flake.drift = Phaser.Math.FloatBetween(-0.22, 0.22);
-      this.snowflakes.push(flake);
+        Phaser.Math.FloatBetween(.18, .6)
+      ).setScrollFactor(0).setDepth(2000);
+      flake.speed = Phaser.Math.FloatBetween(.35, 1.15);
+      flake.drift = Phaser.Math.FloatBetween(-.18, .18);
+      this.snow.push(flake);
     }
   }
 
-  createHUD() {
-    this.prompt = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 72, "", {
-      fontFamily: "Arial, sans-serif",
-      fontSize: "14px",
-      color: "#f5f5f5",
-      backgroundColor: "#11151bdd",
-      padding: { left: 13, right: 13, top: 8, bottom: 8 }
-    }).setScrollFactor(0).setDepth(80).setOrigin(0.5).setVisible(false);
+  update() {
+    this.updateSnow();
 
-    this.dialogBg = this.add.rectangle(
-      GAME_WIDTH / 2,
-      GAME_HEIGHT - 95,
-      Math.min(820, GAME_WIDTH - 48),
-      116,
-      0x0d1015,
-      0.96
-    ).setStrokeStyle(1, 0x68717c, 0.8)
-      .setScrollFactor(0)
-      .setDepth(100)
-      .setVisible(false);
+    if (this.dialogueOpen) {
+      this.player.setVelocity(0);
+      this.player.anims.stop();
+      if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) this.advanceDialogue();
+      return;
+    }
 
-    this.dialogName = this.add.text(100, GAME_HEIGHT - 137, "RAPOSA", {
-      fontFamily: "Arial, sans-serif",
-      fontSize: "12px",
-      color: "#aeb6c0",
-      fontStyle: "bold",
-      letterSpacing: 2
-    }).setScrollFactor(0).setDepth(101).setVisible(false);
+    const speed = 170;
+    let x = 0;
+    let y = 0;
 
-    this.dialogText = this.add.text(100, GAME_HEIGHT - 112, "", {
-      fontFamily: "Georgia, serif",
-      fontSize: "19px",
-      color: "#f4f4f2",
-      wordWrap: { width: 740 },
-      lineSpacing: 5
-    }).setScrollFactor(0).setDepth(101).setVisible(false);
+    if (this.keys.left.isDown || this.cursors.left.isDown) x -= 1;
+    if (this.keys.right.isDown || this.cursors.right.isDown) x += 1;
+    if (this.keys.up.isDown || this.cursors.up.isDown) y -= 1;
+    if (this.keys.down.isDown || this.cursors.down.isDown) y += 1;
 
-    this.dialogContinue = this.add.text(GAME_WIDTH - 106, GAME_HEIGHT - 61, "E  ›", {
-      fontFamily: "Arial, sans-serif",
-      fontSize: "12px",
-      color: "#9099a5"
-    }).setScrollFactor(0).setDepth(101).setVisible(false);
+    const dir = new Phaser.Math.Vector2(x, y);
+    if (dir.lengthSq() > 0) {
+      dir.normalize().scale(speed);
+      this.player.setVelocity(dir.x, dir.y);
+      if (x !== 0) this.player.setFlipX(x < 0);
+      if (this.anims.exists("girl-walk")) this.player.anims.play("girl-walk", true);
+    } else {
+      this.player.setVelocity(0);
+      this.player.anims.stop();
+      this.player.setFrame(0);
+    }
+
+    const foxDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fox.x, this.fox.y);
+    const runeDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.rune.x, this.rune.y);
+
+    if (foxDistance < 105) {
+      this.setPrompt("Conversar com a raposa");
+      ui.objective.textContent = "Converse com a raposa";
+      if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) this.startFoxDialogue();
+    } else if (runeDistance < 90) {
+      this.setPrompt("Observar a pedra rúnica");
+      ui.objective.textContent = "Observe o símbolo";
+      if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) {
+        this.openDialogue([
+          ["PEDRA RÚNICA", "Um símbolo foi gravado no gelo. Você tem a sensação de que ainda não deveria entendê-lo."]
+        ]);
+      }
+    } else {
+      hide(ui.prompt);
+      ui.objective.textContent = this.foxTalked ? "Explore a floresta" : "Encontre a raposa";
+    }
   }
 
-  update() {
-    for (const flake of this.snowflakes) {
+  updateSnow() {
+    for (const flake of this.snow) {
       flake.y += flake.speed;
       flake.x += flake.drift;
       if (flake.y > GAME_HEIGHT + 4) {
@@ -352,105 +392,46 @@ class GameScene extends Phaser.Scene {
       if (flake.x < -4) flake.x = GAME_WIDTH + 4;
       if (flake.x > GAME_WIDTH + 4) flake.x = -4;
     }
-
-    if (this.dialogOpen) {
-      this.player.setVelocity(0);
-      if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) {
-        this.advanceDialog();
-      }
-      return;
-    }
-
-    const speed = 185;
-    let vx = 0;
-    let vy = 0;
-
-    if (this.keys.left.isDown || this.cursors.left.isDown) vx -= 1;
-    if (this.keys.right.isDown || this.cursors.right.isDown) vx += 1;
-    if (this.keys.up.isDown || this.cursors.up.isDown) vy -= 1;
-    if (this.keys.down.isDown || this.cursors.down.isDown) vy += 1;
-
-    const v = new Phaser.Math.Vector2(vx, vy);
-    if (v.lengthSq() > 0) {
-      v.normalize().scale(speed);
-      this.player.setVelocity(v.x, v.y);
-      this.player.setFlipX(v.x < 0);
-    } else {
-      this.player.setVelocity(0);
-    }
-
-    const foxDistance = Phaser.Math.Distance.Between(
-      this.player.x,
-      this.player.y,
-      this.fox.x,
-      this.fox.y
-    );
-
-    const runeDistance = Phaser.Math.Distance.Between(
-      this.player.x,
-      this.player.y,
-      this.rune.x,
-      this.rune.y
-    );
-
-    if (foxDistance < 105) {
-      this.prompt.setText("[ E ] conversar com a raposa").setVisible(true);
-      if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) {
-        this.startFoxDialog();
-      }
-    } else if (runeDistance < 95) {
-      this.prompt.setText("[ E ] observar a pedra").setVisible(true);
-      if (Phaser.Input.Keyboard.JustDown(this.keys.interact)) {
-        this.openSingleDialog(
-          "PEDRA",
-          "Há um símbolo gravado aqui. Parece importante... mas ainda não faz sentido."
-        );
-      }
-    } else {
-      this.prompt.setVisible(false);
-    }
   }
 
-  startFoxDialog() {
-    this.dialogStep = 0;
-    this.dialogLines = [
+  setPrompt(text) {
+    ui.promptText.textContent = text;
+    show(ui.prompt);
+  }
+
+  startFoxDialogue() {
+    this.foxTalked = true;
+    this.openDialogue([
       ["RAPOSA", "Você finalmente chegou."],
-      ["RAPOSA", "Este lugar perdeu quase todas as suas cores há muito tempo."],
-      ["RAPOSA", "Se quiser encontrá-las de novo, vai precisar me seguir."],
-      ["RAPOSA", "Mas cuidado... o inverno gosta de esconder respostas."]
-    ];
-    this.showDialogLine();
+      ["RAPOSA", "Este lugar já teve cores. O inverno ficou com quase todas elas."],
+      ["RAPOSA", "Se quiser encontrá-las de novo, terá que aprender a enxergar o que muda entre o branco e o preto."],
+      ["RAPOSA", "Venha. A primeira resposta está mais perto do que parece."]
+    ]);
   }
 
-  openSingleDialog(name, line) {
-    this.dialogStep = 0;
-    this.dialogLines = [[name, line]];
-    this.showDialogLine();
+  openDialogue(lines) {
+    this.dialogueLines = lines;
+    this.dialogueIndex = 0;
+    this.dialogueOpen = true;
+    hide(ui.prompt);
+    show(ui.dialogue);
+    this.renderDialogue();
   }
 
-  showDialogLine() {
-    const [name, line] = this.dialogLines[this.dialogStep];
-    this.dialogOpen = true;
-    this.prompt.setVisible(false);
-    this.dialogBg.setVisible(true);
-    this.dialogName.setText(name).setVisible(true);
-    this.dialogText.setText(line).setVisible(true);
-    this.dialogContinue.setVisible(true);
+  renderDialogue() {
+    const [speaker, text] = this.dialogueLines[this.dialogueIndex];
+    ui.speaker.textContent = speaker;
+    ui.text.textContent = text;
   }
 
-  advanceDialog() {
-    this.dialogStep += 1;
-
-    if (this.dialogStep >= this.dialogLines.length) {
-      this.dialogOpen = false;
-      this.dialogBg.setVisible(false);
-      this.dialogName.setVisible(false);
-      this.dialogText.setVisible(false);
-      this.dialogContinue.setVisible(false);
+  advanceDialogue() {
+    this.dialogueIndex += 1;
+    if (this.dialogueIndex >= this.dialogueLines.length) {
+      this.dialogueOpen = false;
+      hide(ui.dialogue);
       return;
     }
-
-    this.showDialogLine();
+    this.renderDialogue();
   }
 }
 
@@ -459,21 +440,33 @@ const config = {
   parent: "game",
   width: GAME_WIDTH,
   height: GAME_HEIGHT,
-  backgroundColor: "#090b0f",
+  resolution: Math.min(window.devicePixelRatio || 1, 2),
+  backgroundColor: "#070b10",
   pixelArt: true,
   antialias: false,
+  roundPixels: true,
   physics: {
     default: "arcade",
-    arcade: {
-      gravity: { y: 0 },
-      debug: false
-    }
+    arcade: { gravity: { y: 0 }, debug: false }
   },
   scale: {
     mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: GAME_WIDTH,
+    height: GAME_HEIGHT
   },
   scene: [BootScene, TitleScene, GameScene]
 };
 
-new Phaser.Game(config);
+const game = new Phaser.Game(config);
+
+function startGame() {
+  if (!game.scene.isActive("title")) return;
+  hide(ui.title);
+  game.scene.start("game");
+}
+
+ui.start.addEventListener("click", startGame);
+window.addEventListener("keydown", event => {
+  if (event.key === "Enter" && game.scene.isActive("title")) startGame();
+});
