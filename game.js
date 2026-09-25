@@ -144,6 +144,7 @@ class TitleScene extends Phaser.Scene {
   constructor() { super("title"); }
 
   create() {
+    document.querySelector("#app").classList.add("is-title");
     this.cameras.main.setBackgroundColor("#070b10");
     this.createSnow(110);
 
@@ -451,6 +452,7 @@ const game = new Phaser.Game(config);
 
 function startGame() {
   if (!game.scene.isActive("title")) return;
+  document.querySelector("#app").classList.remove("is-title");
   hide(ui.title);
   game.scene.start("game");
 }
