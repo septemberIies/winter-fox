@@ -8,27 +8,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./winter-ui.css?v=20260925-game2" />
+  <link rel="stylesheet" href="./winter-ui.css?v=20260925-clean1" />
 </head>
 <body>
 <main id="app">
 
-  <section id="title" class="screen title-screen active">
+  <section id="title" class="scene active title-scene">
     <div id="title-snow" class="snow-layer"></div>
-    <div class="title-vignette"></div>
-    <div class="title-content">
-      <div class="fox-mark" aria-hidden="true"></div>
-      <p class="eyebrow">A SMALL WINTER STORY</p>
+    <div class="vignette"></div>
+    <div class="title-card">
+      <div class="fox-logo"></div>
+      <span class="kicker">A SMALL WINTER STORY</span>
       <h1>WINTER FOX</h1>
-      <p class="title-sub">Uma noite fria. Oito pequenos jogos. Um presente no fim.</p>
-      <button id="start" class="main-button">Começar</button>
+      <p>Uma pequena noite feita para você.</p>
+      <button id="start-game" class="primary">Começar</button>
     </div>
   </section>
 
-  <section id="paris" class="screen story-screen paris-scene">
-    <div class="paris-bg">
+  <section id="paris" class="scene paris-scene">
+    <div class="paris-art">
       <div class="moon"></div>
-      <div class="city city-a"></div><div class="city city-b"></div>
+      <div class="paris-buildings"></div>
       <svg class="eiffel" viewBox="0 0 180 360" aria-hidden="true">
         <g fill="none" stroke="currentColor" stroke-linecap="square">
           <path stroke-width="9" d="M89 14 L49 286 M91 14 L131 286"/>
@@ -38,241 +38,244 @@
           <path stroke-width="6" d="M15 343 H165"/>
         </g>
       </svg>
-      <div class="bridge"><i></i><b></b><em></em></div>
+      <div class="seine"></div>
+      <div class="paris-bridge"></div>
       <div id="paris-snow" class="snow-layer"></div>
     </div>
-    <header class="hud"><div><span>CAPÍTULO I</span><strong>Paris, 23:47</strong></div><div class="right"><span>OBJETIVO</span><strong id="paris-objective">Fale com a raposa</strong></div></header>
 
-    <div id="paris-fox-wrap" class="fox-wrap">
-      <div id="paris-fox" class="fox-sprite idle"></div>
-      <div class="fox-aura"></div>
+    <header class="topbar">
+      <div><span>CAPÍTULO I</span><strong>Paris, 23:47</strong></div>
+      <div class="topbar-right"><span>OBJETIVO</span><strong id="paris-objective">Fale com a raposa</strong></div>
+    </header>
+
+    <div class="fox-stage">
+      <div id="fox" class="fox idle"></div>
+      <div class="fox-shadow"></div>
     </div>
 
-    <button id="fox-talk" class="pill-prompt"><kbd>E</kbd> falar com a raposa</button>
+    <button id="talk-fox" class="prompt"><kbd>E</kbd><span>falar com a raposa</span></button>
 
-    <div id="paris-dialogue" class="dialogue hidden">
+    <div id="dialogue" class="dialogue hidden">
       <span>RAPOSA</span>
-      <p id="paris-line"></p>
-      <button id="paris-next"><kbd>E</kbd> continuar</button>
+      <p id="dialogue-text"></p>
+      <button id="dialogue-next"><kbd>E</kbd> continuar</button>
     </div>
 
-    <div id="path-game" class="minigame-panel path-game hidden">
-      <p class="mini-label">SIGA AS PEGADAS</p>
-      <h2>Qual rua ela escolheu?</h2>
-      <p class="mini-help">Observe o brilho e escolha o caminho certo. São 4 esquinas.</p>
-      <div class="path-preview">
-        <div class="path-lane" data-lane="0"><span>↙</span><i class="paw">✦</i></div>
-        <div class="path-lane" data-lane="1"><span>↑</span><i class="paw">✦</i></div>
-        <div class="path-lane" data-lane="2"><span>↘</span><i class="paw">✦</i></div>
+    <div id="paw-game" class="game-card paw-game hidden">
+      <div class="game-heading">
+        <span class="kicker">MINIGAME 01</span>
+        <h2>Siga as pegadas</h2>
+        <p>Veja onde as pegadas aparecem e escolha a mesma rua.</p>
       </div>
-      <div class="path-buttons">
-        <button data-path="0">Esquerda</button>
-        <button data-path="1">Reto</button>
-        <button data-path="2">Direita</button>
+
+      <div id="paw-round" class="round-pill">Rodada 1 de 4</div>
+
+      <div class="paw-roads">
+        <button class="paw-road" data-road="0">
+          <img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/paw.svg" alt="">
+          <b>Esquerda</b>
+        </button>
+        <button class="paw-road" data-road="1">
+          <img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/paw.svg" alt="">
+          <b>Em frente</b>
+        </button>
+        <button class="paw-road" data-road="2">
+          <img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/paw.svg" alt="">
+          <b>Direita</b>
+        </button>
       </div>
-      <div class="mini-status"><span id="path-progress">0 / 4</span><b id="path-status"></b></div>
+
+      <p id="paw-status" class="status">Observe.</p>
     </div>
   </section>
 
-  <section id="boutique" class="screen story-screen boutique-scene">
-    <div class="boutique-bg">
-      <div class="boutique-window"></div>
-      <div class="mirror"></div>
-      <div class="rack rack-a"></div><div class="rack rack-b"></div>
-      <div class="boutique-lamp"></div>
+  <section id="boutique" class="scene boutique-scene">
+    <div class="soft-bg boutique-bg">
+      <div class="big-word">MAISON</div>
+      <div class="shop-window"></div>
     </div>
-    <header class="hud"><div><span>CAPÍTULO II</span><strong>Maison Noire</strong></div><div class="right"><span>MINIGAME</span><strong>Monte o look</strong></div></header>
 
-    <div class="boutique-layout">
-      <div class="mannequin-card">
-        <div class="mannequin">
-          <div class="head"></div><div class="torso"></div><div class="legs"></div>
+    <header class="topbar">
+      <div><span>CAPÍTULO II</span><strong>Maison Noire</strong></div>
+      <div class="topbar-right"><span>OBJETIVO</span><strong>Monte o look da noite</strong></div>
+    </header>
+
+    <div class="center-shell">
+      <div class="intro-column">
+        <span class="kicker">MINIGAME 02</span>
+        <h2>O convite diz:</h2>
+        <div class="brief">
+          <span>elegante</span>
+          <span>preto ou vinho</span>
+          <span>delicado</span>
+          <span>nada esportivo</span>
         </div>
-        <div class="outfit-slots">
-          <button class="outfit-slot" data-slot="dress">VESTIDO <span>solte aqui</span></button>
-          <button class="outfit-slot" data-slot="shoes">SAPATO <span>solte aqui</span></button>
-          <button class="outfit-slot" data-slot="jewel">JOIA <span>solte aqui</span></button>
-          <button class="outfit-slot" data-slot="detail">DETALHE <span>solte aqui</span></button>
+        <p>Escolha uma opção em cada linha.</p>
+      </div>
+
+      <div class="look-panel">
+        <div class="choice-row" data-category="dress">
+          <div class="choice-title"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/hanger.svg" alt=""><span>ROUPA</span></div>
+          <button data-choice="dress" data-good="true"><b>Vestido vinho</b><small>renda · justo · longo</small></button>
+          <button data-choice="dress"><b>Conjunto neon</b><small>esportivo</small></button>
         </div>
-      </div>
 
-      <div class="wardrobe">
-        <p class="mini-label">DARK COQUETTE × OLD MONEY</p>
-        <h2>Prepare-a para a noite.</h2>
-        <p class="mini-help">Arraste ou clique em uma peça e depois no espaço correspondente.</p>
-        <div id="wardrobe-items" class="wardrobe-items">
-          <button draggable="true" class="fashion-item good wine-dress" data-slot="dress" data-name="Vestido vinho de renda">Vestido vinho<br><small>renda, justo e longo</small></button>
-          <button draggable="true" class="fashion-item bad neon-dress" data-slot="dress" data-name="Vestido neon">Vestido neon<br><small>não combina nada</small></button>
-          <button draggable="true" class="fashion-item good heel" data-slot="shoes" data-name="Salto de sola vermelha">Salto preto<br><small>sola vermelha</small></button>
-          <button draggable="true" class="fashion-item bad sneaker" data-slot="shoes" data-name="Tênis esportivo">Tênis esportivo<br><small>hoje não</small></button>
-          <button draggable="true" class="fashion-item good bracelet" data-slot="jewel" data-name="Bracelete trevo">Bracelete<br><small>trevo delicado</small></button>
-          <button draggable="true" class="fashion-item bad chain" data-slot="jewel" data-name="Corrente pesada">Corrente pesada<br><small>exagerada</small></button>
-          <button draggable="true" class="fashion-item good bow" data-slot="detail" data-name="Laço preto">Laço preto<br><small>perfeito</small></button>
-          <button draggable="true" class="fashion-item bad cap" data-slot="detail" data-name="Boné">Boné<br><small>definitivamente não</small></button>
+        <div class="choice-row" data-category="shoes">
+          <div class="choice-title"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/shoe.svg" alt=""><span>SAPATO</span></div>
+          <button data-choice="shoes" data-good="true"><b>Salto preto</b><small>sola vermelha</small></button>
+          <button data-choice="shoes"><b>Tênis de corrida</b><small>casual</small></button>
         </div>
-        <button id="check-look" class="action-button">Finalizar look</button>
-        <p id="look-status" class="feedback"></p>
-      </div>
-    </div>
-  </section>
 
-  <section id="cafe" class="screen story-screen cafe-scene">
-    <div class="cafe-bg">
-      <div class="cafe-window"><div class="mini-tower"></div><div id="cafe-snow" class="snow-layer"></div></div>
-      <div class="counter"></div><div class="pendant p1"></div><div class="pendant p2"></div>
-    </div>
-    <header class="hud"><div><span>CAPÍTULO III</span><strong>Le Petit Café</strong></div><div class="right"><span>MINIGAME</span><strong>Prepare os pedidos</strong></div></header>
+        <div class="choice-row" data-category="jewel">
+          <div class="choice-title"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/diamond.svg" alt=""><span>JOIA</span></div>
+          <button data-choice="jewel" data-good="true"><b>Bracelete delicado</b><small>trevos dourados</small></button>
+          <button data-choice="jewel"><b>Corrente pesada</b><small>maximalista</small></button>
+        </div>
 
-    <div class="cafe-game">
-      <div class="order-board">
-        <span class="mini-label">PEDIDO <b id="order-number">1</b>/3</span>
-        <h2 id="order-title">Noite parisiense</h2>
-        <p id="order-text"></p>
-        <div class="timer"><i id="order-timer"></i></div>
-        <div id="tray" class="tray"></div>
-        <button id="serve-order" class="action-button">Servir bandeja</button>
-        <p id="order-status" class="feedback"></p>
-      </div>
+        <div class="choice-row" data-category="detail">
+          <div class="choice-title"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/bow.svg" alt=""><span>DETALHE</span></div>
+          <button data-choice="detail" data-good="true"><b>Laço preto</b><small>dark coquette</small></button>
+          <button data-choice="detail"><b>Boné esportivo</b><small>street</small></button>
+        </div>
 
-      <div id="food-shelf" class="food-shelf">
-        <button data-food="brie">🧀<span>Brie</span></button>
-        <button data-food="king">🧀<span>Queijo do reino</span></button>
-        <button data-food="wine">🍷<span>Vinho gelado</span></button>
-        <button data-food="pudding">🍮<span>Pudim Ninho + Nutella</span></button>
-        <button data-food="milkshake">🥛<span>Milkshake vanilla</span></button>
-        <button data-food="steak">🥩<span>Picanha mal passada</span></button>
-        <button data-food="sushi">🍣<span>Sushi hot</span></button>
-        <button data-food="strawberry">🍓<span>Morango com doce de leite</span></button>
-      </div>
-    </div>
-  </section>
-
-  <section id="witch" class="screen story-screen witch-scene">
-    <div class="witch-bg"><div class="witch-moon"></div><div class="shelves"></div><div class="candle c1"></div><div class="candle c2"></div><div class="cauldron"><i></i></div></div>
-    <header class="hud"><div><span>CAPÍTULO IV</span><strong>Ateliê da Bruxa</strong></div><div class="right"><span>MINIGAME</span><strong>Memorize o ritual</strong></div></header>
-
-    <div class="witch-game">
-      <p class="mini-label">RITUAL DA NOITE</p>
-      <h2>Repita a sequência.</h2>
-      <p class="mini-help">Os ingredientes vão brilhar. Depois clique neles na mesma ordem.</p>
-      <div id="ingredient-grid" class="ingredient-grid">
-        <button data-ing="lily"><span>⚜</span><b>Lírio</b></button>
-        <button data-ing="spider"><span>✺</span><b>Lírio-aranha</b></button>
-        <button data-ing="vanilla"><span>◌</span><b>Baunilha</b></button>
-        <button data-ing="bow"><span>୨୧</span><b>Laço preto</b></button>
-        <button data-ing="rose"><span>✿</span><b>Rosa</b></button>
-      </div>
-      <div class="ritual-row"><span>Rodada <b id="ritual-round">1</b>/3</span><button id="start-ritual" class="action-button">Ver sequência</button></div>
-      <p id="ritual-status" class="feedback"></p>
-    </div>
-  </section>
-
-  <section id="apartment" class="screen story-screen apartment-scene">
-    <div class="room">
-      <div class="room-wall"></div><div class="window-night"></div><div class="sofa"></div><div class="rug"></div><div class="desk"></div><div class="bed"></div>
-      <button class="hidden-object perfume" data-find="Perfume doce" aria-label="Perfume doce">♢</button>
-      <button class="hidden-object notebook" data-find="Caderno" aria-label="Caderno">▤</button>
-      <button class="hidden-object bracelet-object" data-find="Bracelete" aria-label="Bracelete">◌</button>
-      <button class="hidden-object bow-object" data-find="Laço preto" aria-label="Laço preto">୨୧</button>
-      <button class="hidden-object rose-object" data-find="Rosa" aria-label="Rosa">✿</button>
-    </div>
-    <header class="hud"><div><span>CAPÍTULO V</span><strong>Um apartamento pequeno</strong></div><div class="right"><span>MINIGAME</span><strong>Objetos escondidos</strong></div></header>
-
-    <div class="find-panel">
-      <p class="mini-label">ENCONTRE 5 COISAS</p>
-      <h2>Um cantinho que parece dela.</h2>
-      <div id="find-list" class="find-list">
-        <span data-label="Perfume doce">Perfume doce</span>
-        <span data-label="Caderno">Caderno</span>
-        <span data-label="Bracelete">Bracelete</span>
-        <span data-label="Laço preto">Laço preto</span>
-        <span data-label="Rosa">Rosa</span>
-      </div>
-      <p id="find-status" class="feedback">0 / 5 encontrados</p>
-    </div>
-  </section>
-
-  <section id="rhythm" class="screen story-screen rhythm-scene">
-    <div class="rhythm-bg"><div class="record"></div><div class="equalizer"></div></div>
-    <header class="hud"><div><span>CAPÍTULO VI</span><strong>Depois da meia-noite</strong></div><div class="right"><span>MINIGAME</span><strong>Ritmo</strong></div></header>
-
-    <div class="rhythm-layout">
-      <div>
-        <p class="mini-label">RITMO NOTURNO</p>
-        <h2>Acerte as notas.</h2>
-        <p class="mini-help">Use <b>A S D F</b> ou clique nas pistas quando a nota chegar na linha.</p>
-        <div class="rhythm-stats"><span>Pontos <b id="rhythm-score">0</b></span><span>Sequência <b id="rhythm-combo">0</b></span></div>
-        <button id="start-rhythm" class="action-button">Começar música</button>
-        <p id="rhythm-status" class="feedback"></p>
-      </div>
-      <div id="rhythm-board" class="rhythm-board">
-        <div class="lane" data-key="a"><b>A</b></div>
-        <div class="lane" data-key="s"><b>S</b></div>
-        <div class="lane" data-key="d"><b>D</b></div>
-        <div class="lane" data-key="f"><b>F</b></div>
-        <div class="hit-line"></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="drive" class="screen story-screen drive-scene">
-    <div class="drive-sky"><div class="mountains"></div><div id="drive-snow" class="snow-layer"></div></div>
-    <header class="hud"><div><span>CAPÍTULO VII</span><strong>Estrada de inverno</strong></div><div class="right"><span>MINIGAME</span><strong>Dirija na neve</strong></div></header>
-
-    <div class="drive-info">
-      <p class="mini-label">GTR NA NEVE</p>
-      <h2>Pegue as rosas.</h2>
-      <p>← → ou A/D para trocar de faixa. Evite as barreiras.</p>
-      <div class="drive-stats"><span>🌹 <b id="rose-count">0</b>/6</span><span>♥ <b id="drive-hearts">3</b></span></div>
-      <button id="start-drive" class="action-button">Ligar o carro</button>
-      <p id="drive-status" class="feedback"></p>
-    </div>
-
-    <div id="road" class="road">
-      <div class="road-lines"></div>
-      <div id="car" class="car"><i></i><b></b></div>
-    </div>
-  </section>
-
-  <section id="journal" class="screen story-screen journal-scene">
-    <div class="journal-bg"><div class="desk-light"></div></div>
-    <header class="hud"><div><span>CAPÍTULO VIII</span><strong>O caderno</strong></div><div class="right"><span>ÚLTIMA ESCOLHA</span><strong>Monte uma página do futuro</strong></div></header>
-
-    <div class="journal-layout">
-      <div class="notebook-page">
-        <p class="handwrite">algum dia...</p>
-        <div id="future-page" class="future-page">
-          <div data-future-slot="city"><span>cidade</span></div>
-          <div data-future-slot="home"><span>casa</span></div>
-          <div data-future-slot="flower"><span>flor</span></div>
-          <div data-future-slot="night"><span>noite perfeita</span></div>
+        <div class="panel-footer">
+          <p id="look-status" class="status">0 de 4 escolhidos</p>
+          <button id="confirm-look" class="primary" disabled>Confirmar look</button>
         </div>
       </div>
-      <div class="future-options">
-        <p class="mini-label">SALVE 4 PINS</p>
-        <h2>Como seria uma página perfeita?</h2>
-        <div class="pin-groups">
-          <div><span>CIDADE</span><button data-future="city" data-value="Paris">Paris</button><button data-future="city" data-value="Nova York">Nova York</button><button data-future="city" data-value="Suíça">Suíça</button></div>
-          <div><span>CASA</span><button data-future="home" data-value="Apartamento pequeno">Apê pequeno</button><button data-future="home" data-value="Casa vitoriana">Vitoriana</button><button data-future="home" data-value="Minimalista branca">Minimalista</button></div>
-          <div><span>FLOR</span><button data-future="flower" data-value="Rosas">Rosas</button><button data-future="flower" data-value="Lírios">Lírios</button><button data-future="flower" data-value="Lírio-aranha vermelho">Lírio-aranha</button></div>
-          <div><span>NOITE</span><button data-future="night" data-value="Vinho gelado + frio">Vinho + frio</button><button data-future="night" data-value="Filme de romance + manta">Filme + manta</button><button data-future="night" data-value="Paris depois da meia-noite">Paris tarde</button></div>
-        </div>
-        <button id="finish-journal" class="action-button" disabled>Fechar o caderno</button>
+    </div>
+  </section>
+
+  <section id="cafe" class="scene cafe-scene">
+    <div class="soft-bg cafe-bg">
+      <div class="cafe-window"></div>
+      <div class="cafe-counter"></div>
+    </div>
+
+    <header class="topbar">
+      <div><span>CAPÍTULO III</span><strong>Le Petit Café</strong></div>
+      <div class="topbar-right"><span>OBJETIVO</span><strong>Monte os pedidos</strong></div>
+    </header>
+
+    <div class="cafe-shell">
+      <div class="order-card">
+        <span class="kicker">MINIGAME 03 · PEDIDO <b id="order-index">1</b>/3</span>
+        <h2 id="order-title">Noite fria</h2>
+        <p id="order-hint"></p>
+        <div id="order-needed" class="order-needed"></div>
+        <div class="selection-count">Escolhidos: <b id="selected-count">0</b></div>
+        <button id="serve" class="primary">Servir</button>
+        <p id="order-status" class="status"></p>
+      </div>
+
+      <div id="food-grid" class="food-grid">
+        <button class="food-item" data-food="brie">
+          <img src="https://raw.githubusercontent.com/redamajlal/kitchen-nightmare/main/assets/kenney_pixel-platformer-food-expansion/Tiles/tile_0105.png" alt="">
+          <b>Brie</b><small>queijo suave</small>
+        </button>
+        <button class="food-item" data-food="wine">
+          <img src="https://raw.githubusercontent.com/redamajlal/kitchen-nightmare/main/assets/kenney_pixel-platformer-food-expansion/Tiles/tile_0098.png" alt="">
+          <b>Vinho gelado</b><small>bem frio</small>
+        </button>
+        <button class="food-item" data-food="pudding">
+          <img src="https://raw.githubusercontent.com/redamajlal/kitchen-nightmare/main/assets/kenney_pixel-platformer-food-expansion/Tiles/tile_0109.png" alt="">
+          <b>Pudim</b><small>Ninho + Nutella</small>
+        </button>
+        <button class="food-item" data-food="shake">
+          <img src="https://raw.githubusercontent.com/redamajlal/kitchen-nightmare/main/assets/kenney_pixel-platformer-food-expansion/Tiles/tile_0089.png" alt="">
+          <b>Milkshake</b><small>baunilha</small>
+        </button>
+        <button class="food-item wrong-food" data-food="king">
+          <img src="https://raw.githubusercontent.com/redamajlal/kitchen-nightmare/main/assets/kenney_pixel-platformer-food-expansion/Tiles/tile_0106.png" alt="">
+          <b>Queijo do reino</b><small>não.</small>
+        </button>
+        <button class="food-item" data-food="dessert">
+          <img src="https://raw.githubusercontent.com/redamajlal/kitchen-nightmare/main/assets/kenney_pixel-platformer-food-expansion/Tiles/tile_0108.png" alt="">
+          <b>Doce de baunilha</b><small>extra</small>
+        </button>
       </div>
     </div>
   </section>
 
-  <section id="finale" class="screen finale-scene">
+  <section id="witch" class="scene witch-scene">
+    <div class="soft-bg witch-bg">
+      <div class="ritual-circle"></div>
+      <div class="witch-glow"></div>
+    </div>
+
+    <header class="topbar">
+      <div><span>CAPÍTULO IV</span><strong>Ateliê da Bruxa</strong></div>
+      <div class="topbar-right"><span>OBJETIVO</span><strong>Repita o ritual</strong></div>
+    </header>
+
+    <div class="witch-shell">
+      <div class="game-heading centered">
+        <span class="kicker">MINIGAME 04</span>
+        <h2>Memorize a sequência</h2>
+        <p>Os ingredientes vão acender. Depois clique neles na mesma ordem.</p>
+      </div>
+
+      <div id="ritual-items" class="ritual-items">
+        <button data-ritual="flower">
+          <img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/flower.svg" alt="">
+          <b>Lírio-aranha</b>
+        </button>
+        <button data-ritual="vanilla">
+          <img src="https://raw.githubusercontent.com/d954mas/game-67-idle/master/templates/template/assets/icons/potion.png" alt="">
+          <b>Baunilha</b>
+        </button>
+        <button data-ritual="bow">
+          <img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/bow.svg" alt="">
+          <b>Laço preto</b>
+        </button>
+        <button data-ritual="ice">
+          <img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/snowflake.svg" alt="">
+          <b>Gelo</b>
+        </button>
+      </div>
+
+      <div class="ritual-footer">
+        <span id="ritual-round" class="round-pill">Rodada 1 de 3</span>
+        <button id="show-ritual" class="primary">Ver sequência</button>
+      </div>
+      <p id="ritual-status" class="status centered-status">Clique em “Ver sequência”.</p>
+    </div>
+  </section>
+
+  <section id="journal" class="scene journal-scene">
+    <div class="soft-bg journal-bg"></div>
+
+    <header class="topbar">
+      <div><span>CAPÍTULO V</span><strong>O caderno</strong></div>
+      <div class="topbar-right"><span>OBJETIVO</span><strong>Encontre os pares</strong></div>
+    </header>
+
+    <div class="memory-shell">
+      <div class="game-heading">
+        <span class="kicker">MINIGAME 05</span>
+        <h2>Salve os pins</h2>
+        <p>Vire duas cartas por vez e encontre os 4 pares.</p>
+      </div>
+
+      <div id="memory-grid" class="memory-grid"></div>
+
+      <div class="memory-footer">
+        <span id="memory-progress">0 de 4 pares</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="finale" class="scene finale-scene">
     <div id="final-snow" class="snow-layer"></div>
-    <div class="final-glow"></div>
-    <div class="final-flowers"><span>✿</span><span>⚜</span><span>✺</span><span>✿</span></div>
-    <div class="final-fox fox-sprite idle"></div>
+    <div class="final-light"></div>
+    <div class="final-fox fox idle"></div>
+
     <div class="final-card">
-      <p class="eyebrow">FIM DA HISTÓRIA</p>
+      <span class="kicker">FIM</span>
       <h1>Feliz aniversário.</h1>
-      <p>Eu quis montar um pequeno mundo com um monte de coisas que lembram você — frio, Paris, coisas bonitas, um pouco de bruxaria, comida, moda e uma raposa te guiando até aqui.</p>
-      <p class="final-small">E ainda assim, nenhuma dessas coisas é tão especial quanto você é pra mim.</p>
-      <button id="replay" class="main-button">Jogar de novo</button>
+      <p>Eu quis montar um pequeno mundo com coisas que lembram você: Paris, frio, moda, queijo, doces, um pouco de bruxaria e uma raposa te trazendo até aqui.</p>
+      <p class="gold-line">Ainda falta colocar a sua mensagem de verdade aqui.</p>
+      <button id="replay" class="primary">Jogar de novo</button>
     </div>
   </section>
 
@@ -280,6 +283,6 @@
   <div id="toast" class="toast hidden"></div>
 </main>
 
-<script src="./story.js?v=20260925-game2"></script>
+<script src="./story.js?v=20260925-clean1"></script>
 </body>
 </html>
