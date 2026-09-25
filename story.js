@@ -13,7 +13,7 @@ const lines=["Paris parece mais bonita quando está fria, não acha?","Eu prepar
 let line=0,dialogueOpen=false;
 function openDialogue(){if(dialogueOpen||!$("#paris-game").classList.contains("hidden"))return;dialogueOpen=true;line=0;$("#talk-fox").classList.add("hidden");$("#dialogue").classList.remove("hidden");$("#dialogue-text").textContent=lines[0];$("#paris-objective").textContent="Ouça a raposa";tone()}
 function advance(){if(!dialogueOpen)return;line++;tone(510,.04,.01);if(line<lines.length){$("#dialogue-text").textContent=lines[line];return}dialogueOpen=false;$("#dialogue").classList.add("hidden");$("#paris-game").classList.remove("hidden");$("#paris-objective").textContent="Siga as pegadas";buildParisBoard()}
-$("#talk-fox").onclick=openDialogue;$("#fox").onclick=openDialogue;$("#dialogue-next").onclick=advance;
+$("#talk-fox").onclick=openDialogue;$("#dialogue-next").onclick=advance;
 
 const cols=5,rows=4;
 const parisPath=[15,10,11,6,7,2];
@@ -39,29 +39,50 @@ function moveParis(dir){
 }
 $$("[data-move]").forEach(b=>b.onclick=()=>moveParis(b.dataset.move));
 
-/* BOUTIQUE DRAG & DROP */
-let dragItem=null;const outfit={};
-$$(".wardrobe-item").forEach(item=>{
-  item.addEventListener("dragstart",e=>{dragItem=item;e.dataTransfer.setData("text/plain",item.dataset.name)});
-  item.onclick=()=>{dragItem=item;toast("Agora clique no espaço correspondente do manequim.")}
-});
-$$(".drop-slot").forEach(slot=>{
-  slot.addEventListener("dragover",e=>e.preventDefault());
-  slot.addEventListener("drop",e=>{e.preventDefault();equip(slot)});
-  slot.onclick=()=>equip(slot);
-});
-function equip(slot){
-  if(!dragItem){toast("Escolha uma peça primeiro.");return}
-  if(dragItem.dataset.slot!==slot.dataset.slot){bad();toast("Essa peça não pertence a esse espaço.");return}
-  const previous=outfit[slot.dataset.slot];if(previous)previous.classList.remove("used");
-  outfit[slot.dataset.slot]=dragItem;dragItem.classList.add("used");slot.classList.add("filled");slot.querySelector("b").textContent=dragItem.dataset.name;dragItem=null;
-  const count=Object.keys(outfit).length;$("#look-status").textContent=`${count} / 4 peças`;$("#finish-look").disabled=count<4;tone(520,.05,.009)
-}
-$("#finish-look").onclick=()=>{
-  const wrong=Object.values(outfit).filter(x=>!x.classList.contains("good")).length;
-  if(wrong){bad();$("#look-status").textContent=wrong===1?"1 peça não combina com o convite.":"Algumas peças não combinam com o convite.";return}
-  good();$("#look-status").textContent="Look perfeito.";setTimeout(()=>go("cafe"),850)
+/* BOUTIQUE — CINEMATIC HOTSPOTS */
+const outfit={
+  dress: document.querySelector('[data-look="dress-good"]')
 };
+const lookLabels={
+  dress:"roupa",
+  shoes:"sapato",
+  jewel:"acessório",
+  detail:"detalhe"
+};
+function updateBoutique(){
+  const count=Object.keys(outfit).length;
+  $("#look-status").textContent=`${count} / 4 peças`;
+  $("#finish-look").disabled=count<4;
+  const missing=["dress","shoes","jewel","detail"].filter(x=>!outfit[x]).map(x=>lookLabels[x]);
+  $("#boutique-feedback").textContent=missing.length
+    ? `Falta escolher: ${missing.join(", ")}.`
+    : "Tudo escolhido. Confira o look e finalize.";
+}
+$$(".look-hotspot").forEach(btn=>{
+  btn.onclick=()=>{
+    const slot=btn.dataset.slot;
+    $$(' .look-hotspot[data-slot="'+slot+'"]'.trim()).forEach(x=>x.classList.remove("selected"));
+    btn.classList.add("selected");
+    outfit[slot]=btn;
+    tone(530,.05,.01);
+    updateBoutique();
+  };
+});
+$("#finish-look").onclick=()=>{
+  const chosen=Object.values(outfit);
+  const wrong=chosen.filter(x=>x.dataset.good!=="true").length;
+  if(wrong){
+    bad();
+    $("#boutique-feedback").textContent=wrong===1
+      ? "Tem 1 escolha que não combina com o convite."
+      : `Tem ${wrong} escolhas que não combinam com o convite.`;
+    return;
+  }
+  good();
+  $("#boutique-feedback").textContent="Perfeito. Esse é o look da noite.";
+  setTimeout(()=>go("cafe"),900);
+};
+updateBoutique();
 
 /* CAFE CONVEYOR */
 const foods={
