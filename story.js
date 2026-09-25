@@ -152,9 +152,9 @@ setupOrder();
 
 /* VINHO — SEGURE E SOLTE */
 const wineRounds=[
-  {width:10.0,speed:18.5,label:"faixa média"},
-  {width:6.0,speed:25.5,label:"faixa estreita"},
-  {width:3.4,speed:32.5,label:"faixa mínima"}
+  {width:8.0,speed:22.0,label:"faixa estreita"},
+  {width:5.0,speed:30.0,label:"faixa difícil"},
+  {width:3.0,speed:38.0,label:"faixa brutal"}
 ];
 
 let wineRound=0;
@@ -182,7 +182,7 @@ function renderWine(){
 function randomizeWineTarget(){
   const cfg=wineRounds[wineRound];
   wineTargetWidth=cfg.width;
-  wineTargetCenter=76+Math.random()*7;
+  wineTargetCenter=72+Math.random()*15;
   const left=wineTargetCenter-wineTargetWidth/2;
   wineTarget.style.left=left+"%";
   wineTarget.style.width=wineTargetWidth+"%";
@@ -219,8 +219,9 @@ function wineLoop(now){
   const cfg=wineRounds[wineRound];
   const irregular=
     1
-    +Math.sin(now/190+winePhase)*.22
-    +Math.sin(now/73+winePhase*.7)*.10;
+    +Math.sin(now/150+winePhase)*.28
+    +Math.sin(now/59+winePhase*.7)*.14
+    +Math.sin(now/37+winePhase*1.35)*.07;
 
   wineProgress+=cfg.speed*irregular*dt;
   wineProgress=Math.min(100,wineProgress);
@@ -264,13 +265,14 @@ function finishWineHold(e){
   bad();
   wineMachine.classList.add("wine-fail");
 
-  if(wineProgress<min){
-    $("#wine-status").textContent=`Ainda está quente demais — ${wineTemperature().toFixed(1)}°C.`;
-  }else{
-    $("#wine-status").textContent=`Passou do ponto — ${wineTemperature().toFixed(1)}°C.`;
-  }
+  const failReason=wineProgress<min
+    ? `Ainda está quente demais — ${wineTemperature().toFixed(1)}°C.`
+    : `Passou do ponto — ${wineTemperature().toFixed(1)}°C.`;
 
-  setTimeout(()=>resetWineAttempt("Tente de novo. A velocidade muda a cada tentativa."),950);
+  $("#wine-status").textContent=failReason+" Voltando para a Rodada 1...";
+  wineRound=0;
+
+  setTimeout(()=>resetWineAttempt("Errou, voltou para a Rodada 1. Segure para tentar de novo."),1150);
 }
 
 wineButton.addEventListener("pointerdown",startWineHold);
