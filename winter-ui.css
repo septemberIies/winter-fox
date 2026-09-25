@@ -264,3 +264,75 @@ body{font-family:"Manrope",system-ui,sans-serif;color:var(--text)}button{font:in
 @keyframes wineBottleChill{
   to{transform:translateX(-50%) translateY(-2px) rotate(1deg);filter:drop-shadow(0 12px 16px rgba(0,0,0,.34)) brightness(1.05)}
 }
+
+/* FIX: bottle properly submerged inside ice bucket */
+.ice-bucket{
+  position:relative;
+  width:184px;
+  height:150px;
+  margin-top:38px;
+  border-radius:16px 16px 48px 48px;
+  background:none!important;
+  box-shadow:none!important;
+  overflow:visible;
+}
+.ice-bucket::before,.ice-bucket::after{content:none!important}
+
+.ice-bucket-back{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  border-radius:16px 16px 48px 48px;
+  background:linear-gradient(90deg,#6e7780,#d7dde0 44%,#818b94);
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.13),0 24px 38px rgba(0,0,0,.32);
+}
+.ice-bucket-back::before{
+  content:"";
+  position:absolute;
+  left:7px;
+  right:7px;
+  top:-14px;
+  height:29px;
+  border-radius:50%;
+  background:#d9e2e6;
+  border:4px solid #68727a;
+  box-shadow:inset 0 5px 12px rgba(82,115,128,.28);
+}
+
+.wine-bottle-icon{
+  z-index:2!important;
+  bottom:34px!important;
+  width:118px!important;
+  height:222px!important;
+}
+
+.ice-cube{
+  z-index:5!important;
+}
+.ice-cube.c1{left:18px!important;top:-8px!important}
+.ice-cube.c2{right:19px!important;top:-5px!important}
+.ice-cube.c3{left:77px!important;top:2px!important}
+
+.ice-bucket-front{
+  position:absolute;
+  z-index:4;
+  left:0;
+  right:0;
+  bottom:0;
+  height:92px;
+  border-radius:0 0 48px 48px;
+  background:linear-gradient(90deg,#626b73,#cdd4d8 44%,#747e87);
+  box-shadow:
+    inset 0 10px 16px rgba(255,255,255,.08),
+    inset 0 -10px 18px rgba(0,0,0,.12);
+}
+.ice-bucket-front::before{
+  content:"";
+  position:absolute;
+  left:18px;
+  right:18px;
+  top:8px;
+  height:3px;
+  border-radius:999px;
+  background:rgba(255,255,255,.34);
+}
