@@ -1,0 +1,49 @@
+:root {
+  color-scheme: dark;
+  font-family: Georgia, "Times New Roman", serif;
+  background: #090b0f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 30%, #20252c 0%, #101319 42%, #07090d 100%);
+}
+
+body {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+}
+
+#game-shell,
+#game {
+  width: 100vw;
+  height: 100dvh;
+}
+
+#game canvas {
+  display: block;
+  margin: 0 auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+noscript {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: #f3f4f6;
+  background: #090b0f;
+  text-align: center;
+}
