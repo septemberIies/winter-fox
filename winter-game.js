@@ -111,9 +111,12 @@ class BootScene extends Phaser.Scene {
 
     const skin = 0xf2d3bd;
     const skinShadow = 0xdcae93;
-    const hair = 0x111216;
-    const hairHighlight = 0x24262d;
+    const hair = 0x0b0c0f;
+    const hairSoft = 0x15171b;
     const eye = 0x6b4935;
+    const lash = 0x111216;
+    const lip = 0xb86f78;
+    const cheek = 0xe8b7ad;
     const dress = 0x6b2035;
     const dressLight = 0x8b314b;
     const dressDark = 0x471522;
@@ -123,40 +126,52 @@ class BootScene extends Phaser.Scene {
       g.clear();
 
       // shadow under feet baked into sprite
-      g.fillStyle(0x000000, 0.12);
+      g.fillStyle(0x000000, 0.10);
       g.fillEllipse(12, 22, 10, 3);
 
       if (dir === "down") {
-        // Hair silhouette
+        // Black hair: cleaner silhouette, no grey blocks.
         g.fillStyle(hair);
+        g.fillRect(7, 1, 10, 2);
         g.fillRect(6, 2, 12, 4);
         g.fillRect(5, 5, 2, 8);
         g.fillRect(17, 5, 2, 8);
-        g.fillRect(7, 1, 10, 2);
 
-        // Face
+        // Face.
         g.fillStyle(skin);
         g.fillRect(7, 5, 10, 7);
-        g.fillStyle(skinShadow);
-        g.fillRect(7, 11, 10, 1);
 
-        // Hair fringe
-        g.fillStyle(hairHighlight);
+        // Soft fringe, using near-black only.
+        g.fillStyle(hair);
         g.fillRect(7, 4, 3, 2);
         g.fillRect(14, 4, 3, 2);
-        g.fillStyle(hair);
         g.fillRect(10, 4, 4, 1);
+        g.fillStyle(hairSoft);
+        g.fillRect(8, 3, 2, 1);
+        g.fillRect(14, 3, 2, 1);
 
-        // Brown eyes
+        // Delicate brown eyes + tiny lashes.
+        g.fillStyle(lash);
+        g.fillRect(8, 7, 1, 1);
+        g.fillRect(15, 7, 1, 1);
         g.fillStyle(eye);
         g.fillRect(9, 7, 1, 1);
         g.fillRect(14, 7, 1, 1);
 
-        // neck
+        // Subtle cheeks.
+        g.fillStyle(cheek);
+        g.fillRect(8, 9, 1, 1);
+        g.fillRect(15, 9, 1, 1);
+
+        // Small rose mouth — no dark line under the face.
+        g.fillStyle(lip);
+        g.fillRect(11, 10, 2, 1);
+
+        // Neck.
         g.fillStyle(skin);
         g.fillRect(11, 12, 2, 1);
 
-        // Wine dress
+        // Wine dress.
         g.fillStyle(dress);
         g.fillRect(8, 13, 8, 5);
         g.fillRect(7, 16, 10, 3);
@@ -165,12 +180,12 @@ class BootScene extends Phaser.Scene {
         g.fillStyle(dressDark);
         g.fillRect(7, 18, 10, 1);
 
-        // arms
+        // Arms.
         g.fillStyle(skin);
         g.fillRect(step === 1 ? 6 : 7, 14, 1, 4);
         g.fillRect(step === 2 ? 17 : 16, 14, 1, 4);
 
-        // legs
+        // Legs / shoes.
         g.fillStyle(skinShadow);
         g.fillRect(step === 1 ? 9 : 10, 19, 2, 2);
         g.fillRect(step === 2 ? 13 : 12, 19, 2, 2);
@@ -180,58 +195,70 @@ class BootScene extends Phaser.Scene {
       }
 
       if (dir === "up") {
-        // Back hair
+        // Back hair, solid black with a very subtle near-black sheen.
         g.fillStyle(hair);
+        g.fillRect(7, 1, 10, 2);
         g.fillRect(6, 2, 12, 10);
         g.fillRect(5, 6, 2, 8);
         g.fillRect(17, 6, 2, 8);
-        g.fillStyle(hairHighlight);
-        g.fillRect(8, 3, 8, 2);
+        g.fillStyle(hairSoft);
+        g.fillRect(10, 3, 4, 1);
 
-        // Neck
+        // Neck.
         g.fillStyle(skin);
         g.fillRect(11, 12, 2, 1);
 
-        // Dress back
+        // Dress back.
         g.fillStyle(dress);
         g.fillRect(8, 13, 8, 5);
         g.fillRect(7, 16, 10, 3);
-        g.fillStyle(dressDark);
-        g.fillRect(7, 18, 10, 1);
         g.fillStyle(dressLight);
         g.fillRect(9, 13, 6, 1);
+        g.fillStyle(dressDark);
+        g.fillRect(7, 18, 10, 1);
 
-        // arms
+        // Arms.
         g.fillStyle(skinShadow);
         g.fillRect(step === 1 ? 6 : 7, 14, 1, 4);
         g.fillRect(step === 2 ? 17 : 16, 14, 1, 4);
 
-        // legs
+        // Shoes.
         g.fillStyle(shoe);
         g.fillRect(step === 1 ? 8 : 10, 20, 3, 2);
         g.fillRect(step === 2 ? 13 : 12, 20, 3, 2);
       }
 
       if (dir === "side") {
-        // Hair profile
+        // Cleaner feminine profile hair.
         g.fillStyle(hair);
+        g.fillRect(8, 1, 8, 2);
         g.fillRect(7, 2, 10, 4);
         g.fillRect(6, 5, 3, 9);
         g.fillRect(15, 5, 3, 8);
-        g.fillStyle(hairHighlight);
-        g.fillRect(9, 3, 6, 2);
+        g.fillStyle(hairSoft);
+        g.fillRect(10, 3, 4, 1);
 
-        // Face profile
+        // Face profile without the old beard-like shadow strip.
         g.fillStyle(skin);
         g.fillRect(9, 5, 8, 7);
-        g.fillStyle(skinShadow);
-        g.fillRect(9, 11, 8, 1);
 
-        // Eye
+        // Eye + lash.
+        g.fillStyle(lash);
+        g.fillRect(13, 7, 1, 1);
         g.fillStyle(eye);
         g.fillRect(14, 7, 1, 1);
 
-        // Dress
+        // Tiny cheek + mouth.
+        g.fillStyle(cheek);
+        g.fillRect(14, 9, 1, 1);
+        g.fillStyle(lip);
+        g.fillRect(15, 10, 1, 1);
+
+        // Neck.
+        g.fillStyle(skin);
+        g.fillRect(11, 12, 2, 1);
+
+        // Dress.
         g.fillStyle(dress);
         g.fillRect(9, 13, 7, 5);
         g.fillRect(8, 16, 9, 3);
@@ -240,11 +267,11 @@ class BootScene extends Phaser.Scene {
         g.fillStyle(dressDark);
         g.fillRect(8, 18, 9, 1);
 
-        // arm swing
+        // Arm swing.
         g.fillStyle(skin);
         g.fillRect(step === 1 ? 8 : 9, 14, 1, 4);
 
-        // legs
+        // Legs / shoes.
         g.fillStyle(shoe);
         g.fillRect(step === 1 ? 8 : 10, 20, 3, 2);
         g.fillRect(step === 2 ? 14 : 12, 20, 3, 2);
