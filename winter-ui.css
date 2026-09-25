@@ -115,7 +115,7 @@ button, kbd { font: inherit; }
 
 .title-minimal {
   position: relative;
-  z-index: 3;
+  z-index: 4;
   width: min(1040px, calc(100vw - 48px));
   display: flex;
   flex-direction: column;
@@ -179,48 +179,53 @@ button, kbd { font: inherit; }
 
 .start-minimal {
   position: relative;
-  margin-top: 42px;
-  padding: 12px 8px 15px;
-  border: 0;
-  background: transparent;
-  color: #c9d1d9;
+  margin-top: 38px;
+  min-width: 156px;
+  height: 46px;
+  padding: 0 24px;
+  border: 1px solid rgba(124, 213, 159, .22);
+  border-radius: 7px;
+  background: #2f7d55;
+  color: #ffffff;
   cursor: pointer;
   font-family: "Manrope", sans-serif;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: .31em;
+  letter-spacing: .20em;
   text-transform: uppercase;
-  transition: color .2s ease, transform .2s ease;
+  box-shadow:
+    0 10px 30px rgba(26, 92, 59, .18),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  transition:
+    transform .18s ease,
+    background .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease;
 }
 
 .start-minimal span:first-child {
   display: block;
-  transform: translateX(.155em);
+  transform: translateX(.10em);
 }
 
 .start-line {
-  display: block;
-  width: 34px;
-  height: 1px;
-  margin: 11px auto 0;
-  background: rgba(218, 227, 235, .32);
-  transform-origin: center;
-  transition: width .25s ease, background .25s ease;
+  display: none;
 }
 
 .start-minimal:hover,
 .start-minimal:focus-visible {
-  color: #ffffff;
-  transform: translateY(-1px);
+  background: #378b61;
+  border-color: rgba(153, 231, 184, .34);
+  box-shadow:
+    0 13px 34px rgba(26, 92, 59, .25),
+    inset 0 1px 0 rgba(255,255,255,.07);
+  transform: translateY(-2px);
   outline: none;
 }
 
-.start-minimal:hover .start-line,
-.start-minimal:focus-visible .start-line {
-  width: 68px;
-  background: rgba(236, 242, 247, .75);
+.start-minimal:active {
+  transform: translateY(0);
 }
-
 @media (max-width: 760px) {
   .title-minimal h1 {
     font-size: clamp(52px, 14vw, 84px);
@@ -459,54 +464,39 @@ noscript {
   .interaction { bottom: 118px; }
   .controls { display: none; }
 }
-.menu-snow {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 1;
+
+#app.is-title .screen-vignette,
+#app.is-title .grain {
+  display: none !important;
 }
 
-.snow {
+.title-snow {
   position: absolute;
-  inset: -220px 0 0 0;
-  background-repeat: repeat;
-  animation-name: snowfall;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.title-flake {
+  position: absolute;
+  top: -24px;
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 999px;
+  background: #ffffff;
+  opacity: var(--opacity);
+  box-shadow: 0 0 5px rgba(255,255,255,.12);
+  animation: titleSnowFall var(--duration) linear var(--delay) infinite;
   will-change: transform;
 }
 
-.snow-1 {
-  opacity: .62;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,.96) 0 1.4px, transparent 1.9px);
-  background-size: 72px 72px;
-  animation-duration: 13s;
-}
-
-.snow-2 {
-  opacity: .38;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,.82) 0 1.8px, transparent 2.4px);
-  background-size: 108px 108px;
-  animation-duration: 20s;
-  animation-delay: -6s;
-}
-
-.snow-3 {
-  opacity: .22;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,.72) 0 2.2px, transparent 3px);
-  background-size: 156px 156px;
-  animation-duration: 29s;
-  animation-delay: -11s;
-}
-
-@keyframes snowfall {
-  from { transform: translate3d(-10px, -180px, 0); }
-  to { transform: translate3d(45px, calc(100vh + 260px), 0); }
-}
-
-  to { transform: translate3d(18px, calc(100vh + 220px), 0); }
+@keyframes titleSnowFall {
+  0% {
+    transform: translate3d(0, -30px, 0);
+  }
+  100% {
+    transform: translate3d(var(--drift), calc(100vh + 60px), 0);
+  }
 }
