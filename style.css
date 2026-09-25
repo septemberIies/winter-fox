@@ -33,9 +33,22 @@ button, kbd { font: inherit; }
   height: 100dvh;
 }
 
+#app {
+  background: #05070b;
+}
+
+#app.is-title #game {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#app.is-title #game canvas {
+  opacity: 0;
+}
+
 #game {
-  background:
-    radial-gradient(circle at 50% 20%, #26313b 0%, #0b1118 52%, #06090d 100%);
+  background: #05070b;
+  transition: opacity .35s ease;
 }
 
 #game canvas {
@@ -82,8 +95,8 @@ button, kbd { font: inherit; }
   place-items: center;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 46%, rgba(214, 226, 237, .045) 0, rgba(214, 226, 237, .012) 28%, transparent 54%),
-    linear-gradient(180deg, rgba(4, 7, 10, .42), rgba(4, 7, 10, .66));
+    radial-gradient(circle at 50% 46%, rgba(214, 226, 237, .035) 0, rgba(214, 226, 237, .01) 28%, transparent 54%),
+    #05070b;
   transition: opacity .55s ease, visibility .55s ease;
 }
 
