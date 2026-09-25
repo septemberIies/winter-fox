@@ -109,33 +109,180 @@ class BootScene extends Phaser.Scene {
   makeFallbackTextures() {
     const g = this.make.graphics({ add: false });
 
-    if (!this.textures.exists("girl")) {
-      g.fillStyle(0xe8edf2);
-      g.fillRoundedRect(5, 2, 6, 6, 2);
-      g.fillStyle(0x202731);
-      g.fillRect(4, 8, 8, 7);
-      g.fillStyle(0x503a36);
-      g.fillRect(4, 2, 8, 3);
-      g.generateTexture("girl", 16, 16);
+    const skin = 0xf2d3bd;
+    const skinShadow = 0xdcae93;
+    const hair = 0x111216;
+    const hairHighlight = 0x24262d;
+    const eye = 0x6b4935;
+    const dress = 0x6b2035;
+    const dressLight = 0x8b314b;
+    const dressDark = 0x471522;
+    const shoe = 0x1c1f25;
+
+    const drawHero = (key, dir, step = 0) => {
       g.clear();
-    }
+
+      // shadow under feet baked into sprite
+      g.fillStyle(0x000000, 0.12);
+      g.fillEllipse(12, 22, 10, 3);
+
+      if (dir === "down") {
+        // Hair silhouette
+        g.fillStyle(hair);
+        g.fillRect(6, 2, 12, 4);
+        g.fillRect(5, 5, 2, 8);
+        g.fillRect(17, 5, 2, 8);
+        g.fillRect(7, 1, 10, 2);
+
+        // Face
+        g.fillStyle(skin);
+        g.fillRect(7, 5, 10, 7);
+        g.fillStyle(skinShadow);
+        g.fillRect(7, 11, 10, 1);
+
+        // Hair fringe
+        g.fillStyle(hairHighlight);
+        g.fillRect(7, 4, 3, 2);
+        g.fillRect(14, 4, 3, 2);
+        g.fillStyle(hair);
+        g.fillRect(10, 4, 4, 1);
+
+        // Brown eyes
+        g.fillStyle(eye);
+        g.fillRect(9, 7, 1, 1);
+        g.fillRect(14, 7, 1, 1);
+
+        // neck
+        g.fillStyle(skin);
+        g.fillRect(11, 12, 2, 1);
+
+        // Wine dress
+        g.fillStyle(dress);
+        g.fillRect(8, 13, 8, 5);
+        g.fillRect(7, 16, 10, 3);
+        g.fillStyle(dressLight);
+        g.fillRect(9, 13, 6, 1);
+        g.fillStyle(dressDark);
+        g.fillRect(7, 18, 10, 1);
+
+        // arms
+        g.fillStyle(skin);
+        g.fillRect(step === 1 ? 6 : 7, 14, 1, 4);
+        g.fillRect(step === 2 ? 17 : 16, 14, 1, 4);
+
+        // legs
+        g.fillStyle(skinShadow);
+        g.fillRect(step === 1 ? 9 : 10, 19, 2, 2);
+        g.fillRect(step === 2 ? 13 : 12, 19, 2, 2);
+        g.fillStyle(shoe);
+        g.fillRect(step === 1 ? 8 : 10, 21, 3, 1);
+        g.fillRect(step === 2 ? 13 : 12, 21, 3, 1);
+      }
+
+      if (dir === "up") {
+        // Back hair
+        g.fillStyle(hair);
+        g.fillRect(6, 2, 12, 10);
+        g.fillRect(5, 6, 2, 8);
+        g.fillRect(17, 6, 2, 8);
+        g.fillStyle(hairHighlight);
+        g.fillRect(8, 3, 8, 2);
+
+        // Neck
+        g.fillStyle(skin);
+        g.fillRect(11, 12, 2, 1);
+
+        // Dress back
+        g.fillStyle(dress);
+        g.fillRect(8, 13, 8, 5);
+        g.fillRect(7, 16, 10, 3);
+        g.fillStyle(dressDark);
+        g.fillRect(7, 18, 10, 1);
+        g.fillStyle(dressLight);
+        g.fillRect(9, 13, 6, 1);
+
+        // arms
+        g.fillStyle(skinShadow);
+        g.fillRect(step === 1 ? 6 : 7, 14, 1, 4);
+        g.fillRect(step === 2 ? 17 : 16, 14, 1, 4);
+
+        // legs
+        g.fillStyle(shoe);
+        g.fillRect(step === 1 ? 8 : 10, 20, 3, 2);
+        g.fillRect(step === 2 ? 13 : 12, 20, 3, 2);
+      }
+
+      if (dir === "side") {
+        // Hair profile
+        g.fillStyle(hair);
+        g.fillRect(7, 2, 10, 4);
+        g.fillRect(6, 5, 3, 9);
+        g.fillRect(15, 5, 3, 8);
+        g.fillStyle(hairHighlight);
+        g.fillRect(9, 3, 6, 2);
+
+        // Face profile
+        g.fillStyle(skin);
+        g.fillRect(9, 5, 8, 7);
+        g.fillStyle(skinShadow);
+        g.fillRect(9, 11, 8, 1);
+
+        // Eye
+        g.fillStyle(eye);
+        g.fillRect(14, 7, 1, 1);
+
+        // Dress
+        g.fillStyle(dress);
+        g.fillRect(9, 13, 7, 5);
+        g.fillRect(8, 16, 9, 3);
+        g.fillStyle(dressLight);
+        g.fillRect(10, 13, 5, 1);
+        g.fillStyle(dressDark);
+        g.fillRect(8, 18, 9, 1);
+
+        // arm swing
+        g.fillStyle(skin);
+        g.fillRect(step === 1 ? 8 : 9, 14, 1, 4);
+
+        // legs
+        g.fillStyle(shoe);
+        g.fillRect(step === 1 ? 8 : 10, 20, 3, 2);
+        g.fillRect(step === 2 ? 14 : 12, 20, 3, 2);
+      }
+
+      g.generateTexture(key, 24, 24);
+    };
+
+    drawHero("hero-down-0", "down", 0);
+    drawHero("hero-down-1", "down", 1);
+    drawHero("hero-down-2", "down", 2);
+
+    drawHero("hero-up-0", "up", 0);
+    drawHero("hero-up-1", "up", 1);
+    drawHero("hero-up-2", "up", 2);
+
+    drawHero("hero-side-0", "side", 0);
+    drawHero("hero-side-1", "side", 1);
+    drawHero("hero-side-2", "side", 2);
 
     if (!this.textures.exists("fox")) {
+      g.clear();
       g.fillStyle(0xf2f2ef);
       g.fillTriangle(3, 7, 5, 2, 7, 7);
       g.fillTriangle(9, 7, 11, 2, 13, 7);
       g.fillEllipse(8, 9, 10, 8);
       g.fillEllipse(9, 14, 12, 5);
       g.generateTexture("fox", 16, 18);
-      g.clear();
     }
 
+    g.clear();
     g.fillStyle(0x303843);
     g.fillRoundedRect(2, 2, 20, 28, 4);
     g.lineStyle(2, 0xd8e1ea, .8);
     g.strokeCircle(12, 14, 6);
     g.lineBetween(12, 8, 12, 20);
     g.generateTexture("rune", 24, 32);
+
     g.destroy();
   }
 }
@@ -213,38 +360,76 @@ class GameScene extends Phaser.Scene {
     this.buildMap();
     this.createAtmosphere();
 
-    const girlFrameCount = this.textures.get("girl").frameTotal || 1;
-    this.player = this.physics.add.sprite(310, WORLD_HEIGHT - 165, "girl", 0);
-    this.player.setScale(3.25);
+    this.lastFacing = "down";
+    this.player = this.physics.add.sprite(310, WORLD_HEIGHT - 165, "hero-down-0");
+    this.player.setScale(2.65);
     this.player.setCollideWorldBounds(true);
     this.player.setDepth(500);
-    this.player.body.setSize(9, 7);
-    this.player.body.setOffset(3.5, 8);
-    this.player.setTint(0xb8dff2);
+    this.player.body.setSize(10, 8);
+    this.player.body.setOffset(7, 14);
 
     this.playerShadow = this.add.ellipse(
       this.player.x,
-      this.player.y + 17,
-      21,
-      9,
+      this.player.y + 22,
+      26,
+      10,
       0x000000,
       0.18
     ).setDepth(488);
 
     this.playerMarker = this.add.ellipse(
       this.player.x,
-      this.player.y + 16,
-      17,
-      7,
-      0x66a9ca,
+      this.player.y + 21,
+      23,
+      9,
+      0x9bd9f3,
       0.24
     ).setDepth(489);
 
-    if (girlFrameCount >= 3) {
+    this.playerArrow = this.add.triangle(
+      this.player.x,
+      this.player.y - 26,
+      0, 0,
+      8, 0,
+      4, 6,
+      0xeaf8ff,
+      0.82
+    ).setDepth(610);
+
+    if (!this.anims.exists("hero-down-walk")) {
       this.anims.create({
-        key: "girl-walk",
-        frames: [{ key: "girl", frame: 0 }, { key: "girl", frame: 1 }, { key: "girl", frame: 2 }],
-        frameRate: 7,
+        key: "hero-down-walk",
+        frames: [
+          { key: "hero-down-0" },
+          { key: "hero-down-1" },
+          { key: "hero-down-0" },
+          { key: "hero-down-2" }
+        ],
+        frameRate: 9,
+        repeat: -1
+      });
+
+      this.anims.create({
+        key: "hero-up-walk",
+        frames: [
+          { key: "hero-up-0" },
+          { key: "hero-up-1" },
+          { key: "hero-up-0" },
+          { key: "hero-up-2" }
+        ],
+        frameRate: 9,
+        repeat: -1
+      });
+
+      this.anims.create({
+        key: "hero-side-walk",
+        frames: [
+          { key: "hero-side-0" },
+          { key: "hero-side-1" },
+          { key: "hero-side-0" },
+          { key: "hero-side-2" }
+        ],
+        frameRate: 10,
         repeat: -1
       });
     }
@@ -334,6 +519,16 @@ class GameScene extends Phaser.Scene {
       ease: "Sine.inOut"
     });
 
+    this.tweens.add({
+      targets: this.playerArrow,
+      y: this.playerArrow.y - 4,
+      alpha: { from: 0.55, to: 0.95 },
+      duration: 850,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.inOut"
+    });
+
     this.time.delayedCall(7000, () => hide(ui.controls));
   }
 
@@ -396,10 +591,13 @@ class GameScene extends Phaser.Scene {
     this.updateSnow();
 
     if (this.playerShadow) {
-      this.playerShadow.setPosition(this.player.x, this.player.y + 17);
+      this.playerShadow.setPosition(this.player.x, this.player.y + 22);
     }
     if (this.playerMarker) {
-      this.playerMarker.setPosition(this.player.x, this.player.y + 16);
+      this.playerMarker.setPosition(this.player.x, this.player.y + 21);
+    }
+    if (this.playerArrow) {
+      this.playerArrow.setPosition(this.player.x, this.player.y - 26);
     }
     if (this.foxMarker) {
       this.foxMarker.setPosition(this.fox.x, this.fox.y + 12);
@@ -425,12 +623,37 @@ class GameScene extends Phaser.Scene {
     if (dir.lengthSq() > 0) {
       dir.normalize().scale(speed);
       this.player.setVelocity(dir.x, dir.y);
-      if (x !== 0) this.player.setFlipX(x < 0);
-      if (this.anims.exists("girl-walk")) this.player.anims.play("girl-walk", true);
+
+      if (x !== 0) {
+        this.lastFacing = x < 0 ? "left" : "right";
+        this.player.setFlipX(x < 0);
+        this.player.anims.play("hero-side-walk", true);
+      } else if (y < 0) {
+        this.lastFacing = "up";
+        this.player.setFlipX(false);
+        this.player.anims.play("hero-up-walk", true);
+      } else {
+        this.lastFacing = "down";
+        this.player.setFlipX(false);
+        this.player.anims.play("hero-down-walk", true);
+      }
     } else {
       this.player.setVelocity(0);
       this.player.anims.stop();
-      this.player.setFrame(0);
+
+      if (this.lastFacing === "up") {
+        this.player.setTexture("hero-up-0");
+        this.player.setFlipX(false);
+      } else if (this.lastFacing === "left") {
+        this.player.setTexture("hero-side-0");
+        this.player.setFlipX(true);
+      } else if (this.lastFacing === "right") {
+        this.player.setTexture("hero-side-0");
+        this.player.setFlipX(false);
+      } else {
+        this.player.setTexture("hero-down-0");
+        this.player.setFlipX(false);
+      }
     }
 
     const foxDistance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.fox.x, this.fox.y);
