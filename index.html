@@ -3,171 +3,163 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#06080d" />
+  <meta name="theme-color" content="#07090e" />
   <title>Winter Fox</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./winter-ui.css?v=20260925-cinematic1" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./winter-ui.css?v=20260925-puzzles-only1" />
 </head>
 <body>
 <main id="app">
 
-<section id="title" class="scene active title-scene">
-  <div id="title-snow" class="snow-layer"></div>
-  <div class="vignette"></div>
-  <div class="title-card">
-    <div class="fox-logo"></div>
-    <span class="kicker">A SMALL WINTER STORY</span>
-    <h1>WINTER FOX</h1>
-    <p>Uma pequena noite feita para você.</p>
-    <button id="start-game" class="primary">Começar</button>
-  </div>
-</section>
+  <section id="title" class="scene active title-scene">
+    <div id="title-snow" class="snow-layer"></div>
+    <div class="vignette"></div>
+    <div class="title-card">
+      <div class="fox-logo"></div>
+      <span class="kicker">A SMALL WINTER GAME</span>
+      <h1>WINTER FOX</h1>
+      <p>Três pequenos jogos feitos para você.</p>
+      <button id="start-game" class="primary">Começar</button>
+    </div>
+  </section>
 
-<section id="paris" class="scene paris-scene cinematic-scene">
-  <div class="cinematic-stage paris-cinematic">
-    <div id="paris-snow" class="snow-layer cinematic-snow"></div>
-
-    <header class="topbar stage-topbar">
-      <div><span>CAPÍTULO I</span><strong>Paris, 23:47</strong></div>
-      <div class="topbar-right"><span>OBJETIVO</span><strong id="paris-objective">Fale com a raposa</strong></div>
-    </header>
-
-    <div id="fox" class="hidden"></div>
-    <button id="talk-fox" class="prompt stage-fox-prompt"><kbd>E</kbd><span>Falar com a raposa</span></button>
-
-    <div id="dialogue" class="dialogue stage-dialogue hidden">
-      <span>RAPOSA</span><p id="dialogue-text"></p>
-      <button id="dialogue-next"><kbd>E</kbd> Continuar</button>
+  <section id="cafe" class="scene cafe-scene">
+    <div class="scene-bg cafe-bg">
+      <div class="cafe-window"></div>
+      <div class="cafe-counter"></div>
     </div>
 
-    <div id="paris-game" class="game-card paris-game stage-game-card hidden">
-      <div class="how-to"><b>COMO JOGAR</b><span>Siga as pegadas. Mova a garota apenas para uma casa vizinha com uma pegada.</span></div>
-      <div class="paris-game-head">
-        <div><span class="kicker">MINIGAME 01</span><h2>Encontre a raposa</h2></div>
-        <span id="paris-steps" class="round-pill">0 / 5 passos</span>
+    <header class="topbar">
+      <div><span>JOGO 1 DE 3</span><strong>Le Petit Café</strong></div>
+      <div class="topbar-right"><span>OBJETIVO</span><strong>Pegue os itens do pedido</strong></div>
+    </header>
+
+    <div class="cafe-shell">
+      <div class="order-ticket">
+        <span class="kicker">PEDIDO <b id="order-index">1</b>/3</span>
+        <h2 id="order-title">Noite fria</h2>
+
+        <div class="how-to">
+          <b>COMO JOGAR</b>
+          <span>Os itens passam na esteira. Clique apenas nos alimentos escritos no pedido.</span>
+        </div>
+
+        <p class="ticket-label">PEGUE:</p>
+        <div id="order-needed" class="order-needed"></div>
+
+        <p class="ticket-label">SUA BANDEJA:</p>
+        <div id="tray" class="cafe-tray"></div>
+
+        <p id="cafe-status" class="status">Esperando os itens...</p>
       </div>
-      <div class="paris-board-wrap">
-        <div id="paris-board" class="paris-board"></div>
-        <div class="move-pad">
-          <button data-move="up">↑</button>
-          <div><button data-move="left">←</button><button data-move="down">↓</button><button data-move="right">→</button></div>
-          <small>Você também pode usar as setas do teclado.</small>
+
+      <div class="conveyor-wrap">
+        <div class="conveyor-title">
+          <b>ESTEIRA</b>
+          <span>Clique no alimento certo quando ele passar.</span>
+        </div>
+        <div id="conveyor" class="conveyor">
+          <div class="belt-lines"></div>
         </div>
       </div>
-      <p id="paris-status" class="status">Comece pela pegada ao lado da garota.</p>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="boutique" class="scene boutique-scene cinematic-scene">
-  <div class="cinematic-stage boutique-cinematic">
-    <header class="topbar stage-topbar boutique-stage-topbar">
-      <div><span>CAPÍTULO II</span><strong>Maison Noire</strong></div>
-      <div class="topbar-right"><span>OBJETIVO</span><strong>Monte o look da noite</strong></div>
+  <section id="witch" class="scene witch-scene">
+    <div class="scene-bg witch-bg">
+      <div class="ritual-circle"></div>
+      <div class="witch-glow"></div>
+    </div>
+
+    <header class="topbar">
+      <div><span>JOGO 2 DE 3</span><strong>Ateliê da Bruxa</strong></div>
+      <div class="topbar-right"><span>OBJETIVO</span><strong>Repita o ritual</strong></div>
     </header>
 
-    <div id="look-status" class="boutique-progress">1 / 4 peças</div>
-    <div id="boutique-feedback" class="boutique-feedback">Escolha sapato, acessório e detalhe.</div>
+    <div class="witch-shell">
+      <div class="game-heading centered">
+        <span class="kicker">RITUAL DA NOITE</span>
+        <h2>Memorize a sequência</h2>
 
-    <button class="look-hotspot selected" data-look="dress-good" data-slot="dress" data-good="true" aria-label="Vestido vinho"></button>
-    <button class="look-hotspot" data-look="dress-bad" data-slot="dress" aria-label="Conjunto esportivo"></button>
+        <div class="how-to centered-how">
+          <b>COMO JOGAR</b>
+          <span>1. Clique em “Ver sequência”. 2. Observe os ingredientes acenderem. 3. Clique neles na mesma ordem.</span>
+        </div>
+      </div>
 
-    <button class="look-hotspot" data-look="shoes-good" data-slot="shoes" data-good="true" aria-label="Salto preto"></button>
-    <button class="look-hotspot" data-look="shoes-bad" data-slot="shoes" aria-label="Tênis esportivo"></button>
+      <div id="ritual-items" class="ritual-items">
+        <button data-ritual="flower">
+          <img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/flower.svg" alt="">
+          <b>Lírio-aranha</b>
+        </button>
+        <button data-ritual="vanilla">
+          <img src="https://raw.githubusercontent.com/d954mas/game-67-idle/master/templates/template/assets/icons/potion.png" alt="">
+          <b>Baunilha</b>
+        </button>
+        <button data-ritual="bow">
+          <img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/bow.svg" alt="">
+          <b>Laço preto</b>
+        </button>
+        <button data-ritual="ice">
+          <img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/snowflake.svg" alt="">
+          <b>Gelo</b>
+        </button>
+      </div>
 
-    <button class="look-hotspot" data-look="jewel-good" data-slot="jewel" data-good="true" aria-label="Bracelete delicado"></button>
-    <button class="look-hotspot" data-look="jewel-bad" data-slot="jewel" aria-label="Colar alternativo"></button>
+      <div class="ritual-footer">
+        <span id="ritual-round" class="round-pill">Rodada 1 de 3</span>
+        <button id="show-ritual" class="primary">Ver sequência</button>
+      </div>
 
-    <button class="look-hotspot" data-look="detail-good" data-slot="detail" data-good="true" aria-label="Laço preto"></button>
-    <button class="look-hotspot" data-look="detail-bad" data-slot="detail" aria-label="Boné esportivo"></button>
-
-    <button id="finish-look" class="boutique-final-hotspot" disabled aria-label="Finalizar look"></button>
-  </div>
-</section>
-
-<section id="cafe" class="scene cafe-scene">
-  <div class="soft-bg cafe-bg"><div class="cafe-window"></div><div class="cafe-counter"></div></div>
-  <header class="topbar">
-    <div><span>CAPÍTULO III</span><strong>Le Petit Café</strong></div>
-    <div class="topbar-right"><span>OBJETIVO</span><strong>Pegue os itens do pedido</strong></div>
-  </header>
-
-  <div class="cafe-shell">
-    <div class="order-ticket">
-      <span class="kicker">MINIGAME 03 · PEDIDO <b id="order-index">1</b>/3</span>
-      <h2 id="order-title">Noite fria</h2>
-      <div class="how-to dark"><b>COMO JOGAR</b><span>Os itens passam na esteira. Clique somente nos itens escritos no pedido.</span></div>
-      <p class="ticket-label">PEGUE:</p>
-      <div id="order-needed" class="order-needed"></div>
-      <div id="tray" class="cafe-tray"></div>
-      <p id="cafe-status" class="status">Esperando o primeiro item...</p>
+      <p id="ritual-status" class="status centered-status">Clique em “Ver sequência”.</p>
     </div>
+  </section>
 
-    <div class="conveyor-wrap">
-      <div class="conveyor-title"><b>ESTEIRA</b><span>Clique no alimento certo quando ele passar.</span></div>
-      <div id="conveyor" class="conveyor"><div class="belt-lines"></div></div>
+  <section id="journal" class="scene journal-scene">
+    <div class="scene-bg journal-bg"></div>
+
+    <header class="topbar">
+      <div><span>JOGO 3 DE 3</span><strong>O Caderno</strong></div>
+      <div class="topbar-right"><span>OBJETIVO</span><strong>Encontre os pares</strong></div>
+    </header>
+
+    <div class="memory-shell">
+      <div class="memory-copy">
+        <span class="kicker">PINS</span>
+        <h2>Salve os pins</h2>
+
+        <div class="how-to">
+          <b>COMO JOGAR</b>
+          <span>Vire duas cartas. Se forem iguais, o par fica salvo. Encontre os 4 pares.</span>
+        </div>
+
+        <span id="memory-progress" class="round-pill">0 / 4 pares</span>
+      </div>
+
+      <div id="memory-grid" class="memory-grid"></div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="witch" class="scene witch-scene">
-  <div class="soft-bg witch-bg"><div class="ritual-circle"></div><div class="witch-glow"></div></div>
-  <header class="topbar">
-    <div><span>CAPÍTULO IV</span><strong>Ateliê da Bruxa</strong></div>
-    <div class="topbar-right"><span>OBJETIVO</span><strong>Repita o ritual</strong></div>
-  </header>
+  <section id="finale" class="scene finale-scene">
+    <div id="final-snow" class="snow-layer"></div>
+    <div class="final-light"></div>
+    <div class="final-fox fox idle"></div>
 
-  <div class="witch-shell">
-    <div class="game-heading centered">
-      <span class="kicker">MINIGAME 04</span><h2>Memorize a sequência</h2>
-      <div class="how-to centered-how"><b>COMO JOGAR</b><span>1. Clique em “Ver sequência”. 2. Observe os ingredientes acenderem. 3. Clique neles na mesma ordem.</span></div>
+    <div class="final-card">
+      <span class="kicker">FIM</span>
+      <h1>Feliz aniversário.</h1>
+      <p>Você terminou os três jogos.</p>
+      <p class="gold-line">Ainda falta colocar aqui a sua mensagem pessoal de aniversário.</p>
+      <button id="replay" class="primary">Jogar de novo</button>
     </div>
+  </section>
 
-    <div id="ritual-items" class="ritual-items">
-      <button data-ritual="flower"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/flower.svg" alt=""><b>Lírio-aranha</b></button>
-      <button data-ritual="vanilla"><img src="https://raw.githubusercontent.com/d954mas/game-67-idle/master/templates/template/assets/icons/potion.png" alt=""><b>Baunilha</b></button>
-      <button data-ritual="bow"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/bow.svg" alt=""><b>Laço preto</b></button>
-      <button data-ritual="ice"><img src="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/snowflake.svg" alt=""><b>Gelo</b></button>
-    </div>
-
-    <div class="ritual-footer"><span id="ritual-round" class="round-pill">Rodada 1 de 3</span><button id="show-ritual" class="primary">Ver sequência</button></div>
-    <p id="ritual-status" class="status centered-status">Clique em “Ver sequência”.</p>
-  </div>
-</section>
-
-<section id="journal" class="scene journal-scene">
-  <div class="soft-bg journal-bg"></div>
-  <header class="topbar">
-    <div><span>CAPÍTULO V</span><strong>O caderno</strong></div>
-    <div class="topbar-right"><span>OBJETIVO</span><strong>Encontre os pares</strong></div>
-  </header>
-
-  <div class="memory-shell">
-    <div class="memory-copy">
-      <span class="kicker">MINIGAME 05</span><h2>Salve os pins</h2>
-      <div class="how-to"><b>COMO JOGAR</b><span>Vire duas cartas. Se forem iguais, o par fica salvo. Encontre os 4 pares.</span></div>
-      <span id="memory-progress" class="round-pill">0 / 4 pares</span>
-    </div>
-    <div id="memory-grid" class="memory-grid"></div>
-  </div>
-</section>
-
-<section id="finale" class="scene finale-scene">
-  <div id="final-snow" class="snow-layer"></div><div class="final-light"></div>
-  <div class="final-fox fox idle"></div>
-  <div class="final-card">
-    <span class="kicker">FIM</span><h1>Feliz aniversário.</h1>
-    <p>Eu quis montar um pequeno mundo com coisas que lembram você: Paris, frio, moda, queijo, doces, um pouco de bruxaria e uma raposa te trazendo até aqui.</p>
-    <p class="gold-line">Ainda falta colocar a sua mensagem de verdade aqui.</p>
-    <button id="replay" class="primary">Jogar de novo</button>
-  </div>
-</section>
-
-<div id="transition" class="transition"></div>
-<div id="toast" class="toast hidden"></div>
+  <div id="transition" class="transition"></div>
+  <div id="toast" class="toast hidden"></div>
 </main>
-<script src="./story.js?v=20260925-cinematic1"></script>
+
+<script src="./story.js?v=20260925-puzzles-only1"></script>
 </body>
 </html>
