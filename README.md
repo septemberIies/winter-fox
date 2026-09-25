@@ -1,37 +1,24 @@
 # Winter Fox
 
-Mini experiência interativa de aniversário em capítulos.
+Experiência interativa de aniversário em capítulos, feita como uma coleção de minigames curtos.
 
-## Estrutura atual
+## Fluxo atual
 
-O projeto foi simplificado para uma narrativa por cenas, evitando mapa aberto, colisões e dependência de câmera.
+1. Paris — conversar com a raposa e seguir pegadas.
+2. Boutique — montar um look dark coquette / old money por drag & drop.
+3. Café — preparar três pedidos antes do tempo acabar.
+4. Bruxaria — memorizar e repetir sequências de ingredientes.
+5. Apartamento — encontrar cinco objetos escondidos.
+6. Ritmo — acertar notas com A/S/D/F.
+7. Estrada de inverno — dirigir, desviar de barreiras e coletar rosas.
+8. Caderno — montar uma página de futuro estilo Pinterest.
+9. Final — mensagem de aniversário.
 
-### Capítulo I — Paris
-- noite com neve;
-- Torre Eiffel ao fundo;
-- rio, ponte e postes de luz;
-- raposa animada;
-- diálogo em sequência;
-- transição cinematográfica para a próxima cena.
+## Asset da raposa
 
-### Capítulo II — Le petit café
-- primeiro puzzle de queijo;
-- três escolhas;
-- feedback visual e sonoro.
-
-## Assets
-
-### ScratchIO — Animated Wild Animals
+ScratchIO — Animated Wild Animals
 - Fonte: https://opengameart.org/content/animated-wild-animals
-- Uso: raposa animada
 - Licença: CC0 1.0
+- Uso: idle e walk da raposa.
 
-A ambientação de Paris é construída diretamente em HTML/CSS/SVG para evitar dependência de sprites externos e manter o visual consistente.
-
-## Próximos capítulos
-
-1. mundo preto/branco;
-2. cabana da bruxa;
-3. runas;
-4. pegadas na neve;
-5. final de aniversário com mensagem pessoal.
+Os cenários são construídos em HTML/CSS/SVG para manter consistência visual e evitar problemas de colisão, mapa e sprites quebrados.
