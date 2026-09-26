@@ -710,3 +710,31 @@ body.letter-open{overflow:hidden}
 .ritual-items button.flash::before{
   background:radial-gradient(circle,rgba(255,173,208,.18),rgba(255,255,255,.04) 58%,transparent 74%);
 }
+
+/* RITUAL LOCAL ASSET FIX */
+.ritual-items img{
+  display:block;
+  border:0!important;
+  background:transparent!important;
+}
+.ritual-items button::before{
+  width:90px;
+  height:90px;
+  top:22px;
+}
+.ritual-items button:nth-child(1)::before{
+  background:radial-gradient(circle,rgba(229,57,53,.13),rgba(229,57,53,.035) 58%,transparent 73%);
+}
+.ritual-items button:nth-child(2)::before{
+  background:radial-gradient(circle,rgba(242,223,181,.12),rgba(242,223,181,.03) 58%,transparent 73%);
+}
+.ritual-items button:nth-child(3)::before{
+  background:radial-gradient(circle,#efe5e9 0%,#d7c7ce 56%,rgba(255,255,255,.03) 73%);
+}
+.ritual-items button:nth-child(4)::before{
+  background:radial-gradient(circle,rgba(158,223,255,.14),rgba(158,223,255,.035) 58%,transparent 73%);
+}
+.ritual-items button:nth-child(1) img{width:72px!important;height:72px!important}
+.ritual-items button:nth-child(2) img{width:70px!important;height:70px!important}
+.ritual-items button:nth-child(3) img{width:74px!important;height:74px!important}
+.ritual-items button:nth-child(4) img{width:70px!important;height:70px!important}
