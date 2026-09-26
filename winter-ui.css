@@ -657,3 +657,56 @@ body.letter-open{overflow:hidden}
     display:none;
   }
 }
+
+/* BETTER RITUAL ITEM SPRITES */
+.ritual-items button{
+  position:relative;
+  overflow:hidden;
+}
+.ritual-items button::before{
+  content:"";
+  position:absolute;
+  width:84px;
+  height:84px;
+  top:26px;
+  left:50%;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.08),rgba(255,255,255,.025) 56%,transparent 72%);
+  border:1px solid rgba(255,255,255,.05);
+}
+.ritual-items img{
+  position:relative;
+  z-index:2;
+  width:64px!important;
+  height:64px!important;
+  object-fit:contain;
+  filter:none!important;
+  opacity:1!important;
+  image-rendering:auto!important;
+  transition:transform .18s ease,filter .18s ease;
+}
+.ritual-items button:nth-child(1) img{
+  filter:drop-shadow(0 0 11px rgba(229,57,53,.30))!important;
+}
+.ritual-items button:nth-child(2) img{
+  filter:drop-shadow(0 0 10px rgba(244,230,184,.16))!important;
+}
+.ritual-items button:nth-child(3)::before{
+  background:radial-gradient(circle,#e8dde2 0%,#d6c7cf 50%,rgba(255,255,255,.04) 71%);
+}
+.ritual-items button:nth-child(3) img{
+  width:68px!important;
+  height:68px!important;
+  filter:drop-shadow(0 4px 7px rgba(0,0,0,.30))!important;
+}
+.ritual-items button:nth-child(4) img{
+  filter:drop-shadow(0 0 12px rgba(126,214,255,.28))!important;
+}
+.ritual-items button.flash img{
+  transform:scale(1.14);
+  filter:drop-shadow(0 0 16px rgba(255,175,210,.55))!important;
+}
+.ritual-items button.flash::before{
+  background:radial-gradient(circle,rgba(255,173,208,.18),rgba(255,255,255,.04) 58%,transparent 74%);
+}
