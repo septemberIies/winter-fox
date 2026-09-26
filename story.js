@@ -69,7 +69,6 @@ $("#start-game").onclick=openIntroLetter;
 $("#intro-letter-close").onclick=closeIntroLetter;
 
 function showCafeLetter(){
-  playStageMusic(5);
   $("#cafe-letter-modal").classList.add("open");
   $("#cafe-letter-modal").setAttribute("aria-hidden","false");
   document.body.classList.add("letter-open");
@@ -161,7 +160,7 @@ function catchFood(el,id){
     stopConveyor();
     $("#cafe-status").textContent="Pedido completo!";
     orderIndex++;
-    if(orderIndex>=orders.length){setTimeout(showCafeLetter,700);}
+    if(orderIndex>=orders.length){playStageMusic(5);setTimeout(showCafeLetter,700);}
     else setTimeout(setupOrder,700);
   }
 }
