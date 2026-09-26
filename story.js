@@ -7,6 +7,7 @@ function show(id){
   document.getElementById(id)?.classList.add("active");
   current=id;
   if(typeof syncSkipGameButton==="function")syncSkipGameButton();
+  if(id==="finale"&&typeof startFinaleExperience==="function")startFinaleExperience();
 }
 function go(id){
   const t=$("#transition");
@@ -130,6 +131,7 @@ function showPinsLetter(){
 
 function closePinsLetter(){
   stopStageMusic();
+  playStageMusic(9);
   $("#pins-letter-modal").classList.remove("open");
   $("#pins-letter-modal").setAttribute("aria-hidden","true");
   document.body.classList.remove("letter-open");
@@ -591,7 +593,8 @@ const MUSIC_TRACKS=[
   {title:"M",src:"assets/music/Anil Emre Daldal - M.mp3"},
   {title:"Die For You (Remix)",src:"assets/music/The Weeknd, Ariana Grande - Die For You (Remix Lyric Video) (1).mp3"},
   {title:"Witch Letter",src:"assets/music/ssstik.io_1790386490570.mp3"},
-  {title:"Love",src:"assets/music/love.mp3"}
+  {title:"Love",src:"assets/music/love.mp3"},
+  {title:"Só Pra Você",src:"assets/music/DESEJO DE MENÍNA - SÓ PRA VOCÊ - CLIPE OFICIAL.mp3"}
 ];
 
 const bgMusic=new Audio();
@@ -705,6 +708,7 @@ function skipCurrentMinigame(){
   }
 
   if(current==="journal"){
+    playStageMusic(9);
     go("finale");
   }
 }
@@ -714,3 +718,100 @@ if(skipGameButton){
 }
 
 syncSkipGameButton();
+
+
+/* FINAL PHOTO SLIDESHOW — shuffled, no repeats until every photo has shown */
+const FINAL_PHOTOS=[
+  "assets/photos/apanhandodopapai.png",
+  "assets/photos/auaudopapai.jpg",
+  "assets/photos/bocudona.jpg",
+  "assets/photos/cabelomamae.jpg",
+  "assets/photos/cabelonenemtete.jpg",
+  "assets/photos/filhachamandodepapai.png",
+  "assets/photos/filhahomemaranha.jpg",
+  "assets/photos/filhaterreiro.jpg",
+  "assets/photos/filhaterreiropt1.jpg",
+  "assets/photos/mamaecachorra.jpg",
+  "assets/photos/naboquinha.jpg",
+  "assets/photos/nenemcagando.jpg",
+  "assets/photos/nenemdeitada.jpg",
+  "assets/photos/nenemdejavu.jpg",
+  "assets/photos/nenemfantasma.jpg",
+  "assets/photos/nenemfilha.png",
+  "assets/photos/nenemfranja.jpg",
+  "assets/photos/nenemtete.png",
+  "assets/photos/papai.png",
+  "assets/photos/polo.jpg",
+  "assets/photos/ruanitadebolsinha.jpg",
+  "assets/photos/ruanitaia.jpg",
+  "assets/photos/ruanitanocarro.jpg",
+  "assets/photos/ruanitavidro.png",
+  "assets/photos/solhairnene.jpg",
+  "assets/photos/torandoladentro.png",
+  "assets/photos/unharuanita.jpg",
+  "assets/photos/vestidonenem.png"
+];
+
+let finalPhotoOrder=[];
+let finalPhotoCursor=0;
+let finalPhotoLast=-1;
+let finalPhotoTimer=null;
+let finalPhotoFront=0;
+let finaleStarted=false;
+
+function shuffleFinalPhotos(){
+  finalPhotoOrder=FINAL_PHOTOS.map((_,i)=>i);
+  for(let i=finalPhotoOrder.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [finalPhotoOrder[i],finalPhotoOrder[j]]=[finalPhotoOrder[j],finalPhotoOrder[i]];
+  }
+
+  if(finalPhotoOrder.length>1&&finalPhotoOrder[0]===finalPhotoLast){
+    const swapIndex=1+Math.floor(Math.random()*(finalPhotoOrder.length-1));
+    [finalPhotoOrder[0],finalPhotoOrder[swapIndex]]=[finalPhotoOrder[swapIndex],finalPhotoOrder[0]];
+  }
+  finalPhotoCursor=0;
+}
+
+function showNextFinalPhoto(){
+  if(!FINAL_PHOTOS.length)return;
+  if(!finalPhotoOrder.length||finalPhotoCursor>=finalPhotoOrder.length)shuffleFinalPhotos();
+
+  const index=finalPhotoOrder[finalPhotoCursor++];
+  finalPhotoLast=index;
+
+  const a=$("#final-photo-a");
+  const b=$("#final-photo-b");
+  if(!a||!b)return;
+
+  const incoming=finalPhotoFront===0?b:a;
+  const outgoing=finalPhotoFront===0?a:b;
+  const src=FINAL_PHOTOS[index];
+
+  const preload=new Image();
+  preload.onload=()=>{
+    incoming.style.backgroundImage=`url("${encodeURI(src)}")`;
+    incoming.classList.add("visible");
+    outgoing.classList.remove("visible");
+    finalPhotoFront=finalPhotoFront===0?1:0;
+  };
+  preload.src=src;
+}
+
+function startFinaleExperience(){
+  if(finaleStarted)return;
+  finaleStarted=true;
+  playStageMusic(9);
+  shuffleFinalPhotos();
+
+  const firstIndex=finalPhotoOrder[finalPhotoCursor++];
+  finalPhotoLast=firstIndex;
+  const a=$("#final-photo-a");
+  if(a){
+    a.style.backgroundImage=`url("${encodeURI(FINAL_PHOTOS[firstIndex])}")`;
+    a.classList.add("visible");
+  }
+
+  clearInterval(finalPhotoTimer);
+  finalPhotoTimer=setInterval(showNextFinalPhoto,4200);
+}
