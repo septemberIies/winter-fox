@@ -550,3 +550,26 @@ function startMenuMusic(){
 window.addEventListener("pointerdown",startMenuMusic,{once:true,passive:true});
 window.addEventListener("keydown",startMenuMusic,{once:true});
 
+
+/* MUSIC MUTE TOGGLE */
+const musicToggle=$("#music-toggle");
+let musicMuted=false;
+
+function syncMusicToggle(){
+  if(!musicToggle)return;
+  musicToggle.classList.toggle("muted",musicMuted);
+  musicToggle.setAttribute("aria-pressed",musicMuted?"true":"false");
+  musicToggle.setAttribute("aria-label",musicMuted?"Ativar música":"Mutar música");
+  musicToggle.title=musicMuted?"Ativar música":"Mutar música";
+  $(".music-toggle-text").textContent=musicMuted?"UNMUTE MUSIC":"MUTE MUSIC";
+  $(".music-toggle-icon").textContent=musicMuted?"×":"♪";
+}
+
+if(musicToggle){
+  musicToggle.addEventListener("click",()=>{
+    musicMuted=!musicMuted;
+    bgMusic.muted=musicMuted;
+    syncMusicToggle();
+  });
+  syncMusicToggle();
+}
