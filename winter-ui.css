@@ -790,3 +790,75 @@ body.letter-open{overflow:hidden}
   }
   .skip-game-text{display:none}
 }
+
+/* MORE ROMANTIC PIN CARDS — 10 pairs / 20 cards */
+.memory-shell{
+  width:min(1180px,95vw)!important;
+  grid-template-columns:minmax(220px,.48fr) minmax(0,1.52fr)!important;
+  gap:26px!important;
+}
+.memory-grid{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+.memory-card{
+  height:118px!important;
+  border-radius:14px!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.12);
+}
+.memory-back{
+  background:
+    radial-gradient(circle at 50% 36%,rgba(116,42,69,.18),transparent 38%),
+    linear-gradient(145deg,#1b171d,#101116)!important;
+}
+.memory-back:after{
+  content:"♡"!important;
+  font:600 26px "Cormorant Garamond",serif!important;
+  color:#8c3c5e!important;
+  text-shadow:0 0 12px rgba(205,91,139,.14);
+}
+.memory-front{
+  background:
+    radial-gradient(circle at 50% 28%,rgba(255,255,255,.72),transparent 38%),
+    linear-gradient(145deg,#f2ebe5,#ddd0c7)!important;
+  color:#35282d!important;
+  gap:7px!important;
+}
+.memory-front img{
+  width:42px!important;
+  height:42px!important;
+  object-fit:contain!important;
+  filter:none!important;
+  opacity:1!important;
+}
+.memory-front b{
+  font:700 15px/1 "Cormorant Garamond",serif!important;
+}
+.memory-card.matched{
+  border-color:rgba(207,114,154,.46)!important;
+  box-shadow:0 0 0 1px rgba(207,114,154,.12),0 10px 26px rgba(88,31,56,.16)!important;
+}
+@media(max-width:900px){
+  .memory-shell{
+    top:51%!important;
+    width:94vw!important;
+    max-height:calc(100vh - 95px);
+    overflow:auto;
+    display:block!important;
+    padding-bottom:70px;
+  }
+  .memory-copy{margin-bottom:18px}
+  .memory-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  .memory-card{height:98px!important}
+  .memory-front img{width:34px!important;height:34px!important}
+  .memory-front b{font-size:13px!important}
+}
+@media(max-width:560px){
+  .memory-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .memory-card{height:82px!important}
+  .memory-front img{width:28px!important;height:28px!important}
+  .memory-front b{font-size:11px!important}
+}
