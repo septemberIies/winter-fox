@@ -121,6 +121,23 @@ function closeWitchLetter(){
 const witchLetterClose=$("#witch-letter-close");
 if(witchLetterClose)witchLetterClose.onclick=closeWitchLetter;
 
+function showPinsLetter(){
+  $("#pins-letter-modal").classList.add("open");
+  $("#pins-letter-modal").setAttribute("aria-hidden","false");
+  document.body.classList.add("letter-open");
+}
+
+function closePinsLetter(){
+  stopStageMusic();
+  $("#pins-letter-modal").classList.remove("open");
+  $("#pins-letter-modal").setAttribute("aria-hidden","true");
+  document.body.classList.remove("letter-open");
+  setTimeout(()=>go("finale"),160);
+}
+
+const pinsLetterClose=$("#pins-letter-close");
+if(pinsLetterClose)pinsLetterClose.onclick=closePinsLetter;
+
 
 /* ESTEIRA */
 const foods={
@@ -478,7 +495,10 @@ function flipCard(card){
     good();
     $("#memory-progress").textContent=`${matches} / 4 pares`;
 
-    if(matches===4){playStageMusic(4);setTimeout(()=>go("finale"),900);}
+    if(matches===4){
+      playStageMusic(8);
+      setTimeout(showPinsLetter,850);
+    }
   }else{
     setTimeout(()=>{
       open.forEach(x=>x.classList.remove("flipped"));
@@ -564,7 +584,8 @@ const MUSIC_TRACKS=[
   {title:"The First Time",src:"assets/music/Damiano David - The First Time (Official Visual Video) (1).mp3"},
   {title:"M",src:"assets/music/Anil Emre Daldal - M.mp3"},
   {title:"Die For You (Remix)",src:"assets/music/The Weeknd, Ariana Grande - Die For You (Remix Lyric Video) (1).mp3"},
-  {title:"Witch Letter",src:"assets/music/ssstik.io_1790386490570.mp3"}
+  {title:"Witch Letter",src:"assets/music/ssstik.io_1790386490570.mp3"},
+  {title:"Love",src:"assets/music/love.mp3"}
 ];
 
 const bgMusic=new Audio();
