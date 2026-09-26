@@ -44,3 +44,7 @@ Depois dos quatro jogos, aparece a tela final de aniversário.
 - Twirly Flower — Lorc, CC BY 3.0, Game-icons.net
 - Ice Cube — Lorc, CC BY 3.0, Game-icons.net
 - Bow Tie Ribbon — Delapouite, CC BY 3.0, Game-icons.net
+
+
+### Pins
+O minigame de memória usa 10 pares / 20 cartas românticas: Paris, Nosso lar, Rosas, Amor, Cisnes, Laço preto, Perfume, Vinho, Morango e Beijo. Ícones adicionais derivados de Game-icons.net (CC BY 3.0) e Tabler Icons (MIT).
