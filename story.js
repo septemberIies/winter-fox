@@ -471,3 +471,91 @@ snow("final-snow",95);
     createClickHeart(e.clientX,e.clientY);
   },{passive:true});
 })();
+
+
+/* GLOBAL MUSIC PLAYLIST — shuffle bag, no repeats per cycle */
+const MUSIC_TRACKS=[
+  {title:"Wonderwall",src:"assets/music/wonderwall.mp3"},
+  {title:"Drowning",src:"assets/music/drowning.mp3"},
+  {title:"Without Me",src:"assets/music/without-me.mp3"},
+  {title:"Cinderella",src:"assets/music/cinderella.mp3"},
+  {title:"The First Time",src:"assets/music/the-first-time.mp3"}
+];
+
+const bgMusic=new Audio();
+bgMusic.preload="metadata";
+bgMusic.volume=.28;
+
+let musicOrder=[];
+let musicCursor=0;
+let musicLastIndex=-1;
+let musicStarted=false;
+let musicLoading=false;
+let musicFailures=0;
+
+function shuffleMusicOrder(){
+  musicOrder=MUSIC_TRACKS.map((_,i)=>i);
+  for(let i=musicOrder.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [musicOrder[i],musicOrder[j]]=[musicOrder[j],musicOrder[i]];
+  }
+
+  // A new cycle never starts with the same song that ended the previous one.
+  if(musicOrder.length>1 && musicOrder[0]===musicLastIndex){
+    const swapIndex=1+Math.floor(Math.random()*(musicOrder.length-1));
+    [musicOrder[0],musicOrder[swapIndex]]=[musicOrder[swapIndex],musicOrder[0]];
+  }
+  musicCursor=0;
+}
+
+async function playNextMusic(){
+  if(!musicStarted||musicLoading)return;
+  musicLoading=true;
+
+  if(!musicOrder.length||musicCursor>=musicOrder.length)shuffleMusicOrder();
+
+  const index=musicOrder[musicCursor++];
+  const track=MUSIC_TRACKS[index];
+  musicLastIndex=index;
+
+  bgMusic.src=track.src;
+  bgMusic.currentTime=0;
+
+  try{
+    await bgMusic.play();
+    musicFailures=0;
+  }catch(err){
+    // Missing/unavailable file: try the next one, but never spin forever.
+    musicFailures++;
+    musicLoading=false;
+    if(musicFailures<MUSIC_TRACKS.length){
+      setTimeout(playNextMusic,300);
+    }
+    return;
+  }
+
+  musicLoading=false;
+}
+
+function startGlobalMusic(){
+  if(musicStarted)return;
+  musicStarted=true;
+  shuffleMusicOrder();
+  playNextMusic();
+}
+
+bgMusic.addEventListener("ended",()=>{
+  musicLoading=false;
+  playNextMusic();
+});
+
+bgMusic.addEventListener("error",()=>{
+  if(!musicStarted)return;
+  musicLoading=false;
+  musicFailures++;
+  if(musicFailures<MUSIC_TRACKS.length)setTimeout(playNextMusic,300);
+});
+
+// Browsers require a user gesture before starting audio.
+window.addEventListener("pointerdown",startGlobalMusic,{once:true,passive:true});
+window.addEventListener("keydown",startGlobalMusic,{once:true});
