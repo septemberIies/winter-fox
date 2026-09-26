@@ -453,3 +453,151 @@ body{font-family:"Manrope",system-ui,sans-serif;color:var(--text)}button{font:in
 @media (prefers-reduced-motion: reduce){
   .click-heart,.click-heart-dot,.click-heart-spark{animation-duration:.18s!important}
 }
+
+
+/* ROMANTIC INTRO LETTER */
+.intro-letter-modal{
+  position:fixed;
+  inset:0;
+  z-index:9990;
+  display:grid;
+  place-items:center;
+  padding:28px;
+  visibility:hidden;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .32s ease,visibility .32s ease;
+}
+.intro-letter-modal.open{
+  visibility:visible;
+  opacity:1;
+  pointer-events:auto;
+}
+.intro-letter-backdrop{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(105,31,56,.22),transparent 38%),
+    rgba(3,4,8,.88);
+  backdrop-filter:blur(8px);
+}
+.intro-letter-stage{
+  position:relative;
+  width:min(760px,94vw);
+  max-height:90vh;
+  display:grid;
+  place-items:center;
+  transform:translateY(18px) scale(.96);
+  transition:transform .45s cubic-bezier(.2,.8,.2,1);
+}
+.intro-letter-modal.open .intro-letter-stage{
+  transform:translateY(0) scale(1);
+}
+.intro-envelope-sprite{
+  position:absolute;
+  z-index:0;
+  width:min(390px,55vw);
+  right:-76px;
+  bottom:-75px;
+  transform:rotate(7deg);
+  opacity:.92;
+  filter:drop-shadow(0 24px 34px rgba(0,0,0,.46));
+}
+.intro-letter-paper{
+  position:relative;
+  z-index:2;
+  width:min(650px,88vw);
+  max-height:82vh;
+  overflow:auto;
+  padding:52px 58px 46px;
+  border:1px solid rgba(103,46,55,.22);
+  border-radius:8px 8px 12px 12px;
+  color:#39262d;
+  background:
+    radial-gradient(circle at 14% 8%,rgba(255,255,255,.72),transparent 25%),
+    linear-gradient(145deg,#fffaf2 0%,#f7e9dc 58%,#ead6c5 100%);
+  box-shadow:
+    0 28px 90px rgba(0,0,0,.55),
+    inset 0 0 70px rgba(112,60,51,.05);
+}
+.intro-letter-paper::before,
+.intro-letter-paper::after{
+  content:"";
+  position:absolute;
+  width:90px;
+  height:1px;
+  top:30px;
+  background:linear-gradient(90deg,transparent,#9b5367,transparent);
+  opacity:.55;
+}
+.intro-letter-paper::before{left:38px}
+.intro-letter-paper::after{right:38px}
+.intro-letter-kicker{
+  display:block;
+  margin-bottom:8px;
+  color:#8b3652;
+  font:800 10px/1.2 Manrope,sans-serif;
+  letter-spacing:.24em;
+}
+.intro-letter-paper h2{
+  margin:0 0 20px;
+  color:#4d2633;
+  font:600 clamp(36px,5vw,53px)/.96 "Cormorant Garamond",serif;
+}
+.intro-letter-paper p{
+  margin:0;
+  color:#432f35;
+  font:600 16px/1.85 Manrope,sans-serif;
+  letter-spacing:-.01em;
+}
+.intro-letter-close{
+  display:block;
+  margin:30px auto 0;
+  min-width:220px;
+  padding:14px 22px;
+  border:1px solid rgba(103,40,60,.42);
+  border-radius:999px;
+  color:#fff8f3;
+  background:#64243a;
+  box-shadow:0 10px 28px rgba(79,25,44,.18);
+  font:800 11px/1 Manrope,sans-serif;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:transform .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.intro-letter-close:hover{
+  transform:translateY(-2px);
+  background:#7a2b48;
+  box-shadow:0 14px 32px rgba(79,25,44,.23);
+}
+.intro-wax-seal{
+  position:absolute;
+  right:24px;
+  bottom:20px;
+  display:grid;
+  place-items:center;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  color:#f4d6df;
+  background:#8b2847;
+  border:2px solid rgba(98,20,45,.5);
+  box-shadow:inset 0 0 0 4px rgba(255,255,255,.05),0 8px 14px rgba(70,19,35,.18);
+  font-size:19px;
+  transform:rotate(-8deg);
+}
+body.letter-open{overflow:hidden}
+
+@media (max-width:640px){
+  .intro-letter-modal{padding:14px}
+  .intro-letter-paper{
+    width:min(94vw,650px);
+    max-height:86vh;
+    padding:40px 26px 34px;
+  }
+  .intro-letter-paper p{font-size:14px;line-height:1.72}
+  .intro-letter-paper h2{font-size:38px}
+  .intro-envelope-sprite{width:260px;right:-35px;bottom:-55px}
+  .intro-wax-seal{display:none}
+}
