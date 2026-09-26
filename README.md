@@ -37,3 +37,10 @@ Depois dos quatro jogos, aparece a tela final de aniversário.
 - ScratchIO — Animated Wild Animals, CC0. Usado na raposa da tela final.
 
 - SVG Repo — Wine Bottle Alcohol, CC0. Usado como garrafa de vinho no desafio de resfriamento.
+
+
+### Ritual icons
+- Vanilla Flower — Lorc, CC BY 3.0, Game-icons.net
+- Twirly Flower — Lorc, CC BY 3.0, Game-icons.net
+- Ice Cube — Lorc, CC BY 3.0, Game-icons.net
+- Bow Tie Ribbon — Delapouite, CC BY 3.0, Game-icons.net
