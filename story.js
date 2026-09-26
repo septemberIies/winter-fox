@@ -49,7 +49,7 @@ function snow(id,n){
 }
 
 function openIntroLetter(){
-  tone(330,.12,.02);
+  playStageMusic(0);
   $("#intro-letter-modal").classList.add("open");
   $("#intro-letter-modal").setAttribute("aria-hidden","false");
   document.body.classList.add("letter-open");
