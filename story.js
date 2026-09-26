@@ -49,10 +49,10 @@ function snow(id,n){
 }
 
 function openIntroLetter(){
-  playStageMusic(4);
   $("#intro-letter-modal").classList.add("open");
   $("#intro-letter-modal").setAttribute("aria-hidden","false");
   document.body.classList.add("letter-open");
+  playStageMusic(4);
 }
 
 function closeIntroLetter(){
@@ -65,8 +65,10 @@ function closeIntroLetter(){
   setTimeout(()=>go("cafe"),160);
 }
 
-$("#start-game").onclick=openIntroLetter;
-$("#intro-letter-close").onclick=closeIntroLetter;
+const startGameButton=$("#start-game");
+const introLetterClose=$("#intro-letter-close");
+if(startGameButton)startGameButton.onclick=openIntroLetter;
+if(introLetterClose)introLetterClose.onclick=closeIntroLetter;
 
 function showCafeLetter(){
   $("#cafe-letter-modal").classList.add("open");
@@ -82,7 +84,8 @@ function closeCafeLetter(){
   setTimeout(()=>go("wine"),160);
 }
 
-$("#cafe-letter-close").onclick=closeCafeLetter;
+const cafeLetterClose=$("#cafe-letter-close");
+if(cafeLetterClose)cafeLetterClose.onclick=closeCafeLetter;
 
 
 /* ESTEIRA */
