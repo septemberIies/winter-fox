@@ -68,6 +68,24 @@ function closeIntroLetter(){
 $("#start-game").onclick=openIntroLetter;
 $("#intro-letter-close").onclick=closeIntroLetter;
 
+function showCafeLetter(){
+  playStageMusic(5);
+  $("#cafe-letter-modal").classList.add("open");
+  $("#cafe-letter-modal").setAttribute("aria-hidden","false");
+  document.body.classList.add("letter-open");
+}
+
+function closeCafeLetter(){
+  stopStageMusic();
+  $("#cafe-letter-modal").classList.remove("open");
+  $("#cafe-letter-modal").setAttribute("aria-hidden","true");
+  document.body.classList.remove("letter-open");
+  setTimeout(()=>go("wine"),160);
+}
+
+$("#cafe-letter-close").onclick=closeCafeLetter;
+
+
 /* ESTEIRA */
 const foods={
   brie:{label:"Brie",img:"https://raw.githubusercontent.com/redamajlal/kitchen-nightmare/main/assets/kenney_pixel-platformer-food-expansion/Tiles/tile_0105.png"},
@@ -143,7 +161,7 @@ function catchFood(el,id){
     stopConveyor();
     $("#cafe-status").textContent="Pedido completo!";
     orderIndex++;
-    if(orderIndex>=orders.length){playStageMusic(1);setTimeout(()=>go("wine"),900);}
+    if(orderIndex>=orders.length){setTimeout(showCafeLetter,700);}
     else setTimeout(setupOrder,700);
   }
 }
@@ -507,7 +525,8 @@ const MUSIC_TRACKS=[
   {title:"Drowning",src:"assets/music/A Boogie Wit Da Hoodie - Drowning (feat. Kodak Black) Official Audio.mp3"},
   {title:"Without Me",src:"assets/music/Halsey - Without Me.mp3"},
   {title:"Cinderella",src:"assets/music/Mac Miller - Cinderella (feat. Ty Dolla ign).mp3"},
-  {title:"The First Time",src:"assets/music/Damiano David - The First Time (Official Visual Video) (1).mp3"}
+  {title:"The First Time",src:"assets/music/Damiano David - The First Time (Official Visual Video) (1).mp3"},
+  {title:"M",src:"assets/music/Anil Emre Daldal - M.mp3"}
 ];
 
 const bgMusic=new Audio();
