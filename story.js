@@ -6,7 +6,6 @@ function show(id){
   scenes.forEach(x=>document.getElementById(x)?.classList.remove("active"));
   document.getElementById(id)?.classList.add("active");
   current=id;
-  if(typeof syncSkipGameButton==="function")syncSkipGameButton();
   if(id==="finale"&&typeof startFinaleExperience==="function")startFinaleExperience();
 }
 function go(id){
@@ -668,7 +667,7 @@ if(musicToggle){
   syncMusicToggle();
 }
 
-/* SKIP CURRENT MINIGAME */
+
 const skipGameButton=$("#skip-game");
 
 function syncSkipGameButton(){
