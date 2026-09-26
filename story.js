@@ -473,25 +473,23 @@ snow("final-snow",95);
 })();
 
 
-/* GLOBAL MUSIC PLAYLIST — shuffle bag, no repeats per cycle */
+/* GLOBAL MUSIC PLAYLIST — official YouTube embeds, shuffle bag */
 const MUSIC_TRACKS=[
-  {title:"Wonderwall",src:"assets/music/wonderwall.mp3"},
-  {title:"Drowning",src:"assets/music/drowning.mp3"},
-  {title:"Without Me",src:"assets/music/without-me.mp3"},
-  {title:"Cinderella",src:"assets/music/cinderella.mp3"},
-  {title:"The First Time",src:"assets/music/the-first-time.mp3"}
+  {title:"Wonderwall",videoId:"vU05Eksc_iM"},
+  {title:"Drowning",videoId:"rvaJ7QlhH0g"},
+  {title:"Without Me",videoId:"aYr4fDuLhXg"},
+  {title:"Cinderella",videoId:"0fcsGS1dEro"},
+  {title:"The First Time",videoId:"n1Hzf_is8tI"}
 ];
-
-const bgMusic=new Audio();
-bgMusic.preload="metadata";
-bgMusic.volume=.28;
 
 let musicOrder=[];
 let musicCursor=0;
 let musicLastIndex=-1;
 let musicStarted=false;
-let musicLoading=false;
+let musicRequested=false;
+let musicPlayerReady=false;
 let musicFailures=0;
+let bgMusicPlayer=null;
 
 function shuffleMusicOrder(){
   musicOrder=MUSIC_TRACKS.map((_,i)=>i);
@@ -500,7 +498,6 @@ function shuffleMusicOrder(){
     [musicOrder[i],musicOrder[j]]=[musicOrder[j],musicOrder[i]];
   }
 
-  // A new cycle never starts with the same song that ended the previous one.
   if(musicOrder.length>1 && musicOrder[0]===musicLastIndex){
     const swapIndex=1+Math.floor(Math.random()*(musicOrder.length-1));
     [musicOrder[0],musicOrder[swapIndex]]=[musicOrder[swapIndex],musicOrder[0]];
@@ -508,54 +505,121 @@ function shuffleMusicOrder(){
   musicCursor=0;
 }
 
-async function playNextMusic(){
-  if(!musicStarted||musicLoading)return;
-  musicLoading=true;
+function ensureMusicHost(){
+  if(document.getElementById("yt-music-player"))return;
+  const host=document.createElement("div");
+  host.id="yt-music-player";
+  host.setAttribute("aria-hidden","true");
+  Object.assign(host.style,{
+    position:"fixed",
+    left:"-10000px",
+    top:"-10000px",
+    width:"200px",
+    height:"200px",
+    opacity:"0.01",
+    pointerEvents:"none"
+  });
+  document.body.appendChild(host);
+}
 
-  if(!musicOrder.length||musicCursor>=musicOrder.length)shuffleMusicOrder();
+function loadYouTubeMusicApi(){
+  ensureMusicHost();
+  if(window.YT&&window.YT.Player){
+    createYouTubeMusicPlayer();
+    return;
+  }
+  if(document.getElementById("youtube-iframe-api"))return;
+
+  const script=document.createElement("script");
+  script.id="youtube-iframe-api";
+  script.src="https://www.youtube.com/iframe_api";
+  script.async=true;
+  document.head.appendChild(script);
+}
+
+function createYouTubeMusicPlayer(){
+  if(bgMusicPlayer||!window.YT||!window.YT.Player)return;
+
+  bgMusicPlayer=new YT.Player("yt-music-player",{
+    width:"200",
+    height:"200",
+    playerVars:{
+      autoplay:0,
+      controls:0,
+      disablekb:1,
+      fs:0,
+      playsinline:1,
+      rel:0,
+      modestbranding:1
+    },
+    events:{
+      onReady:(event)=>{
+        musicPlayerReady=true;
+        event.target.setVolume(28);
+        if(musicRequested)playNextMusic();
+      },
+      onStateChange:(event)=>{
+        if(event.data===YT.PlayerState.PLAYING){
+          musicFailures=0;
+        }
+        if(event.data===YT.PlayerState.ENDED){
+          playNextMusic();
+        }
+      },
+      onError:()=>{
+        musicFailures++;
+        if(musicFailures<MUSIC_TRACKS.length){
+          setTimeout(playNextMusic,250);
+        }
+      }
+    }
+  });
+}
+
+window.onYouTubeIframeAPIReady=createYouTubeMusicPlayer;
+
+function playNextMusic(){
+  if(!musicStarted||!musicPlayerReady||!bgMusicPlayer)return;
+
+  if(!musicOrder.length||musicCursor>=musicOrder.length){
+    shuffleMusicOrder();
+  }
 
   const index=musicOrder[musicCursor++];
   const track=MUSIC_TRACKS[index];
   musicLastIndex=index;
 
-  bgMusic.src=track.src;
-  bgMusic.currentTime=0;
-
   try{
-    await bgMusic.play();
-    musicFailures=0;
+    bgMusicPlayer.setVolume(28);
+    bgMusicPlayer.loadVideoById({
+      videoId:track.videoId,
+      startSeconds:0
+    });
   }catch(err){
-    // Missing/unavailable file: try the next one, but never spin forever.
     musicFailures++;
-    musicLoading=false;
     if(musicFailures<MUSIC_TRACKS.length){
-      setTimeout(playNextMusic,300);
+      setTimeout(playNextMusic,250);
     }
-    return;
   }
-
-  musicLoading=false;
 }
 
 function startGlobalMusic(){
   if(musicStarted)return;
   musicStarted=true;
+  musicRequested=true;
   shuffleMusicOrder();
-  playNextMusic();
+
+  if(musicPlayerReady){
+    playNextMusic();
+  }else{
+    loadYouTubeMusicApi();
+  }
 }
 
-bgMusic.addEventListener("ended",()=>{
-  musicLoading=false;
-  playNextMusic();
-});
+/* Load the player early so the COMEÇAR click can start sound immediately. */
+loadYouTubeMusicApi();
 
-bgMusic.addEventListener("error",()=>{
-  if(!musicStarted)return;
-  musicLoading=false;
-  musicFailures++;
-  if(musicFailures<MUSIC_TRACKS.length)setTimeout(playNextMusic,300);
-});
-
-// Browsers require a user gesture before starting audio.
+/* First real interaction unlocks audio in the browser. */
 window.addEventListener("pointerdown",startGlobalMusic,{once:true,passive:true});
 window.addEventListener("keydown",startGlobalMusic,{once:true});
+
