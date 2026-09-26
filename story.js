@@ -456,12 +456,17 @@ ritualButtons.forEach(btn=>btn.onclick=()=>{
 });
 
 /* PINS */
-const iconBase="https://raw.githubusercontent.com/tabler/tabler-icons/main/icons/outline/";
 const pairs=[
-  {id:"paris",label:"Paris",icon:iconBase+"map-pin.svg"},
-  {id:"home",label:"Apartamento",icon:iconBase+"home.svg"},
-  {id:"flower",label:"Flores",icon:iconBase+"flower.svg"},
-  {id:"love",label:"Romance",icon:iconBase+"heart.svg"}
+  {id:"paris",label:"Paris",icon:"./assets/pins/paris.svg"},
+  {id:"home",label:"Nosso lar",icon:"./assets/pins/home.svg"},
+  {id:"rose",label:"Rosas",icon:"./assets/pins/rose.svg"},
+  {id:"love",label:"Amor",icon:"./assets/pins/love.svg"},
+  {id:"swan",label:"Cisnes",icon:"./assets/pins/swan.svg"},
+  {id:"bow",label:"Laço preto",icon:"./assets/ritual/black-bow.svg"},
+  {id:"perfume",label:"Perfume",icon:"./assets/pins/perfume.svg"},
+  {id:"wine",label:"Vinho",icon:"./assets/pins/wine.svg"},
+  {id:"strawberry",label:"Morango",icon:"./assets/pins/strawberry.svg"},
+  {id:"kiss",label:"Beijo",icon:"./assets/pins/kiss.svg"}
 ];
 
 let cards=[...pairs,...pairs].map((x,i)=>({...x,uid:i})).sort(()=>Math.random()-.5);
@@ -494,9 +499,9 @@ function flipCard(card){
     matches++;
     lock=false;
     good();
-    $("#memory-progress").textContent=`${matches} / 4 pares`;
+    $("#memory-progress").textContent=`${matches} / ${pairs.length} pares`;
 
-    if(matches===4){
+    if(matches===pairs.length){
       playStageMusic(8);
       setTimeout(showPinsLetter,850);
     }
