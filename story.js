@@ -49,13 +49,14 @@ function snow(id,n){
 }
 
 function openIntroLetter(){
-  playStageMusic(0);
+  playStageMusic(4);
   $("#intro-letter-modal").classList.add("open");
   $("#intro-letter-modal").setAttribute("aria-hidden","false");
   document.body.classList.add("letter-open");
 }
 
 function closeIntroLetter(){
+  stopStageMusic();
   $("#intro-letter-modal").classList.remove("open");
   $("#intro-letter-modal").setAttribute("aria-hidden","true");
   document.body.classList.remove("letter-open");
@@ -541,9 +542,15 @@ async function playStageMusic(index){
   }
 }
 
+function stopStageMusic(){
+  musicSwitchToken++;
+  bgMusic.pause();
+  bgMusic.currentTime=0;
+}
+
 function startMenuMusic(){
   if(musicUnlocked)return;
-  playStageMusic(0);
+  playStageMusic(4);
 }
 
 /* Start the menu song on the first real user interaction. */
