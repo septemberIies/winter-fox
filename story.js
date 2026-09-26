@@ -87,6 +87,23 @@ function closeCafeLetter(){
 const cafeLetterClose=$("#cafe-letter-close");
 if(cafeLetterClose)cafeLetterClose.onclick=closeCafeLetter;
 
+function showWineLetter(){
+  $("#wine-letter-modal").classList.add("open");
+  $("#wine-letter-modal").setAttribute("aria-hidden","false");
+  document.body.classList.add("letter-open");
+}
+
+function closeWineLetter(){
+  stopStageMusic();
+  $("#wine-letter-modal").classList.remove("open");
+  $("#wine-letter-modal").setAttribute("aria-hidden","true");
+  document.body.classList.remove("letter-open");
+  setTimeout(()=>go("witch"),160);
+}
+
+const wineLetterClose=$("#wine-letter-close");
+if(wineLetterClose)wineLetterClose.onclick=closeWineLetter;
+
 
 /* ESTEIRA */
 const foods={
@@ -299,8 +316,8 @@ function finishWineHold(e){
     $("#wine-status").textContent=`Perfeito — ${wineTemperature().toFixed(1)}°C.`;
 
     if(wineRound===wineRounds.length-1){
-      playStageMusic(2);
-      setTimeout(()=>go("witch"),1100);
+      playStageMusic(6);
+      setTimeout(showWineLetter,900);
       return;
     }
 
@@ -528,7 +545,8 @@ const MUSIC_TRACKS=[
   {title:"Without Me",src:"assets/music/Halsey - Without Me.mp3"},
   {title:"Cinderella",src:"assets/music/Mac Miller - Cinderella (feat. Ty Dolla ign).mp3"},
   {title:"The First Time",src:"assets/music/Damiano David - The First Time (Official Visual Video) (1).mp3"},
-  {title:"M",src:"assets/music/Anil Emre Daldal - M.mp3"}
+  {title:"M",src:"assets/music/Anil Emre Daldal - M.mp3"},
+  {title:"Die For You (Remix)",src:"assets/music/The Weeknd, Ariana Grande - Die For You (Remix Lyric Video) (1).mp3"}
 ];
 
 const bgMusic=new Audio();
