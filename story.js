@@ -6,6 +6,7 @@ function show(id){
   scenes.forEach(x=>document.getElementById(x)?.classList.remove("active"));
   document.getElementById(id)?.classList.add("active");
   current=id;
+  if(typeof syncSkipGameButton==="function")syncSkipGameButton();
 }
 function go(id){
   const t=$("#transition");
@@ -658,3 +659,53 @@ if(musicToggle){
   });
   syncMusicToggle();
 }
+
+/* SKIP CURRENT MINIGAME */
+const skipGameButton=$("#skip-game");
+
+function syncSkipGameButton(){
+  if(!skipGameButton)return;
+  const canSkip=["cafe","wine","witch","journal"].includes(current);
+  skipGameButton.classList.toggle("hidden",!canSkip);
+}
+
+function skipCurrentMinigame(){
+  if(!["cafe","wine","witch","journal"].includes(current))return;
+
+  stopStageMusic();
+
+  if(current==="cafe"){
+    stopConveyor();
+    orderIndex=0;
+    caught.clear();
+    renderTray();
+    resetWineAttempt();
+    go("wine");
+    return;
+  }
+
+  if(current==="wine"){
+    wineHolding=false;
+    wineLocked=false;
+    cancelAnimationFrame(wineRaf);
+    wineButton.classList.remove("holding");
+    wineMachine.classList.remove("cooling","wine-fail","wine-success");
+    go("witch");
+    return;
+  }
+
+  if(current==="witch"){
+    go("journal");
+    return;
+  }
+
+  if(current==="journal"){
+    go("finale");
+  }
+}
+
+if(skipGameButton){
+  skipGameButton.addEventListener("click",skipCurrentMinigame);
+}
+
+syncSkipGameButton();
