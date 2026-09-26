@@ -862,3 +862,60 @@ body.letter-open{overflow:hidden}
   .memory-front img{width:28px!important;height:28px!important}
   .memory-front b{font-size:11px!important}
 }
+
+/* FINAL ROMANTIC PHOTO SLIDESHOW */
+.finale-scene{
+  overflow:hidden;
+  isolation:isolate;
+  background:#06070a!important;
+}
+.final-photo-layer{
+  position:absolute;
+  inset:-2%;
+  z-index:0;
+  opacity:0;
+  background-position:center center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  transform:scale(1.045);
+  transition:opacity 1.45s ease,transform 6s ease;
+  will-change:opacity,transform;
+}
+.final-photo-layer.visible{
+  opacity:1;
+  transform:scale(1);
+}
+.final-photo-shade{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(9,7,11,.10),rgba(4,4,7,.43) 72%),
+    linear-gradient(to bottom,rgba(4,5,8,.22),rgba(4,5,8,.52));
+}
+.finale-scene .snow-layer{z-index:3;opacity:.42}
+.finale-scene .final-light{z-index:4;opacity:.34}
+.finale-scene .final-card{
+  z-index:20;
+  width:min(680px,88vw);
+  padding:44px 48px;
+  background:rgba(8,7,11,.64)!important;
+  border-color:rgba(255,255,255,.14)!important;
+  box-shadow:0 28px 80px rgba(0,0,0,.42);
+  backdrop-filter:blur(13px) saturate(.9);
+}
+.finale-scene .final-card h1{
+  margin:8px 0 8px;
+  font-size:clamp(48px,6vw,76px);
+  text-shadow:0 3px 22px rgba(0,0,0,.38);
+}
+.finale-scene .final-card .gold-line{
+  margin:10px auto 24px;
+  color:#f1ccd9;
+  font-size:clamp(22px,2.8vw,30px);
+  text-shadow:0 2px 16px rgba(0,0,0,.42);
+}
+@media(max-width:640px){
+  .final-photo-layer{inset:0}
+  .finale-scene .final-card{padding:34px 24px}
+}
