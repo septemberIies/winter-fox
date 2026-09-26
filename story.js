@@ -48,7 +48,24 @@ function snow(id,n){
   }
 }
 
-$("#start-game").onclick=()=>{tone(330,.12,.02);go("cafe")};
+function openIntroLetter(){
+  tone(330,.12,.02);
+  $("#intro-letter-modal").classList.add("open");
+  $("#intro-letter-modal").setAttribute("aria-hidden","false");
+  document.body.classList.add("letter-open");
+}
+
+function closeIntroLetter(){
+  $("#intro-letter-modal").classList.remove("open");
+  $("#intro-letter-modal").setAttribute("aria-hidden","true");
+  document.body.classList.remove("letter-open");
+  orderIndex=0;
+  setupOrder();
+  setTimeout(()=>go("cafe"),160);
+}
+
+$("#start-game").onclick=openIntroLetter;
+$("#intro-letter-close").onclick=closeIntroLetter;
 
 /* ESTEIRA */
 const foods={
@@ -125,7 +142,7 @@ function catchFood(el,id){
     stopConveyor();
     $("#cafe-status").textContent="Pedido completo!";
     orderIndex++;
-    if(orderIndex>=orders.length)setTimeout(()=>go("wine"),900);
+    if(orderIndex>=orders.length){playStageMusic(1);setTimeout(()=>go("wine"),900);}
     else setTimeout(setupOrder,700);
   }
 }
@@ -153,6 +170,9 @@ function stopConveyor(){
   conveyorTimer=null;conveyorRaf=null;
 }
 setupOrder();
+stopConveyor();
+$("#conveyor").querySelectorAll(".conveyor-item").forEach(x=>x.remove());
+conveyorItems=[];
 
 
 /* VINHO — SEGURE E SOLTE */
@@ -258,6 +278,7 @@ function finishWineHold(e){
     $("#wine-status").textContent=`Perfeito — ${wineTemperature().toFixed(1)}°C.`;
 
     if(wineRound===wineRounds.length-1){
+      playStageMusic(2);
       setTimeout(()=>go("witch"),1100);
       return;
     }
@@ -348,6 +369,7 @@ ritualButtons.forEach(btn=>btn.onclick=()=>{
 
     if(ritualRound===3){
       $("#ritual-status").textContent="Ritual completo!";
+      playStageMusic(3);
       setTimeout(()=>go("journal"),900);
       return;
     }
@@ -401,7 +423,7 @@ function flipCard(card){
     good();
     $("#memory-progress").textContent=`${matches} / 4 pares`;
 
-    if(matches===4)setTimeout(()=>go("finale"),900);
+    if(matches===4){playStageMusic(4);setTimeout(()=>go("finale"),900);}
   }else{
     setTimeout(()=>{
       open.forEach(x=>x.classList.remove("flipped"));
@@ -478,7 +500,7 @@ snow("final-snow",95);
 })();
 
 
-/* GLOBAL MUSIC PLAYLIST — local MP3, shuffle bag */
+/* STAGE MUSIC — menu + one different song after each minigame */
 const MUSIC_TRACKS=[
   {title:"Wonderwall",src:"assets/music/Oasis - Wonderwall (Official Video).mp3"},
   {title:"Drowning",src:"assets/music/A Boogie Wit Da Hoodie - Drowning (feat. Kodak Black) Official Audio.mp3"},
@@ -489,84 +511,42 @@ const MUSIC_TRACKS=[
 
 const bgMusic=new Audio();
 bgMusic.preload="auto";
-bgMusic.volume=.28;
+bgMusic.volume=.24;
+bgMusic.loop=true;
 
-let musicOrder=[];
-let musicCursor=0;
-let musicLastIndex=-1;
-let musicStarted=false;
-let musicLoading=false;
-let musicFailures=0;
+let activeMusicIndex=-1;
+let musicUnlocked=false;
+let musicSwitchToken=0;
 
-function shuffleMusicOrder(){
-  musicOrder=MUSIC_TRACKS.map((_,i)=>i);
+async function playStageMusic(index){
+  if(index<0||index>=MUSIC_TRACKS.length)return;
+  musicUnlocked=true;
 
-  for(let i=musicOrder.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [musicOrder[i],musicOrder[j]]=[musicOrder[j],musicOrder[i]];
-  }
+  if(activeMusicIndex===index&&!bgMusic.paused)return;
 
-  if(musicOrder.length>1 && musicOrder[0]===musicLastIndex){
-    const swapIndex=1+Math.floor(Math.random()*(musicOrder.length-1));
-    [musicOrder[0],musicOrder[swapIndex]]=[musicOrder[swapIndex],musicOrder[0]];
-  }
-
-  musicCursor=0;
-}
-
-async function playNextMusic(){
-  if(!musicStarted||musicLoading)return;
-  musicLoading=true;
-
-  if(!musicOrder.length||musicCursor>=musicOrder.length){
-    shuffleMusicOrder();
-  }
-
-  const index=musicOrder[musicCursor++];
+  const token=++musicSwitchToken;
   const track=MUSIC_TRACKS[index];
-  musicLastIndex=index;
-
-  bgMusic.src=encodeURI(track.src);
-  bgMusic.currentTime=0;
+  activeMusicIndex=index;
 
   try{
+    bgMusic.pause();
+    bgMusic.src=encodeURI(track.src);
+    bgMusic.currentTime=0;
+    bgMusic.loop=true;
+    bgMusic.volume=.24;
     await bgMusic.play();
-    musicFailures=0;
+    if(token!==musicSwitchToken)bgMusic.pause();
   }catch(err){
-    musicFailures++;
-    musicLoading=false;
-
-    if(musicFailures<MUSIC_TRACKS.length){
-      setTimeout(playNextMusic,250);
-    }
-    return;
+    // Autoplay can be blocked until the user interacts.
   }
-
-  musicLoading=false;
 }
 
-function startGlobalMusic(){
-  if(musicStarted)return;
-  musicStarted=true;
-  shuffleMusicOrder();
-  playNextMusic();
+function startMenuMusic(){
+  if(musicUnlocked)return;
+  playStageMusic(0);
 }
 
-bgMusic.addEventListener("ended",()=>{
-  musicLoading=false;
-  playNextMusic();
-});
-
-bgMusic.addEventListener("error",()=>{
-  if(!musicStarted)return;
-  musicLoading=false;
-  musicFailures++;
-
-  if(musicFailures<MUSIC_TRACKS.length){
-    setTimeout(playNextMusic,250);
-  }
-});
-
-window.addEventListener("pointerdown",startGlobalMusic,{once:true,passive:true});
-window.addEventListener("keydown",startGlobalMusic,{once:true});
+/* Start the menu song on the first real user interaction. */
+window.addEventListener("pointerdown",startMenuMusic,{once:true,passive:true});
+window.addEventListener("keydown",startMenuMusic,{once:true});
 
