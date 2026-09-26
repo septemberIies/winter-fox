@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#07090e" />
-  <title>Winter Fox</title>
+  <title>All About You</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./winter-ui.css?v=20260925-heart2" />
+  <link rel="stylesheet" href="./winter-ui.css?v=20260925-letter1" />
 </head>
 <body>
 <main id="app">
@@ -245,10 +245,25 @@
     </div>
   </section>
 
+
+  <div id="intro-letter-modal" class="intro-letter-modal" aria-hidden="true">
+    <div class="intro-letter-backdrop"></div>
+    <div class="intro-letter-stage" role="dialog" aria-modal="true" aria-labelledby="intro-letter-title">
+      <img class="intro-envelope-sprite" src="https://opengameart.org/sites/default/files/letter_open.png" alt="">
+      <article class="intro-letter-paper">
+        <span class="intro-letter-kicker">PARA VOCÊ ♡</span>
+        <h2 id="intro-letter-title">Parabéns, meu amor.</h2>
+        <p>Parabéns meu amor, hoje é seu dia e quero fazer o máximo pra te agradar e fazer você ficar feliz hoje, a cada puzzle que você acertar vai ser um mini-textinho, tentei fazer baseado nas coisas que você gosta e tentei fazer em um formato que eu nunca tinha feito que é site ;-;, não ficou tão bom quanto eu esperava e queria, mas espero que você goste, eu te amo muito e você é a melhor coisa que me aconteceu, agora vai fazer os puzzle e minigames..</p>
+        <button id="intro-letter-close" class="intro-letter-close">Fechar carta e começar</button>
+        <span class="intro-wax-seal">♡</span>
+      </article>
+    </div>
+  </div>
+
   <div id="transition" class="transition"></div>
   <div id="toast" class="toast hidden"></div>
 </main>
 
-<script src="./story.js?v=20260925-cafe-reset1"></script>
+<script src="./story.js?v=20260925-letter1"></script>
 </body>
 </html>
