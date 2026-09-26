@@ -99,8 +99,13 @@ function catchFood(el,id){
 
   if(!o.need.includes(id)){
     bad();
-    $("#cafe-status").textContent=id==="king"?"Queijo do reino não entra nesse pedido.":"Esse item não está no pedido.";
     el.classList.add("caught");
+    stopConveyor();
+    orderIndex=0;
+    caught.clear();
+    renderTray();
+    $("#cafe-status").textContent="Item errado — voltando para o começo.";
+    setTimeout(setupOrder,850);
     return;
   }
 
